@@ -11,23 +11,23 @@
 template <typename T>
 class ObjectPool : public Immovable {
 public:
-    explicit ObjectPool(unsigned size);
-    ~ObjectPool();
+    inline explicit ObjectPool(unsigned size);
+    inline ~ObjectPool();
 
     template <typename... Args>
-    T *create(Args&& ...args);
+    inline T *create(Args&& ...args);
 
-    void destroy(T *object);
+    inline void destroy(T *object);
 
 private:
     union Node {
-        Node();
-        ~Node();
+        inline Node();
+        inline ~Node();
         T object;
         Node *next;
     };
 
-    bool grow(unsigned amount);
+    inline bool grow(unsigned amount);
 
     unsigned m_size;
     Node *m_free;
@@ -36,3 +36,6 @@ private:
 
 
 #endif // SECS_OBJECT_POOL_HPP
+
+#include "object_pool.inl"
+

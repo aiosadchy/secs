@@ -7,6 +7,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic")
 
 add_executable(secs
         test/main.cpp
+        test/object_pool_test.cpp
         include/engine.cpp
         include/engine.hpp
         include/entity_manager.cpp
@@ -20,5 +21,5 @@ add_executable(secs
         include/event_manager.hpp
         include/callback_chain.cpp
         include/callback_chain.hpp
-        include/object_pool.cpp
+        include/object_pool.inl
         include/object_pool.hpp)

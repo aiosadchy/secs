@@ -1,9 +1,13 @@
+#ifndef SECS_OBJECT_POOL_INL
+#define SECS_OBJECT_POOL_INL
+
+
 #include <cstddef>
 #include <utility>
 #include "object_pool.hpp"
 
 template<typename T>
-ObjectPool<T>::ObjectPool(unsigned size) : m_size(0), m_free(nullptr), m_blocks() {
+inline ObjectPool<T>::ObjectPool(unsigned size) : m_size(0), m_free(nullptr), m_blocks() {
     for (auto &b : m_blocks) {
         b = nullptr;
     }
@@ -11,7 +15,7 @@ ObjectPool<T>::ObjectPool(unsigned size) : m_size(0), m_free(nullptr), m_blocks(
 }
 
 template<typename T>
-ObjectPool<T>::~ObjectPool() {
+inline ObjectPool<T>::~ObjectPool() {
     for (auto &b : m_blocks) {
         delete [] b;
         b = nullptr;
@@ -20,7 +24,7 @@ ObjectPool<T>::~ObjectPool() {
 
 template<typename T>
 template<typename... Args>
-T *ObjectPool<T>::create(Args &&... args) {
+inline T *ObjectPool<T>::create(Args &&... args) {
     if (m_free == nullptr) {
         if (!grow(m_size)) {
             return nullptr;
@@ -32,7 +36,7 @@ T *ObjectPool<T>::create(Args &&... args) {
 }
 
 template<typename T>
-void ObjectPool<T>::destroy(T *object) {
+inline void ObjectPool<T>::destroy(T *object) {
     static_assert(offsetof(Node, object) == 0);
     Node *node = reinterpret_cast<Node *>(object);
     node->object.~T();
@@ -41,7 +45,7 @@ void ObjectPool<T>::destroy(T *object) {
 }
 
 template<typename T>
-bool ObjectPool<T>::grow(unsigned amount) {
+inline bool ObjectPool<T>::grow(unsigned amount) {
     Node *block = nullptr;
 
     for (auto &b : m_blocks) {
@@ -66,7 +70,10 @@ bool ObjectPool<T>::grow(unsigned amount) {
 }
 
 template<typename T>
-ObjectPool<T>::Node::Node() {}
+inline ObjectPool<T>::Node::Node() {}
 
 template<typename T>
-ObjectPool<T>::Node::~Node() {}
+inline ObjectPool<T>::Node::~Node() {}
+
+
+#endif // SECS_OBJECT_POOL_INL
