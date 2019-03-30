@@ -13,8 +13,8 @@ bool EventManager<Application>::unsibscribe(const CallbackID<E> &id) {
 }
 
 template<typename Application>
-template<typename E, typename... Args>
-void EventManager<Application>::raise(Args&&... args) {
+template<typename E, typename ...Args>
+void EventManager<Application>::raise(Args&& ...args) {
     auto &handlers = handlerQueue();
     eventQueue<E>().emplace(std::forward<Args>(args)...);
     handlers.emplace(&processNext<E>);

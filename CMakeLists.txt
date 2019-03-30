@@ -22,4 +22,5 @@ add_executable(secs
         include/callback_chain.cpp
         include/callback_chain.hpp
         include/object_pool.inl
-        include/object_pool.hpp)
+        include/object_pool.hpp
+        include/type_set.hpp)

@@ -14,7 +14,7 @@ public:
     inline explicit ObjectPool(unsigned size);
     inline ~ObjectPool();
 
-    template <typename... Args>
+    template <typename ...Args>
     inline T *create(Args&& ...args);
 
     inline void destroy(T *object);

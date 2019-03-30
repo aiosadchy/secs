@@ -37,6 +37,8 @@ TestObject *objects[TEST_OBJECT_COUNT];
 unsigned eraseorder[TEST_OBJECT_COUNT];
 
 void testObjectPool() {
+    std::cout << "TEST STARTED: Object Pool" << std::endl;
+
     ObjectPool<TestObject> pool(16);
 
     for (unsigned i = 0; i < TEST_OBJECT_COUNT; ++i) {
@@ -61,4 +63,6 @@ void testObjectPool() {
     }
 
     std::cout << TestObject::count << " objects left (expected: " << 0 << ")" << std::endl;
+
+    std::cout << "TEST FINISHED: Object Pool" << std::endl;
 }

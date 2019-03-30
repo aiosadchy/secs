@@ -4,7 +4,7 @@
 
 #include <type_traits>
 
-template <typename... Pack>
+template <typename ...Pack>
 class ParameterPack {
 public:
     template <typename T>
@@ -12,9 +12,24 @@ public:
         return (std::is_same<T, Pack>::value || ...);
     }
 
-    template <typename First, typename Second, typename... Rest>
+    template <typename First, typename Second, typename ...Rest>
     static constexpr bool contains() {
         return (contains<First>() && contains<Second, Rest...>());
+    }
+
+    static constexpr bool isUnique() {
+        return unique<Pack...>();
+    }
+
+private:
+    template <typename First>
+    static constexpr bool unique() {
+        return true;
+    }
+
+    template <typename First, typename Second, typename ...Rest>
+    static constexpr bool unique() {
+        return !(ParameterPack<Second, Rest...>::template contains<First>()) && unique<Second, Rest...>();
     }
 
 };

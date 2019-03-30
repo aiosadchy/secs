@@ -23,8 +23,8 @@ inline ObjectPool<T>::~ObjectPool() {
 }
 
 template<typename T>
-template<typename... Args>
-inline T *ObjectPool<T>::create(Args &&... args) {
+template<typename ...Args>
+inline T *ObjectPool<T>::create(Args&& ...args) {
     if (m_free == nullptr) {
         if (!grow(m_size)) {
             return nullptr;
