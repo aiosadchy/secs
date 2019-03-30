@@ -3,16 +3,18 @@
 #include "object_pool.hpp"
 
 template<typename T>
-ObjectPool<T>::ObjectPool(unsigned size) : m_blocks(nullptr), m_free(nullptr), m_size(0) {
+ObjectPool<T>::ObjectPool(unsigned size) : m_size(0), m_free(nullptr), m_blocks() {
+    for (auto &b : m_blocks) {
+        b = nullptr;
+    }
     grow(size);
 }
 
 template<typename T>
 ObjectPool<T>::~ObjectPool() {
-    while (m_blocks != nullptr) {
-        Node *next = m_blocks->nextBlock;
-        delete [] m_blocks;
-        m_blocks = next;
+    for (auto &b : m_blocks) {
+        delete [] b;
+        b = nullptr;
     }
 }
 
@@ -20,36 +22,47 @@ template<typename T>
 template<typename... Args>
 T *ObjectPool<T>::create(Args &&... args) {
     if (m_free == nullptr) {
-        grow(m_size);
+        if (!grow(m_size)) {
+            return nullptr;
+        }
     }
     Node *node = m_free;
-    m_free = node->nextFree;
+    m_free = node->next;
     return new (&node->object) T(std::forward<Args>(args)...);
 }
 
 template<typename T>
 void ObjectPool<T>::destroy(T *object) {
-    static_assert(offsetof(Node, object) == 0, "Offset of first element of a union is nonzero");
+    static_assert(offsetof(Node, object) == 0);
     Node *node = reinterpret_cast<Node *>(object);
     node->object.~T();
-    node->nextFree = m_free;
+    node->next = m_free;
     m_free = node;
 }
 
 template<typename T>
-void ObjectPool<T>::grow(unsigned amount) {
-    Node *block = new Node[amount + 1];
+bool ObjectPool<T>::grow(unsigned amount) {
+    Node *block = nullptr;
 
-    block->nextBlock = m_blocks;
-    m_blocks = block;
-
-    for (unsigned i = 1; i < amount; ++i) {
-        block[i].nextFree = &block[i + 1];
+    for (auto &b : m_blocks) {
+        if (b == nullptr) {
+            b = new Node[amount];
+            block = b;
+            break;
+        }
     }
-    block[amount].nextFree = m_free;
-    m_free = &block[1];
 
-    m_size += amount;
+    if (block == nullptr) {
+        return false;
+    } else {
+        for (unsigned i = 0; i < amount - 1; ++i) {
+            block[i].next = &block[i + 1];
+        }
+        block[amount - 1].next = m_free;
+        m_free = &block[0];
+        m_size += amount;
+        return true;
+    }
 }
 
 template<typename T>

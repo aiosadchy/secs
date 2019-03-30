@@ -2,6 +2,10 @@
 #define SECS_OBJECT_POOL_HPP
 
 
+#ifndef SECS_OBJECT_POOL_MAX_BLOCKS
+#define SECS_OBJECT_POOL_MAX_BLOCKS 30
+#endif // SECS_OBJECT_POOL_MAX_BLOCKS
+
 #include "utility.hpp"
 
 template <typename T>
@@ -20,15 +24,14 @@ private:
         Node();
         ~Node();
         T object;
-        Node *nextFree;
-        Node *nextBlock;
+        Node *next;
     };
 
-    void grow(unsigned amount);
+    bool grow(unsigned amount);
 
-    Node *m_blocks;
-    Node *m_free;
     unsigned m_size;
+    Node *m_free;
+    Node *m_blocks[SECS_OBJECT_POOL_MAX_BLOCKS];
 };
 
 
