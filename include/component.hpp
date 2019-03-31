@@ -25,10 +25,10 @@ public:
     using Dependencies = PPack<Requirements...>;
 
     template <typename T>
-    T *get();
+    T &get();
 
     template <typename T>
-    const T *get() const;
+    const T &get() const;
 
 protected:
     Dependent() = default;

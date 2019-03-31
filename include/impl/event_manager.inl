@@ -1,4 +1,8 @@
-#include "event_manager.hpp"
+#ifndef SECS_EVENT_MANAGER_INL
+#define SECS_EVENT_MANAGER_INL
+
+
+#include "../event_manager.hpp"
 
 template<typename Application>
 template<typename E>
@@ -52,3 +56,6 @@ std::queue<void (*)()> &EventManager<Application>::handlerQueue() {
     static std::queue<void (*)()> queue = std::queue<void (*)()>();
     return queue;
 }
+
+
+#endif // SECS_EVENT_MANAGER_INL

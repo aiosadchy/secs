@@ -114,6 +114,9 @@ public:
         using Result = typename Subtract<Types..., Other...>::Result;
     };
 
+    PPack() = default;
+    ~PPack() = default;
+
 };
 
 template <typename ...Types>

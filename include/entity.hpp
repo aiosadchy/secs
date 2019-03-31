@@ -5,15 +5,40 @@
 #include "utility.hpp"
 #include "type_set.hpp"
 
-template <typename ...Components>
-class Entity : public Immovable {
+class EntityBase : public Immovable {
 public:
-    template <typename T>
-    T *get();
+    using Destructor = void(*)(EntityBase *);
 
-protected:
-    Entity();
+    inline EntityBase();
+    inline ~EntityBase();
 
+    inline bool init(Destructor destructor);
+    inline bool destroy();
+
+private:
+    bool m_alive;
+    unsigned m_generation;
+    Destructor m_destructor;
+
+    friend class EntityHandle;
+};
+
+class EntityHandle {
+public:
+    inline explicit EntityHandle(EntityBase *base = nullptr);
+    inline bool alive() const;
+
+private:
+    unsigned m_generation;
+    EntityBase *m_entity;
+
+    template <typename Application>
+    friend class EntityManager;
+
+};
+
+template <typename ...Components>
+class Entity : public EntityBase {
 private:
     template <typename ...C>
     struct CDepResolver {
@@ -32,8 +57,15 @@ private:
         using Result = typename Need::template AddUnique<Next>::Result;
     };
 
+public:
     using ComponentTypes = typename CDepResolver<PPack<>, PPack<>, PPack<Components...>>::Result;
 
+    Entity();
+
+    template <typename T>
+    T *get();
+
+private:
     TypeSet<typename PackOf<ComponentTypes>::Pointers> m_components;
 
 };
