@@ -2,8 +2,8 @@
 #define SECS_TYPE_SET_HPP
 
 
-#include <type_traits>
 #include <utility>
+#include "parameter_pack.hpp"
 
 template <typename ...Types>
 class TypeSet;
@@ -11,7 +11,7 @@ class TypeSet;
 template <typename First, typename ...Rest>
 class TypeSet<First, Rest...> : public TypeSet<Rest...> {
 public:
-    static_assert(ParameterPack<First, Rest...>::isUnique(), "Types in Type Set must be unique");
+    static_assert(PPack<First, Rest...>::isUnique(), "Types in Type Set must be unique");
 
     inline TypeSet() : m_data() {};
 
@@ -21,7 +21,7 @@ public:
 
     template <typename T>
     inline T &get() {
-        static_assert(ParameterPack<First, Rest...>::template contains<T>(), "Type is not present in Type Set");
+        static_assert(PPack<First, Rest...>::template contains<T>(), "Type is not present in Type Set");
         if constexpr (std::is_same<T, First>::value) {
             return m_data;
         } else {

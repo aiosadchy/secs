@@ -1,19 +1,21 @@
-#include "callback_chain.hpp"
+#ifndef SECS_CALLBACK_CHAIN_INL
+#define SECS_CALLBACK_CHAIN_INL
+
+
+#include "../callback_chain.hpp"
 
 template<typename E>
-CallbackID<E>::CallbackID(CallbackChain<E> &chain, Key key) : m_holder(&chain), m_key(key) {
-
-}
+inline CallbackID<E>::CallbackID(CallbackChain<E> &chain, Key key) : m_holder(&chain), m_key(key) {}
 
 template<typename E>
-typename CallbackChain<E>::ID CallbackChain<E>::add(const CallbackChain::Function &function) {
+inline typename CallbackChain<E>::ID CallbackChain<E>::add(const CallbackChain::Function &function) {
     ID result = CallbackChain::ID(*this, m_nextKey++);
     m_callbacks.emplace_back(result.m_key, function);
     return result;
 }
 
 template<typename E>
-bool CallbackChain<E>::remove(const ID &id) {
+inline bool CallbackChain<E>::remove(const ID &id) {
     if (id.m_holder != this) {
         return false;
     }
@@ -27,13 +29,14 @@ bool CallbackChain<E>::remove(const ID &id) {
 }
 
 template<typename E>
-void CallbackChain<E>::fire(const E &event) {
+inline void CallbackChain<E>::fire(const E &event) {
     for (auto &p : m_callbacks) {
         p.second(event);
     }
 }
 
 template<typename E>
-CallbackChain<E>::CallbackChain() : m_callbacks(), m_nextKey(0) {
+inline CallbackChain<E>::CallbackChain() : m_callbacks(), m_nextKey(0) {}
 
-}
+
+#endif // SECS_CALLBACK_CHAIN_INL

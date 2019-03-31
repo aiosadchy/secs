@@ -4,7 +4,7 @@
 
 #include <cstddef>
 #include <utility>
-#include "object_pool.hpp"
+#include "../object_pool.hpp"
 
 template<typename T>
 inline ObjectPool<T>::ObjectPool(unsigned size) : m_size(0), m_free(nullptr), m_blocks() {

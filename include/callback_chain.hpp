@@ -3,6 +3,7 @@
 
 
 #include <functional>
+#include <vector>
 #include "utility.hpp"
 
 template <typename E>
@@ -18,7 +19,7 @@ private:
     CallbackChain<E> *m_holder;
     Key m_key;
 
-    CallbackID(CallbackChain<E> &chain, Key key);
+    inline CallbackID(CallbackChain<E> &chain, Key key);
 
 };
 
@@ -28,11 +29,11 @@ public:
     using Function = std::function<void(const E &)>;
     using ID = CallbackID<E>;
 
-    ID add(const Function &function);
-    bool remove(const ID &id);
-    void fire(const E &event);
+    inline ID add(const Function &function);
+    inline bool remove(const ID &id);
+    inline void fire(const E &event);
 
-    CallbackChain();
+    inline CallbackChain();
 
 private:
     std::vector<std::pair<typename ID::Key, Function>> m_callbacks;
@@ -42,3 +43,5 @@ private:
 
 
 #endif // SECS_CALLBACK_CHAIN_HPP
+
+#include "impl/callback_chain.inl"

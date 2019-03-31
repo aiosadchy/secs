@@ -2,39 +2,6 @@
 #define SECS_UTIL_HPP
 
 
-#include <type_traits>
-
-template <typename ...Pack>
-class ParameterPack {
-public:
-    template <typename T>
-    static constexpr bool contains() {
-        return (std::is_same<T, Pack>::value || ...);
-    }
-
-    template <typename First, typename Second, typename ...Rest>
-    static constexpr bool contains() {
-        return (contains<First>() && contains<Second, Rest...>());
-    }
-
-    static constexpr bool isUnique() {
-        return unique<Pack...>();
-    }
-
-private:
-    template <typename First>
-    static constexpr bool unique() {
-        return true;
-    }
-
-    template <typename First, typename Second, typename ...Rest>
-    static constexpr bool unique() {
-        return !(ParameterPack<Second, Rest...>::template contains<First>()) && unique<Second, Rest...>();
-    }
-
-};
-
-
 class Immovable {
 public:
     Immovable() noexcept = default;
@@ -68,5 +35,6 @@ private:
     T *m_container;
 
 };
+
 
 #endif // SECS_UTIL_HPP

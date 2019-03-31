@@ -8,19 +8,21 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic")
 add_executable(secs
         test/main.cpp
         test/object_pool_test.cpp
+        include/utility.hpp
+        include/parameter_pack.hpp
+        include/type_set.hpp
         include/engine.cpp
         include/engine.hpp
         include/entity_manager.cpp
         include/entity_manager.hpp
         include/component.cpp
         include/component.hpp
-        include/utility.hpp
         include/entity.cpp
         include/entity.hpp
         include/event_manager.cpp
         include/event_manager.hpp
-        include/callback_chain.cpp
         include/callback_chain.hpp
-        include/object_pool.inl
+        include/impl/callback_chain.inl
         include/object_pool.hpp
-        include/type_set.hpp)
+        include/impl/object_pool.inl
+        )

@@ -37,5 +37,4 @@ private:
 
 #endif // SECS_OBJECT_POOL_HPP
 
-#include "object_pool.inl"
-
+#include "impl/object_pool.inl"
