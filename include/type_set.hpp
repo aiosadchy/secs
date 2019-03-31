@@ -39,6 +39,9 @@ private:
 
 };
 
+template <typename ...Types, typename ...Rest>
+class TypeSet<PPack<Types...>, Rest...> : TypeSet<Types..., Rest...> {};
+
 template <>
 class TypeSet<> {};
 

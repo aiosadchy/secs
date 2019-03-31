@@ -32,18 +32,9 @@ private:
         using Result = typename Need::template AddUnique<Next>::Result;
     };
 
-    template <typename ...>
-    struct ComponentSet;
+    using ComponentTypes = typename CDepResolver<PPack<>, PPack<>, PPack<Components...>>::Result;
 
-    template <typename ...C>
-    struct ComponentSet<PPack<C...>> {
-        using Type = TypeSet<C*...>;
-    };
-
-    using ComponentPack = typename CDepResolver<PPack<>, PPack<>, PPack<Components...>>::Result;
-    using ComponentHolder = typename ComponentSet<ComponentPack>::Type;
-
-    ComponentHolder m_components;
+    TypeSet<typename PackOf<ComponentTypes>::Pointers> m_components;
 
 };
 

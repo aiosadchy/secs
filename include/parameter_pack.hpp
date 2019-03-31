@@ -116,5 +116,16 @@ public:
 
 };
 
+template <typename ...Types>
+class PackOf;
+
+template <typename ...Types>
+class PackOf<PPack<Types...>> {
+public:
+    using Pointers = PPack<Types*...>;
+    using References = PPack<Types&...>;
+    using Constants = PPack<const Types...>;
+};
+
 
 #endif // SECS_PARAMETER_PACK_HPP
