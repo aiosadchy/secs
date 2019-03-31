@@ -17,8 +17,8 @@ add_executable(secs
         include/entity_manager.hpp
         include/component.cpp
         include/component.hpp
-        include/entity.cpp
         include/entity.hpp
+        include/impl/entity.inl
         include/event_manager.cpp
         include/event_manager.hpp
         include/callback_chain.hpp

@@ -7,19 +7,35 @@
 template <typename ...Pack>
 class PPack {
 private:
-    template <typename T, bool present>
-    struct AddIfNotPresent {
-        using Result = PPack<Pack...>;
-    };
+    template <typename First>
+    static constexpr bool unique() {
+        return true;
+    }
 
-    template <typename T>
-    struct AddIfNotPresent<T, false> {
-        using Result = PPack<Pack..., T>;
-    };
+    template <typename First, typename Second, typename ...Rest>
+    static constexpr bool unique() {
+        return !(PPack<Second, Rest...>::template contains<First>()) && unique<Second, Rest...>();
+    }
 
     template <typename First, typename ...Rest>
     struct GetFirst {
         using Result = First;
+    };
+
+    template <typename First, typename ...Rest>
+    struct GetTail {
+        using Result = PPack<Rest...>;
+    };
+
+    template <typename ...>
+    struct SubtractOneFrom {
+        using Result = PPack<>;
+    };
+
+    template <typename T, typename First, typename ...Rest>
+    struct SubtractOneFrom<T, First, Rest...> {
+        using Result = typename std::conditional<std::is_same<T, First>::value, PPack<>, PPack<First>>
+                            ::type::template Add<typename SubtractOneFrom<T, Rest...>::Result>::Result;
     };
 
 public:
@@ -41,6 +57,14 @@ public:
         return sizeof...(Pack);
     }
 
+    struct First {
+        using Result = typename GetFirst<Pack...>::Result;
+    };
+
+    struct Tail {
+        using Result = typename GetTail<Pack...>::Result;
+    };
+
     template <typename ...Other>
     struct Add {
         using Result = PPack<Pack..., Other...>;
@@ -58,7 +82,7 @@ public:
 
     template <typename T>
     struct AddUnique<T> {
-        using Result = typename AddIfNotPresent<T, contains<T>()>::Result;
+        using Result = typename std::conditional<contains<T>(), PPack<Pack...>, PPack<Pack..., T>>::type;
     };
 
     template <typename First, typename Second, typename ...Rest>
@@ -72,19 +96,23 @@ public:
     };
 
     struct Unique {
-        using Result = typename PPack<typename GetFirst<Pack...>::Result>::template AddUnique<Pack...>::Result;
+        using Result = typename PPack<typename First::Result>::template AddUnique<typename Tail::Result>::Result;
     };
 
-private:
-    template <typename First>
-    static constexpr bool unique() {
-        return true;
-    }
+    template <typename ...Other>
+    struct Subtract {
+        using Result = PPack<Pack...>;
+    };
 
-    template <typename First, typename Second, typename ...Rest>
-    static constexpr bool unique() {
-        return !(PPack<Second, Rest...>::template contains<First>()) && unique<Second, Rest...>();
-    }
+    template <typename First, typename ...Other>
+    struct Subtract<First, Other...> {
+        using Result = typename SubtractOneFrom<First, Pack...>::Result::template Subtract<Other...>::Result;
+    };
+
+    template <typename ...Types, typename ...Other>
+    struct Subtract<PPack<Types...>, Other...> {
+        using Result = typename Subtract<Types..., Other...>::Result;
+    };
 
 };
 
