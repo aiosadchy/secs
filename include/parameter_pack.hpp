@@ -7,50 +7,62 @@
 template <typename ...Pack>
 class PPack {
 private:
-    template <typename First>
+    template <typename First, typename ...Rest>
     static constexpr bool unique() {
-        return true;
+        if constexpr (sizeof...(Rest) != 0) {
+            return !(PPack<Rest...>::template contains<First>()) && unique<Rest...>();
+        } else {
+            return true;
+        }
     }
 
-    template <typename First, typename Second, typename ...Rest>
-    static constexpr bool unique() {
-        return !(PPack<Second, Rest...>::template contains<First>()) && unique<Second, Rest...>();
-    }
+    template <typename ...>
+    struct GetFirst {
+        using Result = PPack<>;
+    };
 
     template <typename First, typename ...Rest>
-    struct GetFirst {
+    struct GetFirst<First, Rest...> {
         using Result = First;
     };
 
-    template <typename First, typename ...Rest>
+    template <typename ...>
     struct GetTail {
+        using Result = PPack<>;
+    };
+
+    template <typename First, typename ...Rest>
+    struct GetTail<First, Rest...> {
         using Result = PPack<Rest...>;
     };
 
-    template <typename ...>
+    template <typename T, typename ...>
     struct SubtractOneFrom {
         using Result = PPack<>;
     };
 
     template <typename T, typename First, typename ...Rest>
     struct SubtractOneFrom<T, First, Rest...> {
-        using Result = typename std::conditional<std::is_same<T, First>::value, PPack<>, PPack<First>>
-                            ::type::template Add<typename SubtractOneFrom<T, Rest...>::Result>::Result;
+        using Head = typename std::conditional<std::is_same<T, First>::value, PPack<>, PPack<First>>::type;
+        using Result = typename Head::template Add<typename SubtractOneFrom<T, Rest...>::Result>::Result;
     };
 
 public:
-    template <typename T>
+    template <typename First, typename ...Rest>
     static constexpr bool contains() {
-        return (std::is_same<T, Pack>::value || ...);
-    }
-
-    template <typename First, typename Second, typename ...Rest>
-    static constexpr bool contains() {
-        return (contains<First>() && contains<Second, Rest...>());
+        if constexpr (sizeof...(Rest) != 0) {
+            return (contains<First>() && contains<Rest...>());
+        } else {
+            return (std::is_same<First, Pack>::value || ...);
+        }
     }
 
     static constexpr bool isUnique() {
-        return unique<Pack...>();
+        if constexpr (size() != 0) {
+            return unique<Pack...>();
+        } else {
+            return true;
+        }
     }
 
     static constexpr decltype(sizeof...(Pack)) size() {
@@ -119,7 +131,7 @@ public:
 
 };
 
-template <typename ...Types>
+template <typename ...>
 class PackOf;
 
 template <typename ...Types>
