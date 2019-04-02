@@ -3,11 +3,17 @@
 
 
 #include "parameter_pack.hpp"
-#include "utility.hpp"
+#include "type_id.hpp"
 #include "type_set.hpp"
+#include "utility.hpp"
 
 class Component : public Immovable {
+private:
+    class ComponentTypeIDFamily {};
+
 public:
+    using TypeID = ::TypeID<ComponentTypeIDFamily>;
+
     using Dependencies = PPack<>;
 
     template <typename ...Requirements>

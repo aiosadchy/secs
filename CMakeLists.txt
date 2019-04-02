@@ -9,6 +9,7 @@ add_executable(secs
         test/main.cpp
         test/object_pool_test.cpp
         include/parameter_pack.hpp
+        include/type_id.hpp
         include/type_set.hpp
         include/utility.hpp
         include/engine.hpp
