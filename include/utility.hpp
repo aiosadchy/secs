@@ -15,11 +15,16 @@ public:
 
 };
 
-
 template <typename T>
+inline constexpr T max(const T a, const T b) {
+    static_assert(std::is_scalar<T>::value);
+    return (b < a) ? a : b;
+}
+
+template <typename T, typename I = typename T::iterator>
 class View {
 public:
-    using iterator = typename T::iterator;
+    using iterator = I;
 
     iterator begin() {
         return m_container->begin();

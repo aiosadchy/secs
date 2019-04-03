@@ -16,8 +16,6 @@ public:
     // void destroy(const EntityHandle &entity);
 
 private:
-    // template <typename E>
-    // void destroyEntity(EntityBase *entity);
 
     template <typename E, typename First, typename ...Rest>
     void destroyComponents(E *entity);

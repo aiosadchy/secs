@@ -3,13 +3,12 @@
 
 
 #include "component.hpp"
-#include "entity_routine.hpp"
+#include "meta.hpp"
 #include "type_set.hpp"
 #include "utility.hpp"
 
-
 template <typename ...Components>
-class Entity : public Immovable {
+class Entity : public Meta::Entity::Base {
 private:
     template <typename ...C>
     struct CDepResolver {
@@ -42,7 +41,7 @@ private:
     TypeSet<typename PackOf<ComponentTypes>::Pointers> m_components;
 
     template <typename ...Types>
-    void findComponents(PPack<Types...>, const EntityRoutine::ComponentReference *components);
+    void findComponents(PPack<Types...>, const Meta::Component::SafePtr *components);
 
     template <typename ...Args, typename ...Default>
     void initialize(PPack<Default...>, Args&& ...args);

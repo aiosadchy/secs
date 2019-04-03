@@ -10,14 +10,11 @@ Entity<Components...>::Entity(Args&&... args) : m_components() {
     static_assert(PPack<Components...>::isUnique(), "Component types in Entity must be unique");
     using DefaultTypes = typename ComponentTypes::template Subtract<PPack<Args...>>::Result;
 
-    // An entity must be created inside Holder only
     unsigned char *raw = reinterpret_cast<unsigned char *>(this);
-    // Previous byte will always contain byte offset
-    // to the start of corresponding Metadata structure
     unsigned char offset = *(raw - 1);
-    EntityRoutine::Metadata *metadata = reinterpret_cast<EntityRoutine::Metadata *>(raw - offset);
+    const Meta::Entity::Controller *controller = reinterpret_cast<Meta::Entity::Controller *>(raw - offset);
 
-    findComponents(ComponentTypes(), &(metadata->components));
+    findComponents(ComponentTypes(), controller->getComponents());
     initialize<Args...>(DefaultTypes(), std::forward<Args>(args)...);
 }
 
@@ -30,13 +27,10 @@ C &Entity<Components...>::get() {
 
 template <typename ...Components>
 template <typename ...Types>
-void Entity<Components...>::findComponents(PPack<Types...>, const EntityRoutine::ComponentReference *components) {
-    using CType = typename PPack<Types...>::First;
+void Entity<Components...>::findComponents(PPack<Types...>, const Meta::Component::SafePtr *components) {
     if constexpr (PPack<Types...>::size() != 0) {
+        using CType = typename PPack<Types...>::First;
         CType *component = components->get<CType>();
-        if (component == nullptr) {
-            throw std::runtime_error("An entity has been created manually instead of use EntityManager::create");
-        }
         m_components.template get<CType *> = component;
         findComponents(typename PPack<Types...>::Tail::Result(), components + 1);
     }

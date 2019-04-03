@@ -13,15 +13,15 @@ add_executable(secs
         include/type_set.hpp
         include/utility.hpp
         include/engine.hpp
-        include/engine.cpp
+        include/impl/engine.inl
         include/entity_manager.hpp
         include/impl/entity_manager.inl
         include/component.hpp
         include/impl/component.inl
         include/entity.hpp
         include/impl/entity.inl
-        include/entity_routine.hpp
-        include/impl/entity_routine.inl
+        include/meta.hpp
+        include/impl/meta.inl
         include/event_manager.hpp
         include/impl/event_manager.inl
         include/callback_chain.hpp

@@ -2,11 +2,11 @@
 #define SECS_OBJECT_POOL_HPP
 
 
+#include "utility.hpp"
+
 #ifndef SECS_OBJECT_POOL_MAX_BLOCKS
 #define SECS_OBJECT_POOL_MAX_BLOCKS 30
 #endif // SECS_OBJECT_POOL_MAX_BLOCKS
-
-#include "utility.hpp"
 
 template <typename T>
 class ObjectPool : public Immovable {

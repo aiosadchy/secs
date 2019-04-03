@@ -3,7 +3,9 @@
 #include "../include/component.hpp"
 #include "../include/impl/entity.inl"
 #include "../include/entity.hpp"
-#include "../include/entity_routine.hpp"
+#include "../include/meta.hpp"
+#include "../include/impl/meta.inl"
+#include "../include/object_pool.hpp"
 
 template <typename ...Args>
 void print(Args&& ...args) {
@@ -31,11 +33,7 @@ class E3 : public Entity<C1, C3, C5> {
     virtual void f() {};
 };
 
-int main(int argc, char *argv[]) {
-    print(sizeof(EntityRoutine::Holder<E1>),
-          sizeof(EntityRoutine::Holder<E2>),
-          sizeof(EntityRoutine::Holder<E3>));
-    print(sizeof(E1), sizeof(E2), sizeof(E3), sizeof(EntityRoutine::Metadata));
-    // E3::BaseType e3;
+int main() {
+    print(sizeof(E1), sizeof(E2), sizeof(E3), sizeof(Meta::Entity::Controller));
     return 0;
 }

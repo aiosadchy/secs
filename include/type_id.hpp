@@ -4,14 +4,18 @@
 
 #include <functional>
 
-template <typename Family>
+#ifndef SECS_TYPEID_DEFAULT_INTERNAL_TYPE
+#define SECS_TYPEID_DEFAULT_INTERNAL_TYPE unsigned short int
+#endif
+
+template <typename Family, typename IDType = SECS_TYPEID_DEFAULT_INTERNAL_TYPE>
 class TypeID {
 public:
-    using Index = unsigned;
+    using ID = IDType;
 
     template <typename C>
     inline static TypeID get() {
-        static Index resultID = s_next++;
+        static const ID resultID = s_next++;
         return TypeID(resultID);
     }
 
@@ -27,18 +31,18 @@ public:
         return m_id < rhs.m_id;
     }
 
-    inline Index ID() const {
+    inline ID getID() const {
         return m_id;
     }
 
     static const TypeID INVALID;
 
 private:
-    Index m_id;
+    ID m_id;
 
-    static TypeID<Family>::Index s_next;
+    static typename TypeID<Family, IDType>::ID s_next;
 
-    inline explicit TypeID(Index id) : m_id(id) {}
+    inline explicit TypeID(ID id) : m_id(id) {}
 
 };
 
@@ -47,16 +51,17 @@ namespace std {
     class hash<TypeID<Family>> {
     public:
         inline size_t operator()(const TypeID<Family> &typeID) const {
-            return std::hash<typename TypeID<Family>::Index>()(typeID.ID());
+            return std::hash<typename TypeID<Family>::ID>()(typeID.getID());
         }
     };
 }
 
-template <typename Family>
-typename TypeID<Family>::Index TypeID<Family>::s_next = 0;
+template <typename Family, typename IDType>
+typename TypeID<Family, IDType>::ID TypeID<Family, IDType>::s_next = 0;
 
-template <typename Family>
-const TypeID<Family> TypeID<Family>::INVALID = TypeID(std::numeric_limits<typename TypeID<Family>::Index>::max());
+template <typename Family, typename IDType>
+const TypeID<Family, IDType> TypeID<Family, IDType>::INVALID =
+        TypeID(std::numeric_limits<typename TypeID<Family, IDType>::ID>::max());
 
 
 #endif // SECS_TYPE_ID_HPP
