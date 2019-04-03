@@ -6,10 +6,10 @@
 
 namespace Meta {
 
-    Component::SafePtr::SafePtr() : m_component(nullptr), m_typeID(::Component::TypeID::INVALID) {}
+    inline Component::SafePtr::SafePtr() : m_component(nullptr), m_typeID(::Component::TypeID::INVALID) {}
 
     template <typename C>
-    void Component::SafePtr::init(C *component) {
+    inline void Component::SafePtr::init(C *component) {
         static_assert(std::is_base_of<::Component, C>::value);
         if (component != nullptr) {
             m_typeID = ::Component::TypeID::get<C>();
@@ -20,7 +20,7 @@ namespace Meta {
     }
 
     template <typename C>
-    C *Component::SafePtr::get() const {
+    inline C *Component::SafePtr::get() const {
         static_assert(std::is_base_of<::Component, C>::value);
         if (m_typeID == ::Component::TypeID::get<C>()) {
             return m_component;
@@ -31,7 +31,7 @@ namespace Meta {
 
 
 
-    const Component::SafePtr *Entity::Controller::getComponents() const {
+    inline const Component::SafePtr *Entity::Controller::getComponents() const {
         if (m_alive) {
             return nullptr;
         } else {
@@ -39,20 +39,20 @@ namespace Meta {
         }
     }
 
-    Entity::TypeID Entity::Controller::getTypeID() const {
+    inline Entity::TypeID Entity::Controller::getTypeID() const {
         return m_typeID;
     }
 
-    unsigned Entity::Controller::getGeneration() const {
+    inline unsigned Entity::Controller::getGeneration() const {
         return m_generation;
     }
 
-    bool Entity::Controller::isAlive() const {
+    inline bool Entity::Controller::isAlive() const {
         return m_alive;
     }
 
     template <typename E, typename... Args>
-    void Entity::Controller::init(const Component::SafePtr *components, Args &&... args) {
+    inline void Entity::Controller::init(const Component::SafePtr *components, Args &&... args) {
         static_assert(std::is_base_of<Entity::Base, E>::value);
         if (!m_alive) {
             Destructor destructor = m_destructor;
@@ -63,7 +63,7 @@ namespace Meta {
         }
     }
 
-    void Entity::Controller::destroy() {
+    inline void Entity::Controller::destroy() {
         if (m_alive) {
             m_destructor(this);
             m_generation++;
@@ -72,7 +72,7 @@ namespace Meta {
     }
 
     template <typename E>
-    E *Entity::Controller::getEntity() const {
+    inline E *Entity::Controller::getEntity() const {
         if (m_typeID == TypeID::get<E>()) {
             unsigned char *raw = reinterpret_cast<unsigned char *>(const_cast<Controller *>(this));
             return reinterpret_cast<E *>(raw + m_offset);
@@ -81,14 +81,14 @@ namespace Meta {
         }
     }
 
-    Entity::Controller::Controller(Destructor destructor, TypeID typeID, unsigned char offset) :
+    inline Entity::Controller::Controller(Destructor destructor, TypeID typeID, unsigned char offset) :
             m_destructor(destructor),
             m_generation(1),
             m_typeID(typeID),
             m_alive(false),
             m_offset(offset) {}
 
-    constexpr std::size_t Entity::Controller::actualSize() {
+    inline constexpr std::size_t Entity::Controller::actualSize() {
         static_assert(std::is_standard_layout<Controller>::value);
         std::size_t result = offsetof(Controller, m_components) + sizeof(m_components);
         result = max(result, offsetof(Controller, m_destructor) + sizeof(m_destructor));
@@ -101,21 +101,21 @@ namespace Meta {
 
 
     template <typename M, typename E>
-    Entity::Body<M, E>::Body() : m_data() {
+    inline Entity::Body<M, E>::Body() : m_data() {
         static_assert(std::is_base_of<Entity::Base, E>::value);
         static_assert(entityOffset() <= static_cast<std::size_t>(std::numeric_limits<unsigned char>::max()));
         unsigned char offset = static_cast<unsigned char>(entityOffset());
         m_data[entityOffset() - 1] = offset;
-        new (&controller()) Controller(M::template destroyEntity<E>, TypeID::get<E>(), offset);
+        new (&controller()) Controller(M::template destroy<E>, TypeID::get<E>(), offset);
     }
 
     template <typename M, typename E>
-    Entity::Controller &Entity::Body<M, E>::controller() {
+    inline Entity::Controller &Entity::Body<M, E>::controller() {
         return *reinterpret_cast<Controller *>(m_data);
     }
 
     template <typename M, typename E>
-    E &Entity::Body<M, E>::entity() {
+    inline E &Entity::Body<M, E>::entity() {
         return *reinterpret_cast<E *>(m_data + entityOffset());
     }
 

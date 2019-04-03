@@ -4,9 +4,10 @@
 
 #include <queue>
 #include "callback_chain.hpp"
+#include "engine.hpp"
 
-template <typename Application>
-class EventManager {
+template <typename App>
+class Engine<App>::EventManager {
 public:
     template <typename E>
     static CallbackID<E> subscribe(const typename CallbackChain<E>::Function &f);
