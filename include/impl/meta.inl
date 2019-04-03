@@ -104,8 +104,9 @@ namespace Meta {
     Entity::Body<M, E>::Body() : m_data() {
         static_assert(std::is_base_of<Entity::Base, E>::value);
         static_assert(entityOffset() <= static_cast<std::size_t>(std::numeric_limits<unsigned char>::max()));
-        m_data[entityOffset() - 1] = entityOffset();
-        new (&controller()) Controller(M::template destroyEntity<E>, TypeID::get<E>(), entityOffset());
+        unsigned char offset = static_cast<unsigned char>(entityOffset());
+        m_data[entityOffset() - 1] = offset;
+        new (&controller()) Controller(M::template destroyEntity<E>, TypeID::get<E>(), offset);
     }
 
     template <typename M, typename E>

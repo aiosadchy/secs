@@ -48,22 +48,6 @@ namespace Meta {
 
     };
 
-    template <typename M, typename E>
-    class Entity::Body : public Immovable {
-    public:
-        inline Body();
-        inline Controller &controller();
-        inline E &entity();
-
-    private:
-        static constexpr std::size_t size();
-        static constexpr std::size_t align();
-        static constexpr std::size_t entityOffset();
-
-        alignas(align()) unsigned char m_data[size()];
-
-    };
-
     class Entity::Controller : public Immovable {
     public:
         using Destructor = void (*)(Controller *);
@@ -96,6 +80,22 @@ namespace Meta {
 
         template <typename M, typename E>
         friend class Entity::Body;
+
+    };
+
+    template <typename M, typename E>
+    class Entity::Body : public Immovable {
+    public:
+        inline Body();
+        inline Controller &controller();
+        inline E &entity();
+
+    private:
+        static constexpr std::size_t size();
+        static constexpr std::size_t align();
+        static constexpr std::size_t entityOffset();
+
+        alignas(align()) unsigned char m_data[size()];
 
     };
 
