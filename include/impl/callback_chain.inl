@@ -4,17 +4,17 @@
 
 #include "../callback_chain.hpp"
 
-template<typename E>
+template <typename E>
 inline CallbackID<E>::CallbackID(CallbackChain<E> &chain, Key key) : m_holder(&chain), m_key(key) {}
 
-template<typename E>
+template <typename E>
 inline typename CallbackChain<E>::ID CallbackChain<E>::add(const CallbackChain::Function &function) {
     ID result = CallbackChain::ID(*this, m_nextKey++);
     m_callbacks.emplace_back(result.m_key, function);
     return result;
 }
 
-template<typename E>
+template <typename E>
 inline bool CallbackChain<E>::remove(const ID &id) {
     if (id.m_holder != this) {
         return false;
@@ -28,14 +28,14 @@ inline bool CallbackChain<E>::remove(const ID &id) {
     return false;
 }
 
-template<typename E>
+template <typename E>
 inline void CallbackChain<E>::fire(const E &event) {
     for (auto &p : m_callbacks) {
         p.second(event);
     }
 }
 
-template<typename E>
+template <typename E>
 inline CallbackChain<E>::CallbackChain() : m_callbacks(), m_nextKey(0) {}
 
 

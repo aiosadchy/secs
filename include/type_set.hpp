@@ -40,7 +40,7 @@ private:
 };
 
 template <typename ...Types, typename ...Rest>
-class TypeSet<PPack<Types...>, Rest...> : TypeSet<Types..., Rest...> {};
+class TypeSet<PPack<Types...>, Rest...> : public TypeSet<Types..., Rest...> {};
 
 template <>
 class TypeSet<> {};

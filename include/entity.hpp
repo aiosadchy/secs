@@ -2,43 +2,14 @@
 #define SECS_ENTITY_HPP
 
 
-#include "utility.hpp"
+#include "component.hpp"
+#include "entity_routine.hpp"
 #include "type_set.hpp"
+#include "utility.hpp"
 
-class EntityBase : public Immovable {
-public:
-    using Destructor = void(*)(EntityBase *);
-
-    inline EntityBase();
-    inline ~EntityBase();
-
-    inline bool init(Destructor destructor);
-    inline bool destroy();
-
-private:
-    bool m_alive;
-    unsigned m_generation;
-    Destructor m_destructor;
-
-    friend class EntityHandle;
-};
-
-class EntityHandle {
-public:
-    inline explicit EntityHandle(EntityBase *base = nullptr);
-    inline bool alive() const;
-
-private:
-    unsigned m_generation;
-    EntityBase *m_entity;
-
-    template <typename Application>
-    friend class EntityManager;
-
-};
 
 template <typename ...Components>
-class Entity : public EntityBase {
+class Entity : public Immovable {
 private:
     template <typename ...C>
     struct CDepResolver {
@@ -59,15 +30,22 @@ private:
 
 public:
     using ComponentTypes = typename CDepResolver<PPack<>, PPack<>, PPack<Components...>>::Result;
+    using BaseType = Entity<Components...>;
 
-    Entity();
+    template <typename ...Args>
+    explicit Entity(Args&& ...args);
 
-    template <typename T>
-    T *get();
+    template <typename C>
+    C &get();
 
 private:
     TypeSet<typename PackOf<ComponentTypes>::Pointers> m_components;
 
+    template <typename ...Types>
+    void findComponents(PPack<Types...>, const EntityRoutine::ComponentReference *components);
+
+    template <typename ...Args, typename ...Default>
+    void initialize(PPack<Default...>, Args&& ...args);
 };
 
 

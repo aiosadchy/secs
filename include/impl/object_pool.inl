@@ -6,7 +6,7 @@
 #include <utility>
 #include "../object_pool.hpp"
 
-template<typename T>
+template <typename T>
 inline ObjectPool<T>::ObjectPool(unsigned size) : m_size(0), m_free(nullptr), m_blocks() {
     for (auto &b : m_blocks) {
         b = nullptr;
@@ -14,7 +14,7 @@ inline ObjectPool<T>::ObjectPool(unsigned size) : m_size(0), m_free(nullptr), m_
     grow(size);
 }
 
-template<typename T>
+template <typename T>
 inline ObjectPool<T>::~ObjectPool() {
     for (auto &b : m_blocks) {
         delete [] b;
@@ -22,8 +22,8 @@ inline ObjectPool<T>::~ObjectPool() {
     }
 }
 
-template<typename T>
-template<typename ...Args>
+template <typename T>
+template <typename ...Args>
 inline T *ObjectPool<T>::create(Args&& ...args) {
     if (m_free == nullptr) {
         if (!grow(m_size)) {
@@ -35,16 +35,15 @@ inline T *ObjectPool<T>::create(Args&& ...args) {
     return new (&node->object) T(std::forward<Args>(args)...);
 }
 
-template<typename T>
+template <typename T>
 inline void ObjectPool<T>::destroy(T *object) {
-    static_assert(offsetof(Node, object) == 0);
     Node *node = reinterpret_cast<Node *>(object);
     node->object.~T();
     node->next = m_free;
     m_free = node;
 }
 
-template<typename T>
+template <typename T>
 inline bool ObjectPool<T>::grow(unsigned amount) {
     Node *block = nullptr;
 
@@ -69,10 +68,10 @@ inline bool ObjectPool<T>::grow(unsigned amount) {
     }
 }
 
-template<typename T>
+template <typename T>
 inline ObjectPool<T>::Node::Node() {}
 
-template<typename T>
+template <typename T>
 inline ObjectPool<T>::Node::~Node() {}
 
 

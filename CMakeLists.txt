@@ -20,9 +20,12 @@ add_executable(secs
         include/impl/component.inl
         include/entity.hpp
         include/impl/entity.inl
+        include/entity_routine.hpp
+        include/impl/entity_routine.inl
         include/event_manager.hpp
         include/impl/event_manager.inl
         include/callback_chain.hpp
         include/impl/callback_chain.inl
         include/object_pool.hpp
-        include/impl/object_pool.inl)
+        include/impl/object_pool.inl
+        )

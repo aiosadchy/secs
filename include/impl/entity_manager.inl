@@ -6,8 +6,8 @@
 #include "../component.hpp"
 #include "../entity_manager.hpp"
 
-template<typename Application>
-template<typename E, typename... Args>
+template <typename Application>
+template <typename E, typename ...Args>
 EntityHandle EntityManager<Application>::create(Args&& ...args) {
     static_assert(std::is_base_of<Entity, E>::value);
 
@@ -15,15 +15,15 @@ EntityHandle EntityManager<Application>::create(Args&& ...args) {
 
 }
 
-template<typename Application>
+template <typename Application>
 void EntityManager<Application>::destroy(const EntityHandle &entity) {
     if (entity.alive()) {
         entity.m_entity->destroy();
     }
 }
 
-template<typename Application>
-template<typename E>
+template <typename Application>
+template <typename E>
 void EntityManager<Application>::destroyEntity(EntityBase *base) {
     static_assert(std::is_base_of<Entity, E>::value);
 
@@ -31,8 +31,8 @@ void EntityManager<Application>::destroyEntity(EntityBase *base) {
 
 }
 
-template<typename Application>
-template<typename E, typename First, typename... Rest>
+template <typename Application>
+template <typename E, typename First, typename ...Rest>
 void EntityManager<Application>::destroyComponents(E *entity) {
     static_assert(std::is_base_of<Entity, E>::value);
     static_assert(std::is_base_of<Component, First>::value);
@@ -44,8 +44,8 @@ void EntityManager<Application>::destroyComponents(E *entity) {
     }
 }
 
-template<typename Application>
-template<typename E, typename First, typename... Rest>
+template <typename Application>
+template <typename E, typename First, typename ...Rest>
 void EntityManager<Application>::createComponents(E *entity) {
     static_assert(std::is_base_of<Entity, E>::value);
     static_assert(std::is_base_of<Component, First>::value);
@@ -57,8 +57,8 @@ void EntityManager<Application>::createComponents(E *entity) {
     }
 }
 
-template<typename Application>
-template<typename C>
+template <typename Application>
+template <typename C>
 void EntityManager<Application>::destroyComponent(C *component) {
     static_assert(std::is_base_of<Component, C>::value);
 

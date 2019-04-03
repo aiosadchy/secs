@@ -31,6 +31,8 @@ public:
         return m_id;
     }
 
+    static const TypeID INVALID;
+
 private:
     Index m_id;
 
@@ -52,6 +54,9 @@ namespace std {
 
 template <typename Family>
 typename TypeID<Family>::Index TypeID<Family>::s_next = 0;
+
+template <typename Family>
+const TypeID<Family> TypeID<Family>::INVALID = TypeID(std::numeric_limits<typename TypeID<Family>::Index>::max());
 
 
 #endif // SECS_TYPE_ID_HPP
