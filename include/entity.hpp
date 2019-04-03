@@ -7,6 +7,34 @@
 #include "type_set.hpp"
 #include "utility.hpp"
 
+class EntityHandle {
+public:
+    inline explicit EntityHandle(const Meta::Entity::Controller *controller = nullptr);
+    inline bool isAlive() const;
+    inline operator bool() const;
+
+protected:
+    const Meta::Entity::Controller *getController() const;
+
+private:
+    const Meta::Entity::Controller *m_controller;
+    unsigned m_generation;
+
+};
+
+template <typename E>
+class Handle : private EntityHandle {
+public:
+    inline explicit Handle(const Meta::Entity::Controller *c = nullptr);
+
+    inline E *operator->();
+    inline const E *operator->() const;
+
+private:
+    E *m_entity;
+
+};
+
 template <typename ...Components>
 class Entity : public Meta::Entity::Base {
 private:
@@ -32,19 +60,19 @@ public:
     using BaseType = Entity<Components...>;
 
     template <typename ...Args>
-    explicit Entity(Args&& ...args);
+    inline explicit Entity(Args&& ...args);
 
     template <typename C>
-    C &get();
+    inline C &get();
 
 private:
     TypeSet<typename PackOf<ComponentTypes>::Pointers> m_components;
 
     template <typename ...Types>
-    void findComponents(PPack<Types...>, const Meta::Component::SafePtr *components);
+    inline void findComponents(PPack<Types...>, const Meta::Component::SafePtr *components);
 
     template <typename ...Args, typename ...Default>
-    void initialize(PPack<Default...>, Args&& ...args);
+    inline void initialize(PPack<Default...>, Args&& ...args);
 };
 
 

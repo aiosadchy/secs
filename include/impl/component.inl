@@ -14,7 +14,7 @@ T &Component::Dependent<Requirements...>::get() {
 template <typename ...Requirements>
 template <typename T>
 const T &Component::Dependent<Requirements...>::get() const {
-    return const_cast<const Dependent<Requirements...> *>(this)->template get<T>();
+    return const_cast<Dependent<Requirements...> *>(this)->template get<T>();
 }
 
 

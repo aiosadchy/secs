@@ -57,13 +57,13 @@ namespace Meta {
         inline unsigned getGeneration() const;
         inline bool isAlive() const;
 
+        template <typename E>
+        inline E *getEntity() const;
+
         template <typename E, typename ...Args>
         inline void init(const Component::SafePtr *components, Args&& ...args);
 
         inline void destroy();
-
-        template <typename E>
-        inline E *getEntity() const;
 
     private:
         union {

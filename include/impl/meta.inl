@@ -30,7 +30,6 @@ namespace Meta {
     }
 
 
-
     inline const Component::SafePtr *Entity::Controller::getComponents() const {
         if (m_alive) {
             return nullptr;
@@ -51,10 +50,20 @@ namespace Meta {
         return m_alive;
     }
 
+    template <typename E>
+    inline E *Entity::Controller::getEntity() const {
+        if (m_typeID == TypeID::get<E>()) {
+            unsigned char *raw = reinterpret_cast<unsigned char *>(const_cast<Controller *>(this));
+            return reinterpret_cast<E *>(raw + m_offset);
+        } else {
+            return nullptr;
+        }
+    }
+
     template <typename E, typename... Args>
     inline void Entity::Controller::init(const Component::SafePtr *components, Args &&... args) {
         static_assert(std::is_base_of<Entity::Base, E>::value);
-        if (!m_alive) {
+        if ((!m_alive) && (m_typeID == TypeID::get<E>())) {
             Destructor destructor = m_destructor;
             m_components = components;
             new (getEntity<E>()) E(std::forward<Args>(args)...);
@@ -68,16 +77,6 @@ namespace Meta {
             m_destructor(this);
             m_generation++;
             m_alive = false;
-        }
-    }
-
-    template <typename E>
-    inline E *Entity::Controller::getEntity() const {
-        if (m_typeID == TypeID::get<E>()) {
-            unsigned char *raw = reinterpret_cast<unsigned char *>(const_cast<Controller *>(this));
-            return reinterpret_cast<E *>(raw + m_offset);
-        } else {
-            return nullptr;
         }
     }
 
@@ -97,7 +96,6 @@ namespace Meta {
         result = max(result, offsetof(Controller, m_alive) + sizeof(m_alive));
         return result;
     }
-
 
 
     template <typename M, typename E>
