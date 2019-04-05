@@ -25,11 +25,11 @@ class C4 : public Component::Dependent<C5> {};
 
 class C5 : public Component::Dependent<C4> {};
 
-class E1 : public Entity<C3, C4> {};
+class E1 : public Entity::With<C3, C4> {};
 
-class E2 : public Entity<C5> {};
+class E2 : public Entity::With<C5> {};
 
-class E3 : public Entity<C1, C3, C5> {
+class E3 : public Entity::With<C1, C3, C5> {
     virtual void f() {};
 };
 

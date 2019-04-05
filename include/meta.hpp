@@ -2,15 +2,18 @@
 #define SECS_META_HPP
 
 
-#include "component.hpp"
-
-template <typename ...Components>
-class Entity;
+#include "type_id.hpp"
+#include "utility.hpp"
 
 namespace Meta {
 
-    class Component {
+    class Component : public Static {
+    private:
+        class ComponentTypeIDFamily {};
+
     public:
+        using TypeID = ::TypeID<ComponentTypeIDFamily>;
+
         class SafePtr {
         public:
             inline SafePtr();
@@ -22,21 +25,16 @@ namespace Meta {
             inline C *get() const;
 
         private:
-            void *m_component;
-            ::Component::TypeID m_typeID;
+            void  *m_component;
+            TypeID m_typeID;
 
         };
 
     };
 
-    class Entity {
+    class Entity : public Static {
     private:
         class EntityTypeIDFamily {};
-
-        class Base : public Immovable {};
-
-        template <typename ...Components>
-        friend class ::Entity;
 
     public:
         using TypeID = ::TypeID<EntityTypeIDFamily>;
@@ -53,8 +51,12 @@ namespace Meta {
         using Destructor = void (*)(Controller *);
 
         inline const Component::SafePtr *getComponents() const;
-        inline TypeID getTypeID() const;
+
+        template <typename E>
+        inline bool isOfType() const;
+
         inline unsigned getGeneration() const;
+
         inline bool isAlive() const;
 
         template <typename E>
@@ -66,20 +68,28 @@ namespace Meta {
         inline void destroy();
 
     private:
+        template <typename M, typename E>
+        friend class Entity::Body;
+
+        enum class State : unsigned char {
+            DEAD,
+            IN_CONSTRUCTION,
+            ALIVE
+        };
+
         union {
             Destructor m_destructor;
             const Component::SafePtr *m_components;
         };
-        unsigned m_generation;
-        const TypeID m_typeID;
-        bool m_alive;
+
+        unsigned            m_generation;
+        const TypeID        m_typeID;
+        State               m_state;
         const unsigned char m_offset;
 
         inline Controller(Destructor destructor, TypeID typeID, unsigned char offset);
         inline static constexpr std::size_t actualSize();
 
-        template <typename M, typename E>
-        friend class Entity::Body;
 
     };
 
@@ -87,8 +97,8 @@ namespace Meta {
     class Entity::Body : public Immovable {
     public:
         inline Body();
-        inline Controller &controller();
-        inline E &entity();
+        inline Controller &getController();
+        inline E &getEntity();
 
     private:
         static constexpr std::size_t size();

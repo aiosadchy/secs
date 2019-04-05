@@ -2,17 +2,14 @@
 #define SECS_COMPONENT_HPP
 
 
+#include "meta.hpp"
 #include "parameter_pack.hpp"
-#include "type_id.hpp"
 #include "type_set.hpp"
 #include "utility.hpp"
 
 class Component : public Immovable {
-private:
-    class ComponentTypeIDFamily {};
-
 public:
-    using TypeID = ::TypeID<ComponentTypeIDFamily>;
+    using TypeID = Meta::Component::TypeID;
 
     using Dependencies = PPack<>;
 
