@@ -15,6 +15,13 @@ public:
 
 };
 
+class Static {
+public:
+    Static() = delete;
+    ~Static() = delete;
+
+};
+
 template <typename T>
 inline constexpr T max(const T a, const T b) {
     static_assert(std::is_scalar<T>::value);
