@@ -8,30 +8,6 @@
 
 namespace Meta {
 
-    inline Component::SafePtr::SafePtr() : m_component(nullptr), m_typeID(TypeID::INVALID) {}
-
-    template <typename C>
-    inline void Component::SafePtr::init(C *component) {
-        static_assert(std::is_base_of<::Component, C>::value);
-        if (component != nullptr) {
-            m_typeID = TypeID::get<C>();
-        } else {
-            m_typeID = TypeID::INVALID;
-        }
-        m_component = component;
-    }
-
-    template <typename C>
-    inline C *Component::SafePtr::get() const {
-        static_assert(std::is_base_of<::Component, C>::value);
-        if (m_typeID == TypeID::get<C>()) {
-            return m_component;
-        } else {
-            return nullptr;
-        }
-    }
-
-
     inline const Component::SafePtr *Entity::Controller::getComponents() const {
         if (m_state == State::IN_CONSTRUCTION) {
             return m_components;
@@ -65,7 +41,7 @@ namespace Meta {
     }
 
     template <typename E, typename... Args>
-    inline void Entity::Controller::init(const Component::SafePtr *components, Args&&... args) {
+    inline void Entity::Controller::init(const Component::SafePtr *components, Args&& ...args) {
         if ((m_state == State::DEAD) && isOfType<E>()) {
             Destructor destructor = m_destructor;
             m_components = components;
@@ -117,8 +93,8 @@ namespace Meta {
     }
 
     template <typename M, typename E>
-    inline E &Entity::Body<M, E>::getEntity() {
-        return *reinterpret_cast<E *>(m_data + entityOffset());
+    inline E *Entity::Body<M, E>::getEntity() {
+        return reinterpret_cast<E *>(m_data + entityOffset());
     }
 
     template <typename M, typename E>
@@ -136,6 +112,171 @@ namespace Meta {
         std::size_t header = Controller::actualSize() + 1;
         std::size_t aligns = (header / align()) + (((header % align()) > 0) ? 1 : 0);
         return aligns * align();
+    }
+
+
+    inline Entity::Reference::Reference(const Entity::Controller *c) :
+        m_controller(c),
+        m_generation((c != nullptr) ? c->getGeneration() : 0) {}
+
+    inline bool Entity::Reference::isAlive() const {
+        return (m_controller != nullptr)
+            && (m_controller->getGeneration() == m_generation)
+            && (m_controller->isAlive());
+    }
+
+    inline Entity::Reference::operator bool() const {
+        return isAlive();
+    }
+
+    inline void Entity::Reference::invalidate() {
+        m_controller = nullptr;
+        m_generation = 0;
+    }
+
+
+    template <typename E>
+    inline Entity::Handle<E>::Handle(const Entity::Controller *c) : Reference(c), m_entity(nullptr) {
+        static_assert(std::is_base_of<::Entity, E>::value);
+        if ((c != nullptr) && (c->isOfType<E>())) {
+            m_entity = c->getEntity<E>();
+        } else {
+            invalidate();
+        }
+    }
+
+    template <typename E>
+    inline E *Entity::Handle<E>::operator->() {
+        return getEntity();
+    }
+
+    template <typename E>
+    inline const E *Entity::Handle<E>::operator->() const {
+        return getEntity();
+    }
+
+    template <typename E>
+    inline E &Entity::Handle<E>::operator*() {
+        return *getEntity();
+    }
+
+    template <typename E>
+    inline const E &Entity::Handle<E>::operator*() const {
+        return *getEntity();
+    }
+
+    template <typename E>
+    inline E *Entity::Handle<E>::getEntity() {
+        return isAlive() ? m_entity : nullptr;
+    }
+
+    template <typename E>
+    inline const E *Entity::Handle<E>::getEntity() const {
+        return const_cast<Handle<E> *>(this)->getEntity();
+    }
+
+
+
+    template <typename C>
+    inline bool Component::Controller<C>::isAlive() const {
+        return m_entity.isAlive();
+    }
+
+    template <typename C>
+    inline Entity::Reference &Component::Controller<C>::getEntity() const {
+        return m_entity;
+    }
+
+    template <typename C>
+    inline C &Component::Controller<C>::getComponent() const {
+        return *reinterpret_cast<C *>(m_component);
+    }
+
+    template <typename C>
+    template <typename... Args>
+    inline void Component::Controller<C>::init(const Entity::Reference &entity, Args&& ...args) {
+        m_entity = entity;
+        new (&getComponent()) C(std::forward<Args>(args)...);
+    }
+
+    template <typename C>
+    inline void Component::Controller<C>::destroy() {
+        m_entity.invalidate();
+        getComponent().~C();
+    }
+
+
+    template <typename C>
+    inline Component::Handle<C>::Handle(const Component::Controller<C> *c) : m_controller(c) {}
+
+    template <typename C>
+    inline bool Component::Handle<C>::isAlive() const {
+        return (m_controller != nullptr) && (m_controller->isAlive());
+    }
+
+    template <typename C>
+    inline Component::Handle<C>::operator bool() const {
+        return isAlive();
+    }
+
+    template <typename C>
+    inline C *Component::Handle<C>::operator->() {
+        return getComponent();
+    }
+
+    template <typename C>
+    inline const C *Component::Handle<C>::operator->() const {
+        return getComponent();
+    }
+
+    template <typename C>
+    inline C &Component::Handle<C>::operator*() {
+        return *getComponent();
+    }
+
+    template <typename C>
+    inline const C &Component::Handle<C>::operator*() const {
+        return *getComponent();
+    }
+
+    template <typename C>
+    inline C *Component::Handle<C>::getComponent() {
+        return isAlive() ? &m_controller->getComponent() : nullptr;
+    }
+
+    template <typename C>
+    inline const C *Component::Handle<C>::getComponent() const {
+        return const_cast<Handle<C> *>(this)->getComponent();
+    }
+
+    template <typename C>
+    inline Entity::Reference *Component::Handle<C>::getEntity() {
+        return isAlive() ? &m_controller->getEntity() : nullptr;
+    }
+
+    template <typename C>
+    inline const Entity::Reference *Component::Handle<C>::getEntity() const {
+        return const_cast<Handle<C> *>(this)->getEntity();
+    }
+
+
+    inline Component::SafePtr::SafePtr() : m_component(nullptr), m_typeID(TypeID::INVALID) {}
+
+    template <typename C>
+    inline void Component::SafePtr::init(Component::Controller<C> *component) {
+        static_assert(std::is_base_of<::Component, C>::value);
+        if (component != nullptr) {
+            m_typeID = TypeID::get<C>();
+        } else {
+            m_typeID = TypeID::INVALID;
+        }
+        m_component = component;
+    }
+
+    template <typename C>
+    inline Component::Controller<C> *Component::SafePtr::get() const {
+        static_assert(std::is_base_of<::Component, C>::value);
+        return  (m_typeID == TypeID::get<C>()) ? m_component : nullptr;
     }
 
 }

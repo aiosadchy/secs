@@ -2,13 +2,28 @@
 #define SECS_ENTITY_HPP
 
 
-#include "component.hpp"
 #include "meta.hpp"
 #include "type_set.hpp"
 #include "utility.hpp"
 
 class Entity : public Immovable {
-private:
+public:
+    using TypeID = Meta::Entity::TypeID;
+
+    using Reference = Meta::Entity::Reference;
+
+    template <typename E>
+    using Handle = Meta::Entity::Handle<E>;
+
+    template <typename ...Components>
+    class With;
+
+protected:
+    Entity() = default;
+    ~Entity() = default;
+
+    const Meta::Entity::Controller *getController() const;
+
     template <typename ...>
     struct CDepResolver {
         using Result = PPack<>;
@@ -20,14 +35,14 @@ private:
         using CDep = typename Comp::Dependencies;
 
         using Need = typename PPack<N...>::
-                template AddUnique<CDep, Comp>::Result;
+        template AddUnique<CDep, Comp>::Result;
 
         using Processed = typename PPack<P...>::
-                template AddUnique<Comp>::Result;
+        template AddUnique<Comp>::Result;
 
         using Unprocessed = typename PPack<U...>::
-                template AddUnique<CDep>::Result::
-                template Subtract<Processed>::Result;
+        template AddUnique<CDep>::Result::
+        template Subtract<Processed>::Result;
 
         using Next = typename CDepResolver<Need, Processed, Unprocessed>::Result;
 
@@ -36,77 +51,40 @@ private:
 
     };
 
-public:
-    using TypeID = Meta::Entity::TypeID;
+    template <typename ...>
+    class ComponentSet;
 
-    class Reference;
-
-    template <typename E>
-    class Handle;
-
-    template <typename ...Components>
-    class With;
-
-protected:
-    Entity() = default;
-    ~Entity() = default;
+    template <typename ...C>
+    class ComponentSet<PPack<C...>> : public TypeSet<Meta::Component::Controller<C> * ...> {
+        template <typename T>
+        inline Meta::Component::Controller<T> *get();
+    };
 
 };
 
 
-class Entity::Reference {
-public:
-    inline explicit Reference(const Meta::Entity::Controller *c = nullptr);
-    inline bool isValid() const;
-    inline operator bool() const;
-    inline void invalidate();
-
-private:
-    const Meta::Entity::Controller *m_controller;
-    unsigned m_generation;
-
-};
-
-
-template <typename E>
-class Entity::Handle : public Entity::Reference {
-public:
-    inline explicit Handle(const Meta::Entity::Controller *c = nullptr);
-
-    inline E *operator->();
-    inline const E *operator->() const;
-
-    inline E &operator*();
-    inline const E &operator*() const;
-
-    inline E *getEntity();
-    inline const E *getEntity() const;
-
-private:
-    E *m_entity;
-
-};
-
-
-template <typename ...C>
+template <typename ...Components>
 class Entity::With : public Entity {
 public:
     template <typename ...Args>
     inline explicit With(Args&& ...args);
 
+    inline ~With();
+
     template <typename T>
     inline T &get();
 
 private:
-    using ComponentPack = typename CDepResolver<PPack<>, PPack<>, PPack<C...>>::Result;
+    using ComponentTypes = typename CDepResolver<PPack<>, PPack<>, PPack<Components...>>::Result;
 
-    TypeSet<typename PackOf<ComponentPack>::Pointers> m_components;
+    ComponentSet<ComponentTypes> m_components;
 
-    template <typename ...Types>
-    inline void findComponents(PPack<Types...>, const Meta::Component::SafePtr *components);
+    template <typename ...C>
+    inline void findComponents(PPack<C...>, const Meta::Component::SafePtr *components);
 
     template <typename ...Args, typename ...Default>
-    inline void initialize(PPack<Default...>, Args&& ...args);
+    inline void initialize(const Reference &entity, PPack<Default...>, Args&& ...args);
+
 };
 
 

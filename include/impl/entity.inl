@@ -4,108 +4,63 @@
 
 #include "../entity.hpp"
 
-inline Entity::Reference::Reference(const Meta::Entity::Controller *c) : m_controller(c), m_generation(0) {
-    if (m_controller != nullptr) {
-        m_generation = m_controller->getGeneration();
-    }
-}
-
-inline bool Entity::Reference::isValid() const {
-    return (m_controller != nullptr)
-        && (m_controller->getGeneration() == m_generation)
-        && (m_controller->isAlive());
-}
-
-inline Entity::Reference::operator bool() const {
-    return isValid();
-}
-
-inline void Entity::Reference::invalidate() {
-    m_controller = nullptr;
+const Meta::Entity::Controller *Entity::getController() const {
+    const unsigned char *raw = reinterpret_cast<const unsigned char *>(this);
+    const unsigned char offset = *(raw - 1);
+    return reinterpret_cast<const Meta::Entity::Controller *>(raw - offset);
 }
 
 
-template <typename E>
-inline Entity::Handle<E>::Handle(const Meta::Entity::Controller *c) : Reference(c), m_entity(nullptr) {
-    if ((c == nullptr) || (!c->isOfType<E>())) {
-        invalidate();
-    } else {
-        m_entity = c->getEntity<E>();
-    }
-}
-
-template <typename E>
-inline E *Entity::Handle<E>::operator->() {
-    return getEntity();
-}
-
-template <typename E>
-inline const E *Entity::Handle<E>::operator->() const {
-    return getEntity();
-}
-
-template <typename E>
-inline E &Entity::Handle<E>::operator*() {
-    return *getEntity();
-}
-
-template <typename E>
-inline const E &Entity::Handle<E>::operator*() const {
-    return *getEntity();
-}
-
-template <typename E>
-inline E *Entity::Handle<E>::getEntity() {
-    return isValid() ? m_entity : nullptr;
-}
-
-template <typename E>
-inline const E *Entity::Handle<E>::getEntity() const {
-    return const_cast<Handle<E> *>(this)->getEntity();
+template <typename... Components>
+template <typename T>
+inline Meta::Component::Controller<T> *Entity::ComponentSet<PPack<Components...>>::get() {
+    return TypeSet<Meta::Component::Controller<Components> * ...>::template get<Meta::Component::Controller<T> *>();
 }
 
 
 template <typename ...C>
 template <typename ...Args>
-inline Entity::With<C...>::With(Args&&... args) : m_components() {
+inline Entity::With<C...>::With(Args&& ...args) : m_components() {
     static_assert(PPack<C...>::isUnique(),
                   "Component types in entity must be unique");
     static_assert((std::is_base_of<Component, C>::value && ...),
                   "Component classes in entity must be derived from Component");
 
-    using DefaultTypes = typename ComponentPack::template Subtract<PPack<Args...>>::Result;
+    using DefaultTypes = typename ComponentTypes::template Subtract<Args...>::Result;
 
-    unsigned char *raw = reinterpret_cast<unsigned char *>(this);
-    unsigned char offset = *(raw - 1);
-    const Meta::Entity::Controller *controller = reinterpret_cast<Meta::Entity::Controller *>(raw - offset);
+    const Meta::Entity::Controller *controller = getController();
 
-    findComponents(ComponentPack(), controller->getComponents());
-    initialize<Args...>(DefaultTypes(), std::forward<Args>(args)...);
+    findComponents(ComponentTypes(), controller->getComponents());
+    initialize<Args...>(Reference(controller), DefaultTypes::instance(), std::forward<Args>(args)...);
+}
+
+template <typename ...C>
+inline Entity::With<C...>::~With() {
+    (m_components.template get<C>()->destroy(), ...);
 }
 
 template <typename ...C>
 template <typename T>
 inline T &Entity::With<C...>::get() {
-    static_assert(ComponentPack::template contains<T>(), "Entity does not contain requested component");
-    return *m_components.template get<T *>();
+    return m_components.template get<T>()->getComponent();
 }
 
 template <typename ...C>
-template <typename ...Types>
-inline void Entity::With<C...>::findComponents(PPack<Types...>, const Meta::Component::SafePtr *components) {
-    if constexpr (PPack<Types...>::size() != 0) {
-        using CType = typename PPack<Types...>::First;
+template <typename ...Components>
+inline void Entity::With<C...>::findComponents(PPack<Components...>, const Meta::Component::SafePtr *components) {
+    if constexpr (PPack<Components...>::size() != 0) {
+        using CType = typename PPack<Components...>::First;
         CType *component = components->get<CType>();
-        m_components.template get<CType *> = component;
-        findComponents(typename PPack<Types...>::Tail::Result(), components + 1);
+        m_components.template get<CType> = component;
+        findComponents(typename PPack<Components...>::Tail::Result::instance(), components + 1);
     }
 }
 
 template <typename ...C>
 template <typename ...Args, typename ...Default>
-inline void Entity::With<C...>::initialize(PPack<Default...>, Args&&... args) {
-    (new (m_components.template get<Args *>()) Args(std::forward<Args>(args)), ...);
-    (new (m_components.template get<Default *>()) Default(), ...);
+inline void Entity::With<C...>::initialize(const Reference &entity, PPack<Default...>, Args&& ...args) {
+    (m_components.template get<Args>()->init(entity, std::forward<Args>(args)), ...);
+    (m_components.template get<Default>()->init(entity), ...);
 }
 
 #endif // SECS_ENTITY_INL

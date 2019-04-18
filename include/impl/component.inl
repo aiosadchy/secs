@@ -4,17 +4,17 @@
 
 #include "../component.hpp"
 
-template <typename ...Requirements>
+template <typename ...D>
 template <typename T>
-T &Component::Dependent<Requirements...>::get() {
+T &Component::Dependent<D...>::get() {
     static_assert(Dependencies::template contains<T>(), "Requested type is not a dependency of component");
     return *m_deps.template get<T *>();
 }
 
-template <typename ...Requirements>
+template <typename ...D>
 template <typename T>
-const T &Component::Dependent<Requirements...>::get() const {
-    return const_cast<Dependent<Requirements...> *>(this)->template get<T>();
+const T &Component::Dependent<D...>::get() const {
+    return const_cast<Dependent<D...> *>(this)->template get<T>();
 }
 
 

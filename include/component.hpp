@@ -13,6 +13,9 @@ public:
 
     using Dependencies = PPack<>;
 
+    template <typename C>
+    using Handle = Meta::Component::Handle<C>;
+
     template <typename ...Requirements>
     class Dependent;
 
@@ -22,10 +25,11 @@ protected:
 
 };
 
-template <typename ...Requirements>
+
+template <typename ...Dependency>
 class Component::Dependent : public Component {
 public:
-    using Dependencies = PPack<Requirements...>;
+    using Dependencies = PPack<Dependency...>;
 
     template <typename T>
     T &get();
@@ -38,7 +42,7 @@ protected:
     ~Dependent() = default;
 
 private:
-    TypeSet<typename PackOf<Dependencies>::Pointers> m_deps;
+    TypeSet<Dependency * ...> m_deps;
 
 };
 

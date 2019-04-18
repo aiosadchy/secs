@@ -7,6 +7,8 @@
 template <typename ...Pack>
 class PPack {
 private:
+    PPack() = default;
+
     template <typename First, typename ...Rest>
     static constexpr bool unique() {
         if constexpr (sizeof...(Rest) != 0) {
@@ -126,20 +128,9 @@ public:
         using Result = typename Subtract<Types..., Other...>::Result;
     };
 
-    PPack() = default;
-    ~PPack() = default;
-
-};
-
-template <typename ...>
-class PackOf;
-
-template <typename ...Types>
-class PackOf<PPack<Types...>> {
-public:
-    using Pointers = PPack<Types*...>;
-    using References = PPack<Types&...>;
-    using Constants = PPack<const Types...>;
+    inline static PPack<Pack...> instance() {
+        return PPack<Pack...>();
+    }
 };
 
 
