@@ -1,4 +1,0 @@
-#ifndef SECS_ENGINE_INL
-#define SECS_ENGINE_INL
-
-#endif // SECS_ENGINE_INL
