@@ -5,7 +5,6 @@
 #ifndef SECS_VECTOR_INL
 #define SECS_VECTOR_INL
 
-#include <new>
 #include <utility>
 #include "../vector.hpp"
 
@@ -22,7 +21,7 @@ Vector<T>::~Vector() {
     for (T &object : *this) {
         object.~T();
     }
-    free(m_data);
+    memory::free<T>(m_data);
 }
 
 template <typename T>
@@ -47,14 +46,15 @@ T &Vector<T>::append(T &&element) {
 
 template <typename T>
 void Vector<T>::pop() {
-    T *data = m_size > 0 ? m_data : nullptr;
-    data[--m_size].~T();
+    T *object = (m_size > 0) ? (m_data + m_size - 1) : nullptr;
+    object->~T();
+    --m_size;
 }
 
 template <typename T>
 inline T &Vector<T>::operator[](Size index) {
-    T *data = index < m_size ? m_data : nullptr;
-    return data[index];
+    T *object = index < m_size ? (m_data + index) : nullptr;
+    return *object;
 }
 
 template <typename T>
@@ -65,6 +65,21 @@ inline const T &Vector<T>::operator[](Size index) const {
 template <typename T>
 Size Vector<T>::get_size() const {
     return m_size;
+}
+
+template <typename T>
+void Vector<T>::reserve(Size count) {
+    if (count <= m_reserved) {
+        return;
+    }
+    T *old_data = m_data;
+    m_data = memory::allocate<T>(count);
+    for (Size i : Range<Size>(m_size)) {
+        new (m_data + i) T(std::move(old_data[i]));
+        old_data[i].~T();
+    }
+    m_reserved = count;
+    memory::free<T>(old_data);
 }
 
 template <typename T>
@@ -85,24 +100,6 @@ const T *Vector<T>::begin() const {
 template <typename T>
 const T *Vector<T>::end() const {
     return const_cast<Vector<T> *>(this)->end();
-}
-
-template <typename T>
-void Vector<T>::reserve(Size new_size) {
-    T *old_data = m_data;
-    void *new_data = ::operator new (sizeof(T) * new_size, std::align_val_t(alignof(T)));
-    m_data = static_cast<T *>(new_data);
-    for (Size i : Range<Size>(m_size)) {
-        new (m_data + i) T(std::move(old_data[i]));
-        old_data[i].~T();
-    }
-    m_reserved = new_size;
-    free(old_data);
-}
-
-template <typename T>
-void Vector<T>::free(T *data) {
-    ::operator delete(data, std::align_val_t(alignof(T)));
 }
 
 #endif // SECS_VECTOR_INL

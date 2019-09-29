@@ -10,50 +10,22 @@ class Range {
 public:
     class Iterator {
     public:
-        inline explicit Iterator(T initial_value) :
-            m_value(initial_value) {}
-
-        inline T &operator*() {
-            return m_value;
-        }
-
-        inline Iterator &operator++() {
-            ++m_value;
-            return *this;
-        }
-
-        inline bool operator!=(const Iterator &another) const {
-            return !(m_value == another.m_value);
-        }
+        inline explicit Iterator(T initial_value);
+        inline T &operator*();
+        inline Iterator &operator++();
+        inline bool operator!=(const Iterator &another) const;
 
     private:
         mutable T m_value;
 
     };
 
-    inline explicit Range(const T &length) :
-        m_begin(),
-        m_end(length) {}
-
-    inline explicit Range(const T &start, const T &end) :
-            m_begin(start),
-            m_end(end) {}
-
-    inline Iterator begin() {
-        return Iterator(m_begin);
-    }
-
-    inline Iterator end() {
-        return Iterator(m_end);
-    }
-
-    inline Iterator begin() const {
-        return const_cast<Range<T> *>(this)->begin();
-    }
-
-    inline Iterator end() const {
-        return const_cast<Range<T> *>(this)->end();
-    }
+    inline explicit Range(const T &length);
+    inline Range(const T &start, const T &end);
+    inline Iterator begin();
+    inline Iterator end();
+    inline Iterator begin() const;
+    inline Iterator end() const;
 
 private:
     T m_begin;
@@ -62,3 +34,5 @@ private:
 };
 
 #endif // SECS_RANGE_HPP
+
+#include "impl/range.inl"

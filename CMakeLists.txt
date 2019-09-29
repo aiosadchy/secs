@@ -19,4 +19,4 @@ add_executable(secs
         include/utility/repeat.hpp
         include/utility/type_utils.hpp
         include/utility/types.hpp
-    )
+        include/utility/memory.hpp include/utility/impl/range.inl include/utility/impl/memory.inl)

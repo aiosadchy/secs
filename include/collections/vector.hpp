@@ -24,6 +24,7 @@ public:
     inline const T &operator[](Size index) const;
 
     Size get_size() const;
+    void reserve(Size count);
 
     T *begin();
     T *end();
@@ -34,10 +35,6 @@ private:
     Size m_reserved;
     Size m_size;
     T *m_data;
-
-    void reserve(Size new_size);
-
-    static void free(T *data);
 
 };
 

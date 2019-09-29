@@ -48,7 +48,7 @@ struct t {
 };
 
 struct C {
-    alignas(32) char data[17];
+    alignas(1) char data[17];
 
     C(char value = '=') {
         for (auto &c : data) {
