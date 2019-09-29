@@ -10,6 +10,9 @@
 template <typename T>
 class Vector {
 public:
+    using Iterator = T *;
+    using ConstIterator = const T *;
+
     explicit Vector(Size initial_capacity);
     ~Vector();
 
@@ -26,10 +29,10 @@ public:
     Size get_size() const;
     void reserve(Size count);
 
-    T *begin();
-    T *end();
-    const T *begin() const;
-    const T *end() const;
+    Iterator begin();
+    Iterator end();
+    ConstIterator begin() const;
+    ConstIterator end() const;
 
 private:
     Size m_reserved;
@@ -40,4 +43,6 @@ private:
 
 #endif // SECS_VECTOR_HPP
 
+#ifndef SECS_VECTOR_INL
 #include "impl/vector.inl"
+#endif

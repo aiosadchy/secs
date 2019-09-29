@@ -21,7 +21,7 @@ Vector<T>::~Vector() {
     for (T &object : *this) {
         object.~T();
     }
-    memory::free<T>(m_data);
+    Memory::free<T>(m_data);
 }
 
 template <typename T>
@@ -73,32 +73,32 @@ void Vector<T>::reserve(Size count) {
         return;
     }
     T *old_data = m_data;
-    m_data = memory::allocate<T>(count);
+    m_data = Memory::allocate<T>(count);
     for (Size i : Range<Size>(m_size)) {
         new (m_data + i) T(std::move(old_data[i]));
         old_data[i].~T();
     }
     m_reserved = count;
-    memory::free<T>(old_data);
+    Memory::free<T>(old_data);
 }
 
 template <typename T>
-T *Vector<T>::begin() {
+typename Vector<T>::Iterator Vector<T>::begin() {
     return m_data;
 }
 
 template <typename T>
-T *Vector<T>::end() {
+typename Vector<T>::Iterator Vector<T>::end() {
     return m_data + get_size();
 }
 
 template <typename T>
-const T *Vector<T>::begin() const {
+typename Vector<T>::ConstIterator Vector<T>::begin() const {
     return const_cast<Vector<T> *>(this)->begin();
 }
 
 template <typename T>
-const T *Vector<T>::end() const {
+typename Vector<T>::ConstIterator Vector<T>::end() const {
     return const_cast<Vector<T> *>(this)->end();
 }
 

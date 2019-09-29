@@ -56,6 +56,8 @@ struct C {
         }
     }
 
+    ~C() {}
+
     char value() const {
         return data[11];
     }

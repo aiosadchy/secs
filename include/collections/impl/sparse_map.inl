@@ -14,7 +14,7 @@ SparseMap<T>::SparseMap(Size initial_capacity) :
     m_values(initial_capacity) {}
 
 template <typename T>
-SparseMap<T>::~SparseMap() {}
+SparseMap<T>::~SparseMap() = default;
 
 template <typename T>
 template <typename... Args>
@@ -70,18 +70,18 @@ Size SparseMap<T>::get_size() const {
 }
 
 template <typename T>
-View<const Size *> SparseMap<T>::get_keys() const {
-    return View<const Size *>(m_dense.begin(), m_dense.end());
+View<const Vector<Size>> SparseMap<T>::get_keys() const {
+    return View<const Vector<Size>>(m_dense);
 }
 
 template <typename T>
-View<T *> SparseMap<T>::get_values() {
-    return View<T *>(m_values.begin(), m_values.end());
+View<Vector<T>> SparseMap<T>::get_values() {
+    return View<Vector<T>>(m_values);
 }
 
 template <typename T>
-View<const T *> SparseMap<T>::get_values() const {
-    return View<const T *>(m_values.begin(), m_values.end());
+View<const Vector<T>> SparseMap<T>::get_values() const {
+    return View<const Vector<T>>(m_values);
 }
 
 #endif // SECS_SPARSE_MAP_INL

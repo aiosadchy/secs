@@ -16,7 +16,7 @@ public:
         inline bool operator!=(const Iterator &another) const;
 
     private:
-        mutable T m_value;
+        T m_value;
 
     };
 
@@ -35,4 +35,6 @@ private:
 
 #endif // SECS_RANGE_HPP
 
+#ifndef SECS_RANGE_INL
 #include "impl/range.inl"
+#endif

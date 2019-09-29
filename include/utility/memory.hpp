@@ -7,7 +7,7 @@
 
 #include "types.hpp"
 
-class memory {
+class Memory {
 public:
     template <typename T>
     static T *allocate(Size count);
@@ -15,12 +15,21 @@ public:
     template <typename T>
     static void free(T *memory);
 
-private:
     template <typename T>
-    class Placeholder;
+    struct Placeholder {
+    public:
+        T *as_object();
+        const T *as_object() const;
+
+    private:
+        alignas(T) unsigned char m_data[sizeof(T)];
+
+    };
 
 };
 
 #endif // SECS_MEMORY_HPP
 
+#ifndef SECS_MEMORY_INL
 #include "impl/memory.inl"
+#endif

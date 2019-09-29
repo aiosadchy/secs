@@ -8,28 +8,27 @@
 #include "../memory.hpp"
 
 template <typename T>
-T *memory::allocate(Size count) {
+T *Memory::allocate(Size count) {
     static_assert(alignof(Placeholder<T>) == alignof(T));
     static_assert(sizeof(Placeholder<T>) == sizeof(T));
     return reinterpret_cast<T *>(new Placeholder<T> [count]);
 }
 
 template <typename T>
-void memory::free(T *memory) {
+void Memory::free(T *memory) {
     static_assert(alignof(Placeholder<T>) == alignof(T));
     static_assert(sizeof(Placeholder<T>) == sizeof(T));
     delete [] reinterpret_cast<Placeholder<T> *>(memory);
 }
 
 template <typename T>
-class memory::Placeholder {
-public:
-    Placeholder() = default;
-    ~Placeholder() = default;
+T *Memory::Placeholder<T>::as_object() {
+    return reinterpret_cast<T *>(m_data);
+}
 
-private:
-    alignas(T) unsigned char m_data[sizeof(T)];
-
-};
+template <typename T>
+const T *Memory::Placeholder<T>::as_object() const {
+    return const_cast<Placeholder<T> *>(this)->as_object();
+}
 
 #endif // SECS_MEMORY_INL

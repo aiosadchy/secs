@@ -5,21 +5,27 @@
 #ifndef SECS_VIEW_HPP
 #define SECS_VIEW_HPP
 
-template <typename Iterator>
+#include <type_traits>
+
+template <typename C>
 class View {
 public:
-    template <typename B, typename E>
-    View(B &&begin, E &&end);
+    using Begin = decltype(std::declval<C>().begin());
+    using End   = decltype(std::declval<C>().end());
 
-    Iterator begin() const;
-    Iterator end() const;
+    explicit View(C &collection);
+
+    Begin begin() const;
+    End end() const;
 
 private:
-    Iterator m_begin;
-    Iterator m_end;
+    Begin m_begin;
+    End m_end;
 
 };
 
 #endif // SECS_VIEW_HPP
 
+#ifndef SECS_VIEW_INL
 #include "impl/view.inl"
+#endif

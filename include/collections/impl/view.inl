@@ -7,19 +7,18 @@
 
 #include "../view.hpp"
 
-template <typename Iterator>
-template <typename B, typename E>
-View<Iterator>::View(B &&begin, E &&end) :
-    m_begin(std::forward<B>(begin)),
-    m_end(std::forward<E>(end)) {}
+template <typename C>
+View<C>::View(C &collection) :
+    m_begin(collection.begin()),
+    m_end(collection.end()) {}
 
-template <typename Iterator>
-Iterator View<Iterator>::begin() const {
+template <typename C>
+typename View<C>::Begin View<C>::begin() const {
     return m_begin;
 }
 
-template <typename Iterator>
-Iterator View<Iterator>::end() const {
+template <typename C>
+typename View<C>::End View<C>::end() const {
     return m_end;
 }
 

@@ -1,5 +1,4 @@
-cmake_minimum_required(VERSION
-        3.10)
+cmake_minimum_required(VERSION 3.10)
 project(secs)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -15,8 +14,13 @@ add_executable(secs
         include/collections/view.hpp
         include/collections/impl/view.inl
         include/utility.hpp
+        include/utility/math.hpp
+        include/utility/impl/math.inl
+        include/utility/memory.hpp
+        include/utility/impl/memory.inl
         include/utility/range.hpp
+        include/utility/impl/range.inl
         include/utility/repeat.hpp
         include/utility/type_utils.hpp
         include/utility/types.hpp
-        include/utility/memory.hpp include/utility/impl/range.inl include/utility/impl/memory.inl)
+    )

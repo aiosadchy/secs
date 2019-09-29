@@ -11,7 +11,7 @@
 template <typename T>
 class SparseMap {
 public:
-    SparseMap(Size initial_capacity);
+    explicit SparseMap(Size initial_capacity);
     ~SparseMap();
 
     template <typename ...Args>
@@ -25,10 +25,10 @@ public:
 
     Size get_size() const;
 
-    View<const Size *> get_keys() const;
+    View<const Vector<Size>> get_keys() const;
 
-    View<T *> get_values();
-    View<const T *> get_values() const;
+    View<Vector<T>> get_values();
+    View<const Vector<T>> get_values() const;
 
 private:
     Vector<Size> m_dense;
@@ -39,4 +39,6 @@ private:
 
 #endif // SECS_SPARSE_MAP_HPP
 
+#ifndef SECS_SPARSE_MAP_INL
 #include "impl/sparse_map.inl"
+#endif
