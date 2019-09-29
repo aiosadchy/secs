@@ -31,12 +31,20 @@ bool Range<T>::Iterator::operator!=(const Iterator &another) const {
 template <typename T>
 Range<T>::Range(const T &length) :
         m_begin(),
-        m_end(length) {}
+        m_end(length) {
+    if (m_end < m_begin) {
+        m_end = m_begin;
+    }
+}
 
 template <typename T>
 Range<T>::Range(const T &start, const T &end) :
         m_begin(start),
-        m_end(end) {}
+        m_end(end) {
+    if (m_end < m_begin) {
+        m_end = m_begin;
+    }
+}
 
 template <typename T>
 typename Range<T>::Iterator Range<T>::begin() {
