@@ -17,16 +17,16 @@ public:
     ~Vector();
 
     template <typename ...Args>
-    T &emplace(Args&& ...args);
+    inline T &emplace(Args&& ...args);
 
-    T &append(const T &element);
-    T &append(T &&element);
-    void pop();
+    inline T &append(const T &element);
+    inline T &append(T &&element);
+    inline void pop();
 
     inline T &operator[](Size index);
     inline const T &operator[](Size index) const;
 
-    Size get_size() const;
+    inline Size get_size() const;
     void reserve(Size count);
 
     Iterator begin();

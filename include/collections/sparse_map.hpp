@@ -15,15 +15,18 @@ public:
     ~SparseMap();
 
     template <typename ...Args>
-    T &put(Size key, Args&& ...args);
+    inline T &put(Size key, Args&& ...args);
 
-    void remove(Size key);
-    bool contains(Size key) const;
+    inline void remove(Size key);
+    inline bool contains(Size key) const;
 
-    T &operator[](Size key);
-    const T &operator[](Size key) const;
+    inline T &get(Size key);
+    inline const T &get(Size key) const;
 
-    Size get_size() const;
+    inline T &operator[](Size key);
+    inline const T &operator[](Size key) const;
+
+    inline Size get_size() const;
 
     View<const Vector<Size>> get_keys() const;
 

@@ -48,9 +48,9 @@ struct t {
 };
 
 struct C {
-    alignas(1) char data[17];
+    char data[17];
 
-    C(char value = '=') {
+    C(char value) {
         for (auto &c : data) {
             c = value;
         }
@@ -58,8 +58,9 @@ struct C {
 
     ~C() {}
 
-    char value() const {
-        return data[11];
+    friend std::ostream &operator<<(std::ostream &os, const C &c) {
+        os << c.data[11];
+        return os;
     }
 };
 
@@ -68,26 +69,21 @@ int main() {
 
     Timer timer;
 
-    print(map.contains(125));
+    REPEAT(1000) {
+        map.put(rand() % 100, 'a' + rand() % 23);
+        if (rand() % 2 == 0) {
+            map.remove(rand() % 10);
+        }
+    }
 
     REPEAT(5) {
-        map.put(rand() % 100, 'a' + rand() % 12);
+        int key = rand() % 100;
+        if (map.contains(key)) {
+            print(key, map.get(key));
+        } else {
+            print(key, "no value");
+        }
     }
-
-    print(map[220].value());
-
-    map.remove(220);
-
-    for (Size i : map.get_keys()) {
-        print(i);
-    }
-
-    print();
-
-    for (auto &c : map.get_values()) {
-        print(c.value());
-    }
-
 
     return 0;
 }

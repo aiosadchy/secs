@@ -19,9 +19,14 @@ SparseMap<T>::~SparseMap() = default;
 template <typename T>
 template <typename... Args>
 T &SparseMap<T>::put(Size key, Args&& ...args) {
-    while (m_sparse.get_size() <= key) {
-        // TODO: more efficient resizing
-        m_sparse.append(0);
+    if (m_sparse.get_size() <= key) {
+        Size old_size = m_sparse.get_size();
+        Size multiplier = (old_size > 0) ? (key / old_size) : key;
+        Size new_size = next_power_of_two(multiplier) * max(old_size, Size(1));
+        m_sparse.reserve(new_size);
+        REPEAT(new_size - old_size) {
+            m_sparse.append(0);
+        }
     }
     remove(key);
     m_dense.append(key);
@@ -38,7 +43,7 @@ void SparseMap<T>::remove(Size key) {
     Size index = m_sparse[key];
 
     m_values[index].~T();
-    new (&m_values[index]) T(std::move(m_values.get_size() - 1));
+    new (&m_values[index]) T(std::move(m_values[m_values.get_size() - 1]));
     m_values.pop();
 
     Size last = m_dense[m_dense.get_size() - 1];
@@ -52,6 +57,17 @@ bool SparseMap<T>::contains(Size key) const {
     return (m_sparse.get_size() > key)
         && (m_dense.get_size() > m_sparse[key])
         && (m_dense[m_sparse[key]] == key);
+}
+
+template <typename T>
+T &SparseMap<T>::get(Size key) {
+    T *object = contains(key) ? &m_values[m_sparse[key]] : nullptr;
+    return *object;
+}
+
+template <typename T>
+const T &SparseMap<T>::get(Size key) const {
+    return const_cast<SparseMap<T> *>(this)->get(key);
 }
 
 template <typename T>

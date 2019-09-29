@@ -52,13 +52,13 @@ void Vector<T>::pop() {
 }
 
 template <typename T>
-inline T &Vector<T>::operator[](Size index) {
-    T *object = index < m_size ? (m_data + index) : nullptr;
+T &Vector<T>::operator[](Size index) {
+    T *object = (index < m_size) ? (m_data + index) : nullptr;
     return *object;
 }
 
 template <typename T>
-inline const T &Vector<T>::operator[](Size index) const {
+const T &Vector<T>::operator[](Size index) const {
     return const_cast<Vector<T> *>(this)->operator[](index);
 }
 
