@@ -5,21 +5,40 @@
 #ifndef SECS_VIEW_INL
 #define SECS_VIEW_INL
 
+#include <type_traits>
 #include "../view.hpp"
 
-template <typename C>
-View<C>::View(C &collection) :
-    m_begin(collection.begin()),
-    m_end(collection.end()) {}
+namespace implementation {
+    template <typename T>
+    struct IsView {
+        static const bool value = false;
+    };
 
-template <typename C>
-typename View<C>::Begin View<C>::begin() const {
-    return m_begin;
+    template <typename T>
+    struct IsView<View<T>> {
+        static const bool value = true;
+    };
+
+    template <typename T>
+    struct CollectionIsView {
+        static const bool value = IsView<typename std::decay<T>::type>::value;
+    };
 }
 
 template <typename C>
-typename View<C>::End View<C>::end() const {
-    return m_end;
+View<C>::View(C &collection) :
+    m_collection(collection) {
+    static_assert(!implementation::CollectionIsView<C>::value);
+}
+
+template <typename C>
+auto View<C>::begin() {
+    return m_collection.begin();
+}
+
+template <typename C>
+auto View<C>::end() {
+    return m_collection.end();
 }
 
 #endif // SECS_VIEW_INL

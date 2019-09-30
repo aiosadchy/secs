@@ -17,6 +17,27 @@ Vector<T>::Vector(Size initial_capacity) :
 }
 
 template <typename T>
+Vector<T>::Vector(const Vector &another) :
+    m_reserved(0),
+    m_size(0),
+    m_data(nullptr) {
+    reserve(another.m_reserved);
+    for (const T &object : another) {
+        emplace(object);
+    }
+}
+
+template <typename T>
+Vector<T>::Vector(Vector &&another) noexcept :
+        m_reserved(another.m_reserved),
+        m_size(another.m_size),
+        m_data(another.m_data) {
+    another.m_reserved = 0;
+    another.m_size = 0;
+    another.m_data = nullptr;
+}
+
+template <typename T>
 Vector<T>::~Vector() {
     for (T &object : *this) {
         object.~T();
@@ -41,7 +62,7 @@ T &Vector<T>::append(const T &element) {
 
 template <typename T>
 T &Vector<T>::append(T &&element) {
-    return emplace(element);
+    return emplace(std::move(element));
 }
 
 template <typename T>
@@ -69,6 +90,9 @@ Size Vector<T>::get_size() const {
 
 template <typename T>
 void Vector<T>::reserve(Size count) {
+    if (count == 0) {
+        count = 1;
+    }
     if (count <= m_reserved) {
         return;
     }

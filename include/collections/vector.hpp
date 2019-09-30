@@ -14,6 +14,8 @@ public:
     using ConstIterator = const T *;
 
     explicit Vector(Size initial_capacity);
+    Vector(const Vector &another);
+    Vector(Vector &&another) noexcept;
     ~Vector();
 
     template <typename ...Args>
