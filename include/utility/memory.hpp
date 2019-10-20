@@ -18,6 +18,8 @@ public:
     template <typename T>
     struct Placeholder {
     public:
+        Placeholder();
+
         T *as_object();
         const T *as_object() const;
 

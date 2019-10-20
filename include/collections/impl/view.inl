@@ -10,25 +10,25 @@
 
 namespace implementation {
     template <typename T>
-    struct IsView {
+    struct IsViewImpl {
         static const bool value = false;
     };
 
     template <typename T>
-    struct IsView<View<T>> {
+    struct IsViewImpl<View<T>> {
         static const bool value = true;
     };
 
     template <typename T>
-    struct CollectionIsView {
-        static const bool value = IsView<typename std::decay<T>::type>::value;
+    struct IsView {
+        static const bool value = IsViewImpl<typename std::decay<T>::type>::value;
     };
 }
 
 template <typename C>
 View<C>::View(C &collection) :
     m_collection(collection) {
-    static_assert(!implementation::CollectionIsView<C>::value);
+    static_assert(!implementation::IsView<C>::value);
 }
 
 template <typename C>

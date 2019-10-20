@@ -9,16 +9,19 @@
 
 template <typename T>
 T *Memory::allocate(Size count) {
-    static_assert(alignof(Placeholder<T>) == alignof(T));
-    static_assert(sizeof(Placeholder<T>) == sizeof(T));
     return reinterpret_cast<T *>(new Placeholder<T> [count]);
 }
 
 template <typename T>
 void Memory::free(T *memory) {
+    delete [] reinterpret_cast<Placeholder<T> *>(memory);
+}
+
+template <typename T>
+Memory::Placeholder<T>::Placeholder() :
+    m_data() {
     static_assert(alignof(Placeholder<T>) == alignof(T));
     static_assert(sizeof(Placeholder<T>) == sizeof(T));
-    delete [] reinterpret_cast<Placeholder<T> *>(memory);
 }
 
 template <typename T>
