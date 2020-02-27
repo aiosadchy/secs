@@ -8,37 +8,32 @@
 #include <type_traits>
 #include "SECS/collections/view.hpp"
 
-namespace implementation {
+namespace internal {
     template <typename T>
-    struct IsViewImpl {
+    struct IsView {
         static const bool value = false;
     };
 
     template <typename T>
-    struct IsViewImpl<View<T>> {
+    struct IsView<View<T>> {
         static const bool value = true;
-    };
-
-    template <typename T>
-    struct IsView {
-        static const bool value = IsViewImpl<typename std::decay<T>::type>::value;
     };
 }
 
 template <typename C>
 View<C>::View(C &collection) :
     m_collection(collection) {
-    static_assert(!implementation::IsView<C>::value);
+    static_assert(!internal::IsView<typename std::decay<C>::type>::value);
 }
 
 template <typename C>
 auto View<C>::begin() {
-    return m_collection.begin();
+    return std::begin(m_collection);
 }
 
 template <typename C>
 auto View<C>::end() {
-    return m_collection.end();
+    return std::end(m_collection);
 }
 
 #endif // SECS_VIEW_INL
