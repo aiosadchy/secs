@@ -1,7 +1,3 @@
-//
-// Created by aiosadchy on 28/09/2019.
-//
-
 #ifndef SECS_VECTOR_HPP
 #define SECS_VECTOR_HPP
 

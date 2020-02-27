@@ -1,7 +1,3 @@
-//
-// Created by aiosadchy on 29/09/2019.
-//
-
 #ifndef SECS_RANGE_INL
 #define SECS_RANGE_INL
 

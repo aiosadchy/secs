@@ -25,4 +25,4 @@ add_executable(SECS
         SECS/utility/repeat.hpp
         SECS/utility/type_utils.hpp
         SECS/utility/types.hpp
-    )
+        )

@@ -1,7 +1,3 @@
-//
-// Created by aiosadchy on 29/09/2019.
-//
-
 #ifndef SECS_SPARSE_MAP_INL
 #define SECS_SPARSE_MAP_INL
 

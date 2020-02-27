@@ -1,7 +1,3 @@
-//
-// Created by aiosadchy on 28/09/2019.
-//
-
 #ifndef SECS_TYPE_UTILS_HPP
 #define SECS_TYPE_UTILS_HPP
 
