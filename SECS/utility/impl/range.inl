@@ -5,7 +5,7 @@
 #ifndef SECS_RANGE_INL
 #define SECS_RANGE_INL
 
-#include "../range.hpp"
+#include "SECS/utility/range.hpp"
 
 template <typename T>
 Range<T>::Iterator::Iterator(T initial_value) :

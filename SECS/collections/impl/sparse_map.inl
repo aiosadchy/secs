@@ -5,7 +5,7 @@
 #ifndef SECS_SPARSE_MAP_INL
 #define SECS_SPARSE_MAP_INL
 
-#include "../sparse_map.hpp"
+#include "SECS/collections/sparse_map.hpp"
 
 template <typename T>
 SparseMap<T>::SparseMap(Size initial_capacity) :

@@ -6,7 +6,7 @@
 #define SECS_VECTOR_INL
 
 #include <utility>
-#include "../vector.hpp"
+#include "SECS/collections/vector.hpp"
 
 template <typename T>
 Vector<T>::Vector(Size initial_capacity) :

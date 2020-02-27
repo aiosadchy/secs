@@ -1,26 +1,28 @@
 cmake_minimum_required(VERSION 3.10)
-project(secs)
+project(SECS)
 
 set(CMAKE_CXX_STANDARD 17)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic")
 
-add_executable(secs
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+add_executable(SECS
         test/main.cpp
-        include/collections/vector.hpp
-        include/collections/impl/vector.inl
-        include/collections/sparse_map.hpp
-        include/collections/impl/sparse_map.inl
-        include/collections/view.hpp
-        include/collections/impl/view.inl
-        include/utility.hpp
-        include/utility/math.hpp
-        include/utility/impl/math.inl
-        include/utility/memory.hpp
-        include/utility/impl/memory.inl
-        include/utility/range.hpp
-        include/utility/impl/range.inl
-        include/utility/repeat.hpp
-        include/utility/type_utils.hpp
-        include/utility/types.hpp
+        SECS/collections/vector.hpp
+        SECS/collections/impl/vector.inl
+        SECS/collections/sparse_map.hpp
+        SECS/collections/impl/sparse_map.inl
+        SECS/collections/view.hpp
+        SECS/collections/impl/view.inl
+        SECS/utility.hpp
+        SECS/utility/math.hpp
+        SECS/utility/impl/math.inl
+        SECS/utility/memory.hpp
+        SECS/utility/impl/memory.inl
+        SECS/utility/range.hpp
+        SECS/utility/impl/range.inl
+        SECS/utility/repeat.hpp
+        SECS/utility/type_utils.hpp
+        SECS/utility/types.hpp
     )

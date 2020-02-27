@@ -1,6 +1,6 @@
 #include <chrono>
 #include <iostream>
-#include "../include/collections/sparse_map.hpp"
+#include "SECS/collections/sparse_map.hpp"
 
 template <typename ...Args>
 void print(Args&& ...args) {

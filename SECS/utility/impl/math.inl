@@ -5,7 +5,7 @@
 #ifndef SECS_MATH_INL
 #define SECS_MATH_INL
 
-#include "../math.hpp"
+#include "SECS/utility/math.hpp"
 
 template <typename T>
 T next_power_of_two(T x) {

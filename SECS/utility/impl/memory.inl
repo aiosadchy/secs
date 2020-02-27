@@ -5,7 +5,7 @@
 #ifndef SECS_MEMORY_INL
 #define SECS_MEMORY_INL
 
-#include "../memory.hpp"
+#include "SECS/utility/memory.hpp"
 
 template <typename T>
 T *Memory::allocate(Size count) {

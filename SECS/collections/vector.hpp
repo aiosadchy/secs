@@ -5,7 +5,7 @@
 #ifndef SECS_VECTOR_HPP
 #define SECS_VECTOR_HPP
 
-#include "../utility.hpp"
+#include "SECS/utility.hpp"
 
 template <typename T>
 class Vector {

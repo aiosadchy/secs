@@ -6,7 +6,7 @@
 #define SECS_VIEW_INL
 
 #include <type_traits>
-#include "../view.hpp"
+#include "SECS/collections/view.hpp"
 
 namespace implementation {
     template <typename T>
