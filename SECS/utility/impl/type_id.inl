@@ -27,6 +27,16 @@ TypeID<Family, IDType>::TypeID(IDType id) :
 }
 
 template <typename Family, typename IDType>
+bool TypeID<Family, IDType>::operator==(const TypeID &another) const {
+    return m_id == another.m_id;
+}
+
+template <typename Family, typename IDType>
+bool TypeID<Family, IDType>::operator!=(const TypeID &another) const {
+    return !(another == *this);
+}
+
+template <typename Family, typename IDType>
 IDType TypeID<Family, IDType>::s_next_type_id = IDType();
 
 #endif // SECS_TYPE_ID_INL

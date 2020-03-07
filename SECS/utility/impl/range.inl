@@ -5,7 +5,8 @@
 
 template <typename T>
 Range<T>::Iterator::Iterator(T initial_value) :
-        m_value(initial_value) {}
+        m_value(initial_value) {
+}
 
 template <typename T>
 T &Range<T>::Iterator::operator*() {

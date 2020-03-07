@@ -12,6 +12,9 @@ public:
     template <typename T>
     static TypeID get();
 
+    bool operator==(const TypeID &another) const;
+    bool operator!=(const TypeID &another) const;
+
 private:
     explicit TypeID(ID id);
 
