@@ -4,39 +4,39 @@
 #include <limits>
 #include "SECS/utility/type_id.hpp"
 
-template <typename Family, typename IDType>
-TypeID<Family, IDType>::TypeID() :
-    m_id(std::numeric_limits<IDType>::max()) {
+template <typename Family, typename Index>
+TypeID<Family, Index>::TypeID() :
+    m_index(std::numeric_limits<Index>::max()) {
 }
 
-template <typename Family, typename IDType>
-IDType TypeID<Family, IDType>::get_id() const {
-    return m_id;
+template <typename Family, typename Index>
+Index TypeID<Family, Index>::index() const {
+    return m_index;
 }
 
-template <typename Family, typename IDType>
-template <typename T>
-TypeID<Family, IDType> TypeID<Family, IDType>::get() {
-    const static IDType type_id = s_next_type_id++;
-    return TypeID(type_id);
+template <typename Family, typename Index>
+TypeID<Family, Index>::TypeID(Index id) :
+    m_index(id) {
 }
 
-template <typename Family, typename IDType>
-TypeID<Family, IDType>::TypeID(IDType id) :
-    m_id(id) {
+template <typename Family, typename Index>
+bool TypeID<Family, Index>::operator==(const TypeID &another) const {
+    return m_index == another.m_index;
 }
 
-template <typename Family, typename IDType>
-bool TypeID<Family, IDType>::operator==(const TypeID &another) const {
-    return m_id == another.m_id;
-}
-
-template <typename Family, typename IDType>
-bool TypeID<Family, IDType>::operator!=(const TypeID &another) const {
+template <typename Family, typename Index>
+bool TypeID<Family, Index>::operator!=(const TypeID &another) const {
     return !(another == *this);
 }
 
-template <typename Family, typename IDType>
-IDType TypeID<Family, IDType>::s_next_type_id = IDType();
+template <typename Family, typename Index>
+template <typename T>
+TypeID<Family, Index> TypeID<Family, Index>::get() {
+    static const Index index = s_next_type_index++;
+    return TypeID(index);
+}
+
+template <typename Family, typename Index>
+Index TypeID<Family, Index>::s_next_type_index = Index(0);
 
 #endif // SECS_TYPE_ID_INL

@@ -42,7 +42,7 @@ Vector<T>::~Vector() {
 }
 
 template <typename T>
-template <typename... Args>
+template <typename ...Args>
 T &Vector<T>::emplace(Args&& ...args) {
     if (m_size == m_reserved) {
         reserve(m_reserved * 2);
@@ -63,15 +63,12 @@ T &Vector<T>::append(T &&element) {
 
 template <typename T>
 void Vector<T>::pop() {
-    T *object = (m_size > 0) ? (m_data + m_size - 1) : nullptr;
-    object->~T();
-    --m_size;
+    m_data[--m_size].~T();
 }
 
 template <typename T>
 T &Vector<T>::operator[](Size index) {
-    T *object = (index < m_size) ? (m_data + index) : nullptr;
-    return *object;
+    return m_data[index];
 }
 
 template <typename T>
@@ -80,7 +77,7 @@ const T &Vector<T>::operator[](Size index) const {
 }
 
 template <typename T>
-Size Vector<T>::get_size() const {
+Size Vector<T>::size() const {
     return m_size;
 }
 
@@ -94,7 +91,7 @@ void Vector<T>::reserve(Size count) {
     }
     T *old_data = m_data;
     m_data = Memory::allocate<T>(count);
-    for (Size i : Range<Size>(m_size)) {
+    for (Size i : Range(m_size)) {
         new (m_data + i) T(std::move(old_data[i]));
         old_data[i].~T();
     }
@@ -109,7 +106,7 @@ typename Vector<T>::Iterator Vector<T>::begin() {
 
 template <typename T>
 typename Vector<T>::Iterator Vector<T>::end() {
-    return m_data + get_size();
+    return m_data + m_size;
 }
 
 template <typename T>

@@ -24,7 +24,7 @@ public:
     inline T &operator[](Size index);
     inline const T &operator[](Size index) const;
 
-    inline Size get_size() const;
+    inline Size size() const;
     void reserve(Size count);
 
     Iterator begin();

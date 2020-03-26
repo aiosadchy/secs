@@ -7,16 +7,17 @@ template <typename T>
 SparseMap<T>::SparseMap(Size initial_capacity) :
     m_dense(initial_capacity),
     m_sparse(initial_capacity),
-    m_values(initial_capacity) {}
+    m_values(initial_capacity) {
+}
 
 template <typename T>
 SparseMap<T>::~SparseMap() = default;
 
 template <typename T>
-template <typename... Args>
+template <typename ...Args>
 T &SparseMap<T>::put(Size key, Args&& ...args) {
-    if (m_sparse.get_size() <= key) {
-        Size old_size = m_sparse.get_size();
+    if (m_sparse.size() <= key) {
+        Size old_size = m_sparse.size();
         Size multiplier = (old_size > 0) ? (key / old_size) : key;
         Size new_size = next_power_of_two(multiplier) * max(old_size, Size(1));
         m_sparse.reserve(new_size);
@@ -26,7 +27,7 @@ T &SparseMap<T>::put(Size key, Args&& ...args) {
     }
     remove(key);
     m_dense.append(key);
-    m_sparse[key] = m_dense.get_size() - 1;
+    m_sparse[key] = m_dense.size() - 1;
     return m_values.emplace(std::forward<Args>(args)...);
 }
 
@@ -39,10 +40,10 @@ void SparseMap<T>::remove(Size key) {
     Size index = m_sparse[key];
 
     m_values[index].~T();
-    new (&m_values[index]) T(std::move(m_values[m_values.get_size() - 1]));
+    new (&m_values[index]) T(std::move(m_values[m_values.size() - 1]));
     m_values.pop();
 
-    Size last = m_dense[m_dense.get_size() - 1];
+    Size last = m_dense[m_dense.size() - 1];
     m_sparse[last] = index;
     m_dense[index] = last;
     m_dense.pop();
@@ -50,8 +51,8 @@ void SparseMap<T>::remove(Size key) {
 
 template <typename T>
 bool SparseMap<T>::contains(Size key) const {
-    return (m_sparse.get_size() > key)
-        && (m_dense.get_size() > m_sparse[key])
+    return (m_sparse.size() > key)
+        && (m_dense.size() > m_sparse[key])
         && (m_dense[m_sparse[key]] == key);
 }
 
@@ -77,8 +78,8 @@ const T &SparseMap<T>::operator[](Size key) const {
 }
 
 template <typename T>
-Size SparseMap<T>::get_size() const {
-    return m_dense.get_size();
+Size SparseMap<T>::size() const {
+    return m_dense.size();
 }
 
 template <typename T>

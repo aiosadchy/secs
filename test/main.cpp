@@ -19,16 +19,14 @@ public:
         auto before = m_start;
         m_start = now;
         auto dur = now - before;
-        auto mcs = std::chrono::duration_cast<std::chrono::microseconds>(dur)
-                .count();
+        auto mcs = std::chrono::duration_cast<std::chrono::microseconds>(dur).count();
         return seconds(mcs);
     }
 
     double get_time() const {
         auto now = std::chrono::high_resolution_clock::now();
         auto dur = now - m_start;
-        auto mcs = std::chrono::duration_cast<std::chrono::microseconds>(dur)
-                .count();
+        auto mcs = std::chrono::duration_cast<std::chrono::microseconds>(dur).count();
         return seconds(mcs);
     }
 
@@ -56,7 +54,8 @@ struct C {
         }
     }
 
-    ~C() {}
+    ~C() {
+    }
 
     friend std::ostream &operator<<(std::ostream &os, const C &c) {
         os << c.data[11];

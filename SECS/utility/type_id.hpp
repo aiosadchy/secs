@@ -1,25 +1,23 @@
 #ifndef SECS_TYPE_ID_HPP
 #define SECS_TYPE_ID_HPP
 
-template <typename Family, typename IDType = unsigned short int>
+template <typename Family, typename Index = unsigned short int>
 class TypeID {
 public:
-    using ID = IDType;
-
     TypeID();
-    ID get_id() const;
-
-    template <typename T>
-    static TypeID get();
+    Index index() const;
 
     bool operator==(const TypeID &another) const;
     bool operator!=(const TypeID &another) const;
 
-private:
-    explicit TypeID(ID id);
+    template <typename T>
+    static TypeID get();
 
-    ID m_id;
-    static ID s_next_type_id;
+private:
+    explicit TypeID(Index index);
+
+    Index m_index;
+    static Index s_next_type_index;
 
 };
 

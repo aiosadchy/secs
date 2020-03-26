@@ -22,7 +22,7 @@ public:
     inline T &operator[](Size key);
     inline const T &operator[](Size key) const;
 
-    inline Size get_size() const;
+    inline Size size() const;
 
     View<const Vector<Size>> get_keys() const;
 

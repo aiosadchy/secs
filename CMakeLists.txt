@@ -23,6 +23,12 @@ add_executable(SECS
         SECS/utility/range.hpp
         SECS/utility/impl/range.inl
         SECS/utility/repeat.hpp
-        SECS/utility/type_utils.hpp
         SECS/utility/types.hpp
-        )
+        SECS/engine.hpp
+        SECS/entity_id.hpp
+        SECS/entity_manager.hpp
+        SECS/impl/engine.inl
+        SECS/utility/type_id.hpp
+        SECS/utility/impl/type_id.inl
+        SECS/impl/entity_manager.inl
+    )
