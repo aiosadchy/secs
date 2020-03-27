@@ -13,11 +13,22 @@ public:
     template <typename T>
     static TypeID get();
 
+    static Index family_size();
+
 private:
-    explicit TypeID(Index index);
+    template <typename T>
+    class Initializer {
+    public:
+        const static Index s_index;
+    };
+
+    explicit TypeID(const Index &id);
+
+    template <typename T>
+    static Index get_index();
 
     Index m_index;
-    static Index s_next_type_index;
+    static Index s_family_size;
 
 };
 
