@@ -15,6 +15,11 @@ Index TypeID<Family, Index>::index() const {
 }
 
 template <typename Family, typename Index>
+TypeID<Family, Index>::TypeID(Index id) :
+    m_index(id) {
+}
+
+template <typename Family, typename Index>
 bool TypeID<Family, Index>::operator==(const TypeID &another) const {
     return m_index == another.m_index;
 }
@@ -27,33 +32,11 @@ bool TypeID<Family, Index>::operator!=(const TypeID &another) const {
 template <typename Family, typename Index>
 template <typename T>
 TypeID<Family, Index> TypeID<Family, Index>::get() {
-    static const Index index = Initializer<T>::s_index;
+    static const Index index = s_next_type_index++;
     return TypeID(index);
 }
 
 template <typename Family, typename Index>
-template <typename T>
-Index TypeID<Family, Index>::get_index() {
-    static const Index index = s_family_size++;
-    return index;
-}
-
-template <typename Family, typename Index>
-Index TypeID<Family, Index>::family_size() {
-    return s_family_size;
-}
-
-template <typename Family, typename Index>
-TypeID<Family, Index>::TypeID(const Index &id) :
-    m_index(id) {
-}
-
-template <typename Family, typename Index>
-Index TypeID<Family, Index>::s_family_size = Index(0);
-
-template <typename Family, typename Index>
-template <typename T>
-const Index TypeID<Family, Index>::Initializer<T>::s_index =
-            TypeID<Family, Index>::template get_index<T>();
+Index TypeID<Family, Index>::s_next_type_index = Index(0);
 
 #endif // SECS_TYPE_ID_INL
