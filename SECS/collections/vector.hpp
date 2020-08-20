@@ -9,7 +9,7 @@ public:
     using Iterator = T *;
     using ConstIterator = const T *;
 
-    explicit Vector(Index initial_capacity, double scale_factor = 2.0);
+    explicit Vector(Index initial_capacity, double growth_rate = 2.0);
     Vector(const Vector &another);
     Vector(Vector &&another) noexcept;
     ~Vector();
@@ -33,7 +33,7 @@ private:
     Index m_reserved;
     Index m_size;
     T *m_data;
-    double m_scale_factor;
+    double m_growth_rate;
 
 };
 

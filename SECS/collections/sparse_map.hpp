@@ -7,32 +7,33 @@
 template <typename T>
 class SparseMap {
 public:
-    explicit SparseMap(Size initial_capacity);
+    explicit SparseMap(Index initial_capacity, double reserve_factor = 0.5, double growth_rate = 2.0);
     ~SparseMap();
 
     template <typename ...Args>
-    inline T &put(Size key, Args&& ...args);
+    inline T &put(Index key, Args&& ...args);
 
-    inline void remove(Size key);
-    inline bool contains(Size key) const;
+    inline void remove(Index key);
+    inline bool contains(Index key) const;
 
-    inline T &get(Size key);
-    inline const T &get(Size key) const;
+    inline T &get(Index key);
+    inline const T &get(Index key) const;
 
-    inline T &operator[](Size key);
-    inline const T &operator[](Size key) const;
+    inline T *find(Index key);
+    inline const T *find(Index key) const;
 
-    inline Size size() const;
+    inline Index size() const;
 
-    View<const Vector<Size>> get_keys() const;
+    View<const Vector<Index>> keys() const;
 
-    View<Vector<T>> get_values();
-    View<const Vector<T>> get_values() const;
+    View<Vector<T>> values();
+    View<const Vector<T>> values() const;
 
 private:
-    Vector<Size> m_dense;
-    Vector<Size> m_sparse;
+    Vector<Index> m_dense;
+    Vector<Index> m_sparse;
     Vector<T> m_values;
+    double m_reserve_factor;
 
 };
 

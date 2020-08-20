@@ -5,13 +5,13 @@
 #include "SECS/collections/vector.hpp"
 
 template <typename T>
-Vector<T>::Vector(Index initial_capacity, double scale_factor) :
+Vector<T>::Vector(Index initial_capacity, double growth_rate) :
     m_reserved(0),
     m_size(0),
     m_data(nullptr),
-    m_scale_factor(scale_factor) {
-    if (m_scale_factor < 1.0) {
-        m_scale_factor = 1.0;
+    m_growth_rate(growth_rate) {
+    if (m_growth_rate < 1.0) {
+        m_growth_rate = 1.0;
     }
     reserve(initial_capacity);
 }
@@ -21,7 +21,7 @@ Vector<T>::Vector(const Vector &another) :
     m_reserved(0),
     m_size(0),
     m_data(nullptr),
-    m_scale_factor(another.m_scale_factor) {
+    m_growth_rate(another.m_growth_rate) {
     reserve(another.m_reserved);
     for (const T &object : another) {
         emplace(object);
@@ -33,7 +33,7 @@ Vector<T>::Vector(Vector &&another) noexcept :
         m_reserved(another.m_reserved),
         m_size(another.m_size),
         m_data(another.m_data),
-        m_scale_factor(another.m_scale_factor) {
+        m_growth_rate(another.m_growth_rate) {
     another.m_reserved = 0;
     another.m_size = 0;
     another.m_data = nullptr;
@@ -51,7 +51,7 @@ template <typename T>
 template <typename ...Args>
 T &Vector<T>::append(Args&& ...args) {
     if (m_size == m_reserved) {
-        reserve(static_cast<Index>(m_reserved * m_scale_factor) + 1);
+        reserve(static_cast<Index>(m_reserved * m_growth_rate) + 1);
     }
     new (m_data + m_size) T(std::forward<Args>(args)...);
     return m_data[m_size++];

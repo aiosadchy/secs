@@ -6,8 +6,8 @@ class View {
 public:
     explicit View(C &collection);
 
-    auto begin();
-    auto end();
+    inline auto begin();
+    inline auto end();
 
 private:
     C &m_collection;
