@@ -14,16 +14,7 @@ public:
     static TypeID get();
 
 private:
-    template <typename T>
-    class Initializer {
-    public:
-        const static Index s_index;
-    };
-
-    explicit TypeID(const Index &id);
-
-    template <typename T>
-    static Index get_index();
+    explicit TypeID(Index index);
 
     Index m_index;
     static Index s_family_size;
