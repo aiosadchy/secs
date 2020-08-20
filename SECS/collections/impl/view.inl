@@ -5,7 +5,7 @@
 
 template <typename C>
 View<C>::View(C &collection) :
-    m_collection(collection) {
+        m_collection(collection) {
 }
 
 template <typename C>

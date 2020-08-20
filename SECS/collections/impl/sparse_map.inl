@@ -5,10 +5,10 @@
 
 template <typename T>
 SparseMap<T>::SparseMap(Index initial_capacity, double reserve_factor, double growth_rate) :
-    m_dense(initial_capacity, growth_rate),
-    m_sparse(initial_capacity, growth_rate),
-    m_values(initial_capacity, growth_rate),
-    m_reserve_factor(reserve_factor) {
+        m_dense(initial_capacity, growth_rate),
+        m_sparse(initial_capacity, growth_rate),
+        m_values(initial_capacity, growth_rate),
+        m_reserve_factor(reserve_factor) {
     if (m_reserve_factor < 0.0) {
         m_reserve_factor = 0.0;
     }

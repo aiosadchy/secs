@@ -6,7 +6,7 @@ class Range {
 public:
     class Iterator {
     public:
-        inline explicit Iterator(T initial_value);
+        inline explicit Iterator(const T &initial_value);
         inline T &operator*();
         inline Iterator &operator++();
         inline bool operator!=(const Iterator &another) const;
@@ -18,8 +18,6 @@ public:
 
     inline explicit Range(const T &length);
     inline Range(const T &start, const T &end);
-    inline Iterator begin();
-    inline Iterator end();
     inline Iterator begin() const;
     inline Iterator end() const;
 

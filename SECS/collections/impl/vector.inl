@@ -6,10 +6,10 @@
 
 template <typename T>
 Vector<T>::Vector(Index initial_capacity, double growth_rate) :
-    m_reserved(0),
-    m_size(0),
-    m_data(nullptr),
-    m_growth_rate(growth_rate) {
+        m_reserved(0),
+        m_size(0),
+        m_data(nullptr),
+        m_growth_rate(growth_rate) {
     if (m_growth_rate < 1.0) {
         m_growth_rate = 1.0;
     }
@@ -18,10 +18,10 @@ Vector<T>::Vector(Index initial_capacity, double growth_rate) :
 
 template <typename T>
 Vector<T>::Vector(const Vector &another) :
-    m_reserved(0),
-    m_size(0),
-    m_data(nullptr),
-    m_growth_rate(another.m_growth_rate) {
+        m_reserved(0),
+        m_size(0),
+        m_data(nullptr),
+        m_growth_rate(another.m_growth_rate) {
     reserve(another.m_reserved);
     for (const T &object : another) {
         emplace(object);

@@ -6,7 +6,7 @@
 
 template <typename Family, typename Index>
 TypeID<Family, Index>::TypeID() :
-    m_index(std::numeric_limits<Index>::max()) {
+        m_index(std::numeric_limits<Index>::max()) {
 }
 
 template <typename Family, typename Index>
@@ -16,7 +16,7 @@ Index TypeID<Family, Index>::index() const {
 
 template <typename Family, typename Index>
 TypeID<Family, Index>::TypeID(Index id) :
-    m_index(id) {
+        m_index(id) {
 }
 
 template <typename Family, typename Index>
