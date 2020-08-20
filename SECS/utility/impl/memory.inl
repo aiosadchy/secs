@@ -4,30 +4,35 @@
 #include "SECS/utility/memory.hpp"
 
 template <typename T>
-T *Memory::allocate(Size count) {
-    return reinterpret_cast<T *>(new Placeholder<T> [count]);
+T *Memory::allocate(Index count) {
+    static_assert(alignof(Storage<T>) == alignof(T));
+    static_assert(sizeof(Storage<T>) == sizeof(T));
+    return reinterpret_cast<T *>(new Storage<T> [count]);
 }
 
 template <typename T>
 void Memory::free(T *memory) {
-    delete [] reinterpret_cast<Placeholder<T> *>(memory);
+    delete [] reinterpret_cast<Storage<T> *>(memory);
 }
 
 template <typename T>
-Memory::Placeholder<T>::Placeholder() :
-    m_data() {
-    static_assert(alignof(Placeholder<T>) == alignof(T));
-    static_assert(sizeof(Placeholder<T>) == sizeof(T));
-}
-
-template <typename T>
-T *Memory::Placeholder<T>::as_object() {
+T *Memory::Storage<T>::ptr() {
     return reinterpret_cast<T *>(m_data);
 }
 
 template <typename T>
-const T *Memory::Placeholder<T>::as_object() const {
-    return const_cast<Placeholder<T> *>(this)->as_object();
+const T *Memory::Storage<T>::ptr() const {
+    return const_cast<Storage <T> *>(this)->ptr();
+}
+
+template <typename T>
+T &Memory::Storage<T>::ref() {
+    return *ptr();
+}
+
+template <typename T>
+const T &Memory::Storage<T>::ref() const {
+    return const_cast<Storage <T> *>(this)->ref();
 }
 
 #endif // SECS_MEMORY_INL

@@ -13,8 +13,6 @@ public:
     template <typename T>
     static TypeID get();
 
-    static Index family_size();
-
 private:
     template <typename T>
     class Initializer {

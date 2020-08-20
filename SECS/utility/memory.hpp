@@ -6,18 +6,19 @@
 class Memory {
 public:
     template <typename T>
-    static T *allocate(Size count);
+    static T *allocate(Index count);
 
     template <typename T>
     static void free(T *memory);
 
     template <typename T>
-    struct Placeholder {
+    class Storage {
     public:
-        Placeholder();
+        T *ptr();
+        const T *ptr() const;
 
-        T *as_object();
-        const T *as_object() const;
+        T &ref();
+        const T &ref() const;
 
     private:
         alignas(T) unsigned char m_data[sizeof(T)];

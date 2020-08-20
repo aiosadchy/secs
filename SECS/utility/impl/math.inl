@@ -4,15 +4,6 @@
 #include "SECS/utility/math.hpp"
 
 template <typename T>
-T next_power_of_two(T x) {
-    T result(1);
-    while (result <= x) {
-        result *= 2;
-    }
-    return result;
-}
-
-template <typename T>
 T min(T first, T second) {
     return (first < second) ? first : second;
 }

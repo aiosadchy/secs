@@ -32,11 +32,11 @@ bool TypeID<Family, Index>::operator!=(const TypeID &another) const {
 template <typename Family, typename Index>
 template <typename T>
 TypeID<Family, Index> TypeID<Family, Index>::get() {
-    static const Index index = s_next_type_index++;
+    static const Index index = s_family_size++;
     return TypeID(index);
 }
 
 template <typename Family, typename Index>
-Index TypeID<Family, Index>::s_next_type_index = Index(0);
+Index TypeID<Family, Index>::s_family_size = Index(0);
 
 #endif // SECS_TYPE_ID_INL
