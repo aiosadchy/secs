@@ -9,23 +9,20 @@ public:
     using Iterator = T *;
     using ConstIterator = const T *;
 
-    explicit Vector(Size initial_capacity);
+    explicit Vector(Index initial_capacity, double scale_factor = 2.0);
     Vector(const Vector &another);
     Vector(Vector &&another) noexcept;
     ~Vector();
 
     template <typename ...Args>
-    inline T &emplace(Args&& ...args);
-
-    inline T &append(const T &element);
-    inline T &append(T &&element);
+    inline T &append(Args&& ...args);
     inline void pop();
 
-    inline T &operator[](Size index);
-    inline const T &operator[](Size index) const;
+    inline T &at(Index index);
+    inline const T &at(Index index) const;
 
-    inline Size size() const;
-    void reserve(Size count);
+    inline Index size() const;
+    void reserve(Index count);
 
     Iterator begin();
     Iterator end();
@@ -33,9 +30,10 @@ public:
     ConstIterator end() const;
 
 private:
-    Size m_reserved;
-    Size m_size;
+    Index m_reserved;
+    Index m_size;
     T *m_data;
+    double m_scale_factor;
 
 };
 
