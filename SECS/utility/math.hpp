@@ -2,9 +2,6 @@
 #define SECS_MATH_HPP
 
 template <typename T>
-inline T next_power_of_two(T x);
-
-template <typename T>
 inline T min(T first, T second);
 
 template <typename T>
