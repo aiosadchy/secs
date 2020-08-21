@@ -2,6 +2,7 @@
 #define SECS_SPARSE_MAP_INL
 
 #include "SECS/collections/sparse_map.hpp"
+#include "SECS/utility/repeat.hpp"
 
 template <typename T>
 SparseMap<T>::SparseMap(Index initial_capacity, double reserve_factor, double growth_rate) :

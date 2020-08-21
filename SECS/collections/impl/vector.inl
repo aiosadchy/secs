@@ -3,6 +3,8 @@
 
 #include <utility>
 #include "SECS/collections/vector.hpp"
+#include "SECS/utility/memory.hpp"
+#include "SECS/utility/range.hpp"
 
 template <typename T>
 Vector<T>::Vector(Index initial_capacity, double growth_rate) :
