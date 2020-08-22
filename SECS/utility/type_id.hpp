@@ -22,8 +22,8 @@ private:
 
 };
 
+#endif // SECS_TYPE_ID_HPP
+
 #ifndef SECS_TYPE_ID_INL
 #include "impl/type_id.inl"
 #endif
-
-#endif // SECS_TYPE_ID_HPP

@@ -25,10 +25,10 @@ add_executable(SECS
         SECS/utility/repeat.hpp
         SECS/utility/types.hpp
         SECS/engine.hpp
-        SECS/entity_id.hpp
+        SECS/entity.hpp
         SECS/entity_manager.hpp
         SECS/impl/engine.inl
         SECS/utility/type_id.hpp
         SECS/utility/impl/type_id.inl
         SECS/impl/entity_manager.inl
-    )
+        SECS/impl/entity.inl)
