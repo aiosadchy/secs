@@ -17,6 +17,7 @@ private:
     explicit TypeID(Index index);
 
     Index m_index;
+
     static Index s_family_size;
 
 };
