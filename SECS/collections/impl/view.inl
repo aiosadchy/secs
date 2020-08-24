@@ -9,12 +9,12 @@ View<C>::View(C &collection) :
 }
 
 template <typename C>
-auto View<C>::begin() {
+decltype(auto) View<C>::begin() {
     return std::begin(m_collection);
 }
 
 template <typename C>
-auto View<C>::end() {
+decltype(auto) View<C>::end() {
     return std::end(m_collection);
 }
 
