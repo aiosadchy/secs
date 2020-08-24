@@ -1,2 +1,2 @@
 # SECS
-Static Entity-Component-System Framework
+A Simple Entity-Component-System framework
