@@ -39,6 +39,4 @@ private:
 
 #endif // SECS_SPARSE_MAP_HPP
 
-#ifndef SECS_SPARSE_MAP_INL
 #include "impl/sparse_map.inl"
-#endif

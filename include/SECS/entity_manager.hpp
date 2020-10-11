@@ -16,8 +16,6 @@ private:
 
 };
 
-#ifndef SECS_ENTITY_MANAGER_INL
 #include "impl/entity_manager.inl"
-#endif
 
 #endif // SECS_ENTITY_MANAGER_HPP

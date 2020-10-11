@@ -56,6 +56,4 @@ private:
 
 #endif // SECS_ENTITY_HPP
 
-#ifndef SECS_ENTITY_INL
 #include "impl/entity.inl"
-#endif

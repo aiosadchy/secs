@@ -16,6 +16,4 @@ private:
 
 #endif // SECS_VIEW_HPP
 
-#ifndef SECS_VIEW_INL
 #include "impl/view.inl"
-#endif

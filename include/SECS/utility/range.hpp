@@ -31,6 +31,4 @@ private:
 
 #endif // SECS_RANGE_HPP
 
-#ifndef SECS_RANGE_INL
 #include "impl/range.inl"
-#endif

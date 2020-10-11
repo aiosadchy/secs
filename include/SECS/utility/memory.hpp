@@ -29,6 +29,4 @@ public:
 
 #endif // SECS_MEMORY_HPP
 
-#ifndef SECS_MEMORY_INL
 #include "impl/memory.inl"
-#endif

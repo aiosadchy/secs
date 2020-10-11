@@ -43,7 +43,7 @@ Range<T>::Range(const T &begin, const T &end, const T &step) :
         step_count += T(1);
     }
     if (step_count < T(0)) {
-        step_count = 0;
+        step_count = T(0);
     }
     m_end = m_begin + step_count * m_step;
 }

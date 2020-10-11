@@ -9,6 +9,4 @@ inline T max(T first, T second);
 
 #endif // SECS_MATH_HPP
 
-#ifndef SECS_MATH_INL
 #include "impl/math.inl"
-#endif

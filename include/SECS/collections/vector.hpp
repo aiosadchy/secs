@@ -39,6 +39,4 @@ private:
 
 #endif // SECS_VECTOR_HPP
 
-#ifndef SECS_VECTOR_INL
 #include "impl/vector.inl"
-#endif
