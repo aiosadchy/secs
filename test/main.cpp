@@ -1,6 +1,6 @@
 #include <chrono>
 #include <iostream>
-#include "SECS/collections/sparse_map.hpp"
+#include <SECS/collections/sparse_map.hpp>
 
 template <typename ...Args>
 void print(Args&& ...args) {
@@ -15,18 +15,20 @@ public:
     }
 
     double restart() {
-        auto now = std::chrono::high_resolution_clock::now();
+        using namespace std::chrono;
+        auto now = high_resolution_clock::now();
         auto before = m_start;
         m_start = now;
         auto dur = now - before;
-        auto mcs = std::chrono::duration_cast<std::chrono::microseconds>(dur).count();
+        auto mcs = duration_cast<std::chrono::microseconds>(dur).count();
         return seconds(mcs);
     }
 
     double get_time() const {
-        auto now = std::chrono::high_resolution_clock::now();
+        using namespace std::chrono;
+        auto now = high_resolution_clock::now();
         auto dur = now - m_start;
-        auto mcs = std::chrono::duration_cast<std::chrono::microseconds>(dur).count();
+        auto mcs = duration_cast<std::chrono::microseconds>(dur).count();
         return seconds(mcs);
     }
 
@@ -68,14 +70,14 @@ int main() {
 
     Timer timer;
 
-    REPEAT(1000) {
+    UTL_REPEAT(1000) {
         map.put(rand() % 100, 'a' + rand() % 23);
         if (rand() % 2 == 0) {
             map.remove(rand() % 10);
         }
     }
 
-    REPEAT(5) {
+    UTL_REPEAT(5) {
         int key = rand() % 100;
         if (map.contains(key)) {
             print(key, map.get(key));

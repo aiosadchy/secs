@@ -2,9 +2,9 @@
 #define SECS_VECTOR_INL
 
 #include <utility>
+#include <utl/range.hpp>
 #include "SECS/collections/vector.hpp"
-#include "SECS/utility/memory.hpp"
-#include "SECS/utility/range.hpp"
+#include "SECS/memory.hpp"
 
 template <typename T>
 Vector<T>::Vector(Index initial_capacity, double growth_rate) :
@@ -86,7 +86,7 @@ void Vector<T>::reserve(Index count) {
     }
     T *old_data = m_data;
     m_data = Memory::allocate<T>(count);
-    for (Index i : Range(m_size)) {
+    for (Index i : utl::Range(m_size)) {
         new (m_data + i) T(std::move(old_data[i]));
         old_data[i].~T();
     }

@@ -3,32 +3,17 @@ project(SECS)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic")
+add_subdirectory(external)
 
-add_executable(SECS
+set(LIBRARY_NAME ${PROJECT_NAME})
+add_library(${LIBRARY_NAME} INTERFACE)
+target_include_directories(${LIBRARY_NAME} INTERFACE include)
+target_link_libraries(${LIBRARY_NAME} INTERFACE utl)
+target_compile_features(${LIBRARY_NAME} INTERFACE cxx_std_17)
+
+set(TEST_PROJECT_NAME ${PROJECT_NAME}_test)
+add_executable(${TEST_PROJECT_NAME}
         test/main.cpp
-        include/SECS/collections/vector.hpp
-        include/SECS/collections/impl/vector.inl
-        include/SECS/collections/sparse_map.hpp
-        include/SECS/collections/impl/sparse_map.inl
-        include/SECS/collections/view.hpp
-        include/SECS/collections/impl/view.inl
-        include/SECS/utility.hpp
-        include/SECS/utility/math.hpp
-        include/SECS/utility/impl/math.inl
-        include/SECS/utility/memory.hpp
-        include/SECS/utility/impl/memory.inl
-        include/SECS/utility/range.hpp
-        include/SECS/utility/impl/range.inl
-        include/SECS/utility/repeat.hpp
-        include/SECS/utility/types.hpp
-        include/SECS/engine.hpp
-        include/SECS/entity.hpp
-        include/SECS/entity_manager.hpp
-        include/SECS/impl/engine.inl
-        include/SECS/utility/type_id.hpp
-        include/SECS/utility/impl/type_id.inl
-        include/SECS/impl/entity_manager.inl
-        include/SECS/impl/entity.inl)
-
-target_include_directories(SECS PUBLIC include)
+)
+target_link_libraries(${TEST_PROJECT_NAME} ${LIBRARY_NAME})
+target_compile_options(${TEST_PROJECT_NAME} PRIVATE -Wall -Wextra -pedantic)

@@ -1,8 +1,8 @@
 #ifndef SECS_SPARSE_MAP_INL
 #define SECS_SPARSE_MAP_INL
 
+#include <utl/repeat.hpp>
 #include "SECS/collections/sparse_map.hpp"
-#include "SECS/utility/repeat.hpp"
 
 template <typename T>
 SparseMap<T>::SparseMap(Index initial_capacity, double reserve_factor, double growth_rate) :
@@ -27,7 +27,7 @@ T &SparseMap<T>::put(Index key, Args&& ...args) {
         double scaling_factor = m_reserve_factor + 1.0;
         Index new_size = static_cast<Index>(key * scaling_factor) + 1;
         m_sparse.reserve(new_size);
-        REPEAT(new_size - old_size) {
+        UTL_REPEAT(new_size - old_size) {
             m_sparse.append(0);
         }
     }

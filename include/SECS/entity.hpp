@@ -2,7 +2,7 @@
 #define SECS_ENTITY_HPP
 
 #include <limits>
-#include "SECS/utility/types.hpp"
+#include "SECS/common.hpp"
 
 class Entity {
 public:
@@ -20,7 +20,7 @@ public:
 
     };
 
-    class Reference {
+    class Handle {
     public:
         template <typename Component, typename ...Args>
         Component &assign(Args&& ...args);
@@ -46,11 +46,11 @@ public:
     private:
         friend class Engine;
 
+        Handle(Engine )
+
         ID m_id;
 
     };
-
-private:
 
 };
 

@@ -6,8 +6,8 @@ class View {
 public:
     explicit View(C &collection);
 
-    inline decltype(auto) begin();
-    inline decltype(auto) end();
+    inline auto begin();
+    inline auto end();
 
 private:
     C &m_collection;

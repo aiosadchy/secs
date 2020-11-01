@@ -1,7 +1,7 @@
 #ifndef SECS_VECTOR_HPP
 #define SECS_VECTOR_HPP
 
-#include "SECS/utility/types.hpp"
+#include "SECS/common.hpp"
 
 template <typename T>
 class Vector {
