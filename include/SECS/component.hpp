@@ -71,7 +71,7 @@ public:
         Index m_type_index;
         Metadata *m_next;
 
-        static const Metadata *s_head = nullptr;
+        inline static const Metadata *s_head = nullptr;
 
     };
 
