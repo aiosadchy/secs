@@ -32,7 +32,7 @@ public:
 
     };
 
-    class Metadata : public utl::TypeInfo<Component<Family>::Metadata, false, RawType> {
+    class Metadata : public utl::TypeInfo<Metadata, false, RawType> {
     public:
         class Iterator {
         public:
@@ -74,6 +74,9 @@ public:
         inline static const Metadata *s_head = nullptr;
 
     };
+
+    Component() = delete;
+    ~Component() = delete;
 
 };
 
