@@ -2,7 +2,10 @@
 #define SECS_COMPONENT_HPP
 
 #include <type_traits>
+
 #include <utl/type_info.hpp>
+#include <utl/non_constructable.hpp>
+
 #include "SECS/collections/component_pool.hpp"
 #include "SECS/common.hpp"
 
@@ -75,8 +78,7 @@ public:
 
     };
 
-    Component() = delete;
-    ~Component() = delete;
+    UTL_NON_CONSTRUCTABLE(Component)
 
 };
 

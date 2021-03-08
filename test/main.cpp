@@ -1,6 +1,7 @@
 #include <chrono>
 #include <iostream>
 #include <SECS/collections/sparse_map.hpp>
+#include <SECS/component.hpp>
 
 template <typename ...Args>
 void print(Args&& ...args) {
@@ -66,6 +67,10 @@ struct C {
 };
 
 int main() {
+    using Component = ::Component<void>;
+    Component::Metadata metadata = Component::Metadata::get<int>();
+
+
     SparseMap<C> map(16);
 
     Timer timer;

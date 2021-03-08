@@ -10,7 +10,8 @@ constexpr Index DEFAULT_INITIAL_CAPACITY = 32;
 
 template <typename Family>
 Engine<Family>::Engine()
-    : m_component_pools() {
+    : m_component_pools()
+    , m_entity_pool(DEFAULT_INITIAL_CAPACITY) {
     m_component_pools.resize(Components::Metadata::get_registered_types_count());
     for (const auto &metadata : Components::Metadata::iterable()) {
         Index type_index = metadata.get_type_id().get_index();
@@ -24,7 +25,7 @@ Engine<Family>::~Engine() {
 
 template <typename Family>
 Entity::ID Engine<Family>::create() {
-    return Entity::ID();
+    return m_entity_pool.create();
 }
 
 template <typename Family>
@@ -32,6 +33,12 @@ void Engine<Family>::destroy(const Entity::ID &entity) {
     for (auto &pool : m_component_pools) {
         pool->remove(entity.index());
     }
+    m_entity_pool.destroy(entity);
+}
+
+template <typename Family>
+bool Engine<Family>::is_alive(const Entity::ID &entity) const {
+    return m_entity_pool.is_alive(entity);
 }
 
 template <typename Family>
@@ -50,7 +57,7 @@ template <typename Family>
 template <typename... Component>
 decltype(auto) Engine<Family>::get(const Entity::ID &entity) {
     if constexpr (sizeof...(Component) == 1) {
-        return get_component_pool<Component>().get(entity.index());
+        return get_component_pool<Component...>().get(entity.index());
     } else {
         return std::forward_as_tuple(get<Component>(entity)...);
     }
@@ -60,7 +67,7 @@ template <typename Family>
 template <typename... Component>
 decltype(auto) Engine<Family>::get(const Entity::ID &entity) const {
     if constexpr (sizeof...(Component) == 1) {
-        return get_component_pool<Component>().get(entity.index());
+        return get_component_pool<Component...>().get(entity.index());
     } else {
         return std::forward_as_tuple(get<Component>(entity)...);
     }
@@ -70,7 +77,7 @@ template <typename Family>
 template <typename... Component>
 decltype(auto) Engine<Family>::find(const Entity::ID &entity) {
     if constexpr (sizeof...(Component) == 1) {
-        return get_component_pool<Component>().find(entity.index());
+        return get_component_pool<Component...>().find(entity.index());
     } else {
         return std::forward_as_tuple(find<Component>(entity)...);
     }
@@ -80,7 +87,7 @@ template <typename Family>
 template <typename... Component>
 decltype(auto) Engine<Family>::find(const Entity::ID &entity) const {
     if constexpr (sizeof...(Component) == 1) {
-        return get_component_pool<Component>().find(entity.index());
+        return get_component_pool<Component...>().find(entity.index());
     } else {
         return std::forward_as_tuple(find<Component>(entity)...);
     }

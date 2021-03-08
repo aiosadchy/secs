@@ -2,6 +2,9 @@
 #define SECS_ENTITY_HPP
 
 #include <limits>
+
+#include <utl/non_constructable.hpp>
+
 #include "SECS/common.hpp"
 
 class Entity {
@@ -19,6 +22,8 @@ public:
         Index m_version;
 
     };
+
+    UTL_NON_CONSTRUCTABLE(Entity)
 
 };
 
