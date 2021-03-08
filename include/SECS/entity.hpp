@@ -20,38 +20,6 @@ public:
 
     };
 
-    class Handle {
-    public:
-        template <typename Component, typename ...Args>
-        Component &assign(Args&& ...args);
-
-        template <typename ...Component>
-        [[nodiscard]] bool has() const;
-
-        template <typename ...Component>
-        [[nodiscard]] decltype(auto) get();
-
-        template <typename ...Component>
-        [[nodiscard]] decltype(auto) get() const;
-
-        template <typename ...Component>
-        [[nodiscard]] decltype(auto) find();
-
-        template <typename ...Component>
-        [[nodiscard]] decltype(auto) find() const;
-
-        template <typename ...Component>
-        void remove();
-
-    private:
-        friend class Engine;
-
-        Handle(Engine )
-
-        ID m_id;
-
-    };
-
 };
 
 #endif // SECS_ENTITY_HPP

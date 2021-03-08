@@ -21,40 +21,4 @@ Index Entity::ID::version() const {
     return m_version;
 }
 
-
-template <typename Component, typename... Args>
-Component &Entity::Handle::assign(Args &&... args) {
-    return Component();
-}
-
-template <typename... Component>
-bool Entity::Handle::has() const {
-    return false;
-}
-
-template <typename... Component>
-decltype(auto) Entity::Handle::get() {
-    return nullptr;
-}
-
-template <typename... Component>
-decltype(auto) Entity::Handle::get() const {
-    return nullptr;
-}
-
-template <typename... Component>
-decltype(auto) Entity::Handle::find() {
-    return nullptr;
-}
-
-template <typename... Component>
-decltype(auto) Entity::Handle::find() const {
-    return nullptr;
-}
-
-template <typename... Component>
-void Entity::Handle::remove() {
-
-}
-
 #endif // SECS_ENTITY_INL
