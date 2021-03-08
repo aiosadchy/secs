@@ -1,8 +1,8 @@
 #ifndef SECS_SPARSE_MAP_HPP
 #define SECS_SPARSE_MAP_HPP
 
-#include "vector.hpp"
-#include "view.hpp"
+#include "SECS/collections/vector.hpp"
+#include "SECS/collections/view.hpp"
 
 template <typename T>
 class SparseMap {

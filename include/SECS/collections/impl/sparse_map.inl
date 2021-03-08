@@ -56,6 +56,7 @@ void SparseMap<T>::remove(Index key) {
 
 template <typename T>
 bool SparseMap<T>::contains(Index key) const {
+    // TODO: optimize using null-value
     return (m_sparse.size() > key)
         && (m_dense.size() > m_sparse.at(key))
         && (m_dense.at(m_sparse.at(key)) == key);
