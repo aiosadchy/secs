@@ -87,7 +87,7 @@ template <typename Family>
 template <typename T>
 Component<Family>::Metadata::Metadata(utl::Type<T>)
     : m_pool_factory(
-    +[](Index initial_capacity) {
+    +[](Index initial_capacity) -> AbstractComponentPool * {
         return new ComponentPool<T>(initial_capacity);
     }
 )
@@ -117,6 +117,5 @@ const typename Component<Family>::Metadata::List &Component<Family>::Metadata::i
     return list;
 }
 
-}
 
 #endif // SECS_COMPONENT_INL

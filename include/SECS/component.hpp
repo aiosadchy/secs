@@ -69,7 +69,7 @@ public:
 
         PoolFactory m_pool_factory;
         Index m_type_index;
-        Metadata *m_next;
+        const Metadata *m_next;
 
         inline static const Metadata *s_head = nullptr;
 
