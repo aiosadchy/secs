@@ -1,0 +1,4 @@
+#ifndef SECS_ENTITY_POOL_HPP
+#define SECS_ENTITY_POOL_HPP
+
+#endif // SECS_ENTITY_POOL_HPP
