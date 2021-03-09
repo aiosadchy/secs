@@ -24,8 +24,8 @@ void EntityPool::destroy(const Entity::ID &entity) {
 }
 
 bool EntityPool::is_alive(const Entity::ID &entity) const {
-    Index index = entity.index();
-    return (m_pool.size() > index) && (m_pool[index].index() == index);
+    Index index = entity.get_index();
+    return (m_pool.size() > index) && (m_pool[index].get_index() == index);
 }
 
 

@@ -3,22 +3,21 @@
 
 #include "SECS/entity.hpp"
 
-Entity::ID::ID() :
-        m_index(std::numeric_limits<Index>::max()),
-        m_version(std::numeric_limits<Index>::max()) {
+Entity::ID::ID()
+    : m_data(std::numeric_limits<UnderlyingType>::max()) {
 }
 
-Entity::ID::ID(Index index, Index version) :
-        m_index(index),
-        m_version(version) {
+Entity::ID::ID(Index index, Index version)
+    : m_data(((UnderlyingType(index  ) & INDEX_MASK  ) << INDEX_OFFSET  )
+           | ((UnderlyingType(version) & VERSION_MASK) << VERSION_OFFSET)) {
 }
 
-Index Entity::ID::index() const {
-    return m_index;
+Index Entity::ID::get_index() const {
+    return (m_data >> INDEX_OFFSET) & INDEX_MASK;
 }
 
-Index Entity::ID::version() const {
-    return m_version;
+Index Entity::ID::get_version() const {
+    return (m_data >> VERSION_OFFSET) & VERSION_MASK;
 }
 
 #endif // SECS_ENTITY_INL
