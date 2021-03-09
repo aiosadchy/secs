@@ -3,6 +3,8 @@
 
 #include "SECS/engine.hpp"
 
+#include "SECS/utility.hpp"
+
 #include <tuple>
 
 // TODO: change to something customizable
@@ -13,7 +15,7 @@ Engine<Family>::Engine()
     : m_component_pools()
     , m_entity_pool(DEFAULT_INITIAL_CAPACITY) {
     m_component_pools.resize(Components::Metadata::get_registered_types_count());
-    for (const auto &metadata : Components::Metadata::iterable()) {
+    for (const auto &metadata : Components::Metadata::iterate()) {
         Index type_index = metadata.get_type_id().get_index();
         m_component_pools[type_index].reset(metadata.create_pool(DEFAULT_INITIAL_CAPACITY));
     }
@@ -105,11 +107,7 @@ auto &Engine<Family>::get_component_pool() {
     using C = typename Components::template RawType<T>;
     Index type_index = Components::TypeID::template get<C>().get_index();
     AbstractComponentPool *pool = m_component_pools[type_index].get();
-    if constexpr (secs::DEBUG) {
-        return dynamic_cast<ComponentPool<C> &>(*pool);
-    } else {
-        return reinterpret_cast<ComponentPool<C> &>(*pool);
-    }
+    return fast_dynamic_cast<ComponentPool<C> &>(*pool);
 }
 
 template <typename Family>

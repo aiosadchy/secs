@@ -112,7 +112,7 @@ Index Component<Family>::Metadata::get_registered_types_count() {
 }
 
 template <typename Family>
-const typename Component<Family>::Metadata::List &Component<Family>::Metadata::iterable() {
+const typename Component<Family>::Metadata::List &Component<Family>::Metadata::iterate() {
     static Component<Family>::Metadata::List list;
     return list;
 }

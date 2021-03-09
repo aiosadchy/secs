@@ -62,7 +62,7 @@ public:
         inline TypeID get_type_id() const;
         static Index get_registered_types_count();
 
-        static const List &iterable();
+        static const List &iterate();
 
     private:
         using PoolFactory = AbstractComponentPool *(*)(Index);
