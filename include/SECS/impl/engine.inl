@@ -103,7 +103,7 @@ void Engine<Family>::remove(const Entity::ID &entity) {
 
 template <typename Family>
 template <typename T>
-auto &Engine<Family>::get_component_pool() {
+Components::Pool<T> &Engine<Family>::get_component_pool() {
     Index type_index = Components::TypeID::template get<T>().get_index();
     typename Components::AbstractPool *pool = m_component_pools[type_index].get();
     return fast_dynamic_cast<typename Components::template Pool<C> &>(*pool);
@@ -111,7 +111,7 @@ auto &Engine<Family>::get_component_pool() {
 
 template <typename Family>
 template <typename T>
-const auto &Engine<Family>::get_component_pool() const {
+const Components::Pool<T> &Engine<Family>::get_component_pool() const {
     return const_cast<Engine<Family> *>(this)->get_component_pool<T>();
 }
 

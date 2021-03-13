@@ -5,12 +5,17 @@
 
 class AbstractComponentPool {
 public:
-    AbstractComponentPool() = default;
     virtual ~AbstractComponentPool() = default;
+
+    virtual Index size() const = 0;
+
+protected:
+    template <typename Family>
+    friend class Engine;
 
     virtual void remove(Index key) = 0;
     virtual bool contains(Index key) const = 0;
-    virtual Index size() const = 0;
+
 };
 
 template <typename T>
@@ -25,6 +30,12 @@ public:
     inline auto end();
     inline auto end() const;
 
+    inline Index size() const override;
+
+private:
+    template <typename Family>
+    friend class Engine;
+
     template <typename ...Args>
     inline T &put(Index key, Args&& ...args);
 
@@ -37,9 +48,6 @@ public:
     inline T *find(Index key);
     inline const T *find(Index key) const;
 
-    inline Index size() const override;
-
-private:
     SparseMap<T> m_data;
 
 };

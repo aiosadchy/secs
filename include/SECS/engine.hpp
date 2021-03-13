@@ -7,6 +7,7 @@
 #include <utl/non_copyable.hpp>
 
 #include "SECS/entity.hpp"
+#include "SECS/entity_view.hpp"
 #include "SECS/collections/component_pool.hpp"
 #include "SECS/collections/entity_pool.hpp"
 #include "SECS/component.hpp"
@@ -14,6 +15,8 @@
 template <typename Family>
 class Engine {
 public:
+    using Components = Component<Family>;
+
     Engine();
     ~Engine();
 
@@ -44,15 +47,13 @@ public:
     template <typename ...Component>
     void remove(const Entity::ID &entity);
 
+    template <typename T>
+    Components::Pool<T> &get_component_pool();
+
+    template <typename T>
+    const Components::Pool<T> &get_component_pool() const;
+
 private:
-    using Components = Component<Family>;
-
-    template <typename T>
-    auto &get_component_pool();
-
-    template <typename T>
-    const auto &get_component_pool() const;
-
     std::vector<std::unique_ptr<typename Components::AbstractPool>> m_component_pools;
     EntityPool m_entity_pool;
 

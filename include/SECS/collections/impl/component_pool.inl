@@ -29,6 +29,11 @@ auto ComponentPool<T>::end() const {
 }
 
 template <typename T>
+Index ComponentPool<T>::size() const {
+    return m_data.size();
+}
+
+template <typename T>
 template <typename... Args>
 T &ComponentPool<T>::put(Index key, Args &&... args) {
     return m_data.put(std::forward<Args>(args)...);
@@ -62,11 +67,6 @@ T *ComponentPool<T>::find(Index key) {
 template <typename T>
 const T *ComponentPool<T>::find(Index key) const {
     return m_data.find();
-}
-
-template <typename T>
-Index ComponentPool<T>::size() const {
-    return m_data.size();
 }
 
 #endif // SECS_COMPONENT_POOL_INL
