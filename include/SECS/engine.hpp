@@ -53,7 +53,7 @@ private:
     template <typename T>
     const auto &get_component_pool() const;
 
-    std::vector<std::unique_ptr<AbstractComponentPool>> m_component_pools;
+    std::vector<std::unique_ptr<typename Components::AbstractPool>> m_component_pools;
     EntityPool m_entity_pool;
 
 };

@@ -87,7 +87,7 @@ template <typename Family>
 template <typename T>
 Component<Family>::Metadata::Metadata(typename Base::template Initializer<T>)
     : m_pool_factory(
-    +[](Index initial_capacity) -> AbstractComponentPool * {
+    +[](Index initial_capacity) -> typename Component<Family>::AbstractPool * {
         return new ComponentPool<T>(initial_capacity);
     }
 )
@@ -97,8 +97,8 @@ Component<Family>::Metadata::Metadata(typename Base::template Initializer<T>)
 }
 
 template <typename Family>
-AbstractComponentPool *Component<Family>::Metadata::create_pool(Index initial_capacity) const {
-    return m_pool_factory(initial_capacity);
+typename Component<Family>::AbstractPool *Component<Family>::Metadata::create_pool(Index capacity) const {
+    return m_pool_factory(capacity);
 }
 
 template <typename Family>

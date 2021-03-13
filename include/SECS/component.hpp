@@ -12,9 +12,15 @@
 
 template <typename Family>
 class Component {
-public:
+private:
     template <typename C>
-    using RawType = std::decay_t<C>;
+    using Decay = std::decay_t<C>;
+
+public:
+    using AbstractPool = AbstractComponentPool;
+
+    template <typename C>
+    using Pool = ComponentPool<Decay<C>>;
 
     class TypeID {
     public:
@@ -35,9 +41,9 @@ public:
 
     };
 
-    class Metadata : public utl::TypeInfo<Metadata, false, RawType> {
+    class Metadata : public utl::TypeInfo<Metadata, false, Decay> {
     private:
-        using Base = utl::TypeInfo<Metadata, false, RawType>;
+        using Base = utl::TypeInfo<Metadata, false, Decay>;
 
     public:
         class Iterator {
@@ -61,14 +67,14 @@ public:
         template <typename T>
         explicit Metadata(typename Base::template Initializer<T>);
 
-        inline AbstractComponentPool *create_pool(Index initial_capacity) const;
+        inline AbstractPool *create_pool(Index capacity) const;
         inline TypeID get_type_id() const;
         static Index get_registered_types_count();
 
         static const List &iterate();
 
     private:
-        using PoolFactory = AbstractComponentPool *(*)(Index);
+        using PoolFactory = AbstractPool *(*)(Index);
 
         friend class Iterator;
         friend class List;

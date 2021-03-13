@@ -5,6 +5,7 @@
 
 class AbstractComponentPool {
 public:
+    AbstractComponentPool() = default;
     virtual ~AbstractComponentPool() = default;
 
     virtual void remove(Index key) = 0;
