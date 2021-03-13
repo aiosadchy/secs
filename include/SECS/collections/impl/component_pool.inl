@@ -10,22 +10,22 @@ ComponentPool<T>::ComponentPool(Index initial_capacity)
 
 template <typename T>
 auto ComponentPool<T>::begin() {
-    return m_data.values().begin();
+    return m_data.keys().begin();
 }
 
 template <typename T>
 auto ComponentPool<T>::begin() const {
-    return m_data.values().begin();
+    return m_data.keys().begin();
 }
 
 template <typename T>
 auto ComponentPool<T>::end() {
-    return m_data.values().end();
+    return m_data.keys().end();
 }
 
 template <typename T>
 auto ComponentPool<T>::end() const {
-    return m_data.values().end();
+    return m_data.keys().end();
 }
 
 template <typename T>
