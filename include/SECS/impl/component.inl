@@ -85,7 +85,7 @@ typename Component<Family>::Metadata::Iterator Component<Family>::Metadata::List
 
 template <typename Family>
 template <typename T>
-Component<Family>::Metadata::Metadata(utl::Type<T>)
+Component<Family>::Metadata::Metadata(typename Base::template Initializer<T>)
     : m_pool_factory(
     +[](Index initial_capacity) -> AbstractComponentPool * {
         return new ComponentPool<T>(initial_capacity);

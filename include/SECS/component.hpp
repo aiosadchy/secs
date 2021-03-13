@@ -36,6 +36,9 @@ public:
     };
 
     class Metadata : public utl::TypeInfo<Metadata, false, RawType> {
+    private:
+        using Base = utl::TypeInfo<Metadata, false, RawType>;
+
     public:
         class Iterator {
         public:
@@ -56,7 +59,7 @@ public:
         };
 
         template <typename T>
-        explicit Metadata(utl::Type<T>);
+        explicit Metadata(typename Base::template Initializer<T>);
 
         inline AbstractComponentPool *create_pool(Index initial_capacity) const;
         inline TypeID get_type_id() const;
