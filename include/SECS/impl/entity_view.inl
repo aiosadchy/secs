@@ -45,9 +45,7 @@ decltype(auto) EntityView<Engine, C...>::GenericIterator<IS_CONST>::operator*() 
 
 template <typename Engine, typename... C>
 template <bool IS_CONST>
-bool EntityView<Engine, C...>::GenericIterator<IS_CONST>::operator!=(
-        const typename EntityView<Engine, C...>::EndGuard &end
-) const {
+bool EntityView<Engine, C...>::GenericIterator<IS_CONST>::operator!=(const EndGuard &end) const {
     return !reached_end();
 }
 

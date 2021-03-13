@@ -87,10 +87,10 @@ template <typename Family>
 template <typename T>
 Component<Family>::Metadata::Metadata(typename Base::template Initializer<T>)
     : m_pool_factory(
-    +[](Index initial_capacity) -> typename Component<Family>::AbstractPool * {
-        return new ComponentPool<T>(initial_capacity);
-    }
-)
+        +[](Index initial_capacity) -> typename Component<Family>::AbstractPool * {
+            return new ComponentPool<T>(initial_capacity);
+        }
+    )
     , m_type_index(s_head == nullptr ? 0 : (s_head->m_type_index + 1))
     , m_next(s_head) {
     s_head = this;
