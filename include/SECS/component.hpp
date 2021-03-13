@@ -92,5 +92,3 @@ public:
 };
 
 #endif // SECS_COMPONENT_HPP
-
-#include "impl/component.inl"

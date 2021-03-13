@@ -48,10 +48,10 @@ public:
     void remove(const Entity::ID &entity);
 
     template <typename T>
-    Components::Pool<T> &get_component_pool();
+    typename Components::template Pool<T> &get_component_pool();
 
     template <typename T>
-    const Components::Pool<T> &get_component_pool() const;
+    const typename Components::template Pool<T> &get_component_pool() const;
 
 private:
     std::vector<std::unique_ptr<typename Components::AbstractPool>> m_component_pools;
@@ -60,5 +60,3 @@ private:
 };
 
 #endif // SECS_ENGINE_HPP
-
-#include "impl/engine.inl"

@@ -51,5 +51,3 @@ public:
 };
 
 #endif // SECS_ENTITY_HPP
-
-#include "impl/entity.inl"

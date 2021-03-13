@@ -1,8 +1,11 @@
 #ifndef SECS_ENTITY_VIEW_INL
 #define SECS_ENTITY_VIEW_INL
 
-#include "SECS/engine.hpp"
 #include "SECS/entity_view.hpp"
+
+#include <algorithm>
+
+#include "SECS/engine.hpp"
 
 template <typename Engine, typename... C>
 template <bool IS_CONST>
@@ -37,7 +40,7 @@ template <typename Engine, typename... C>
 template <bool IS_CONST>
 decltype(auto) EntityView<Engine, C...>::GenericIterator<IS_CONST>::operator*() {
     Entity::ID entity = get_current_entity();
-    return std::forward_as_tuple(entity, m_engine->get<C>(entity)...);
+    return std::forward_as_tuple(entity, m_engine->template get<C>(entity)...);
 }
 
 template <typename Engine, typename... C>
@@ -58,7 +61,7 @@ Entity::ID EntityView<Engine, C...>::GenericIterator<IS_CONST>::get_current_enti
 template <typename Engine, typename... C>
 template <bool IS_CONST>
 void EntityView<Engine, C...>::GenericIterator<IS_CONST>::find_next_entity() {
-    while (!reached_end() && !m_engine->has<C...>(get_current_entity())) {
+    while (!reached_end() && !m_engine->template has<C...>(get_current_entity())) {
         std::visit([](auto &iterator) { ++iterator; }, m_iterator);
     }
 }
@@ -101,7 +104,7 @@ template <typename Engine, typename... C>
 template <typename R, typename First, typename... Rest>
 R EntityView<Engine, C...>::get_pool_iterator_by_index(Engine &engine, Index index) {
     if (index == 0) {
-        auto &pool = engine.get_component_pool<First>();
+        auto &pool = engine.template get_component_pool<First>();
         return R(engine, pool.begin(), pool.end());
     }
     if constexpr (sizeof...(Rest) > 0) {
@@ -115,7 +118,7 @@ template <typename Engine, typename... C>
 Index EntityView<Engine, C...>::get_shortest_pool_index(Engine &engine) {
     int a[sizeof...(C)] = {};
     auto it = std::begin(a);
-    (..., (*it++ = engine.get_component_pool<C>().size()));
+    (..., (*it++ = engine.template get_component_pool<C>().size()));
     return std::min_element(std::begin(a), std::end(a)) - std::begin(a);
 }
 

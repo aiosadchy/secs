@@ -53,5 +53,3 @@ private:
 };
 
 #endif // SECS_COMPONENT_POOL_HPP
-
-#include "impl/component_pool.inl"

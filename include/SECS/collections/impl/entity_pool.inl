@@ -6,6 +6,7 @@
 
 EntityPool::EntityPool(Index default_capacity)
     : m_pool() {
+    m_pool.reserve(default_capacity);
 }
 
 EntityPool::~EntityPool() {

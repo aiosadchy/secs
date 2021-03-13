@@ -15,5 +15,3 @@ private:
 };
 
 #endif // SECS_VIEW_HPP
-
-#include "impl/view.inl"

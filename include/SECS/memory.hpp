@@ -20,5 +20,3 @@ public:
 };
 
 #endif // SECS_MEMORY_HPP
-
-#include "impl/memory.inl"

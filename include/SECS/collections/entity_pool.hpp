@@ -21,5 +21,3 @@ private:
 };
 
 #endif // SECS_ENTITY_POOL_HPP
-
-#include "impl/entity_pool.inl"
