@@ -15,7 +15,7 @@ Engine<Family>::Engine()
     : m_component_pools()
     , m_entity_pool(DEFAULT_INITIAL_CAPACITY) {
     m_component_pools.resize(Components::Metadata::get_registered_types_count());
-    for (const auto &metadata : Components::Metadata::iterate()) {
+    for (const auto &metadata : Components::iterate()) {
         Index type_index = metadata.get_type_id().get_index();
         m_component_pools[type_index].reset(metadata.create_pool(DEFAULT_INITIAL_CAPACITY));
     }

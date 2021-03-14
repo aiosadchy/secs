@@ -17,12 +17,15 @@ private:
     using Decay = std::decay_t<C>;
 
 public:
+    class TypeID;
+    class Metadata;
+    class Iterator;
+    class View;
+
     using AbstractPool = AbstractComponentPool;
 
     template <typename C>
     using Pool = ComponentPool<Decay<C>>;
-
-    class Metadata;
 
     class TypeID {
     public:
@@ -48,25 +51,6 @@ public:
         using Base = utl::TypeInfo<Metadata, false, Decay>;
 
     public:
-        class Iterator {
-        public:
-            Iterator();
-            explicit Iterator(const Metadata *item);
-            const Metadata *operator->() const;
-            const Metadata &operator*() const;
-            const Iterator &operator++();
-            bool operator!=(const Iterator &another) const;
-        private:
-            const Metadata *m_item;
-
-        };
-
-        class List {
-        public:
-            Iterator begin() const;
-            Iterator end() const;
-        };
-
         template <typename T>
         explicit Metadata(typename Base::template Initializer<T>);
 
@@ -74,13 +58,11 @@ public:
         inline TypeID get_type_id() const;
         static Index get_registered_types_count();
 
-        static const List &iterate();
-
     private:
         using PoolFactory = AbstractPool *(*)(Index);
 
         friend class Iterator;
-        friend class List;
+        friend class View;
 
         PoolFactory m_pool_factory;
         Index m_type_index;
@@ -89,6 +71,27 @@ public:
         inline static const Metadata *s_head = nullptr;
 
     };
+
+    class Iterator {
+    public:
+        Iterator();
+        explicit Iterator(const Metadata *item);
+        const Metadata *operator->() const;
+        const Metadata &operator*() const;
+        const Iterator &operator++();
+        bool operator!=(const Iterator &another) const;
+    private:
+        const Metadata *m_item;
+
+    };
+
+    class View {
+    public:
+        Iterator begin() const;
+        Iterator end() const;
+    };
+
+    static View iterate();
 
     UTL_NON_CONSTRUCTABLE(Component)
 
