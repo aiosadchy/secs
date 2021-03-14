@@ -59,13 +59,16 @@ public:
     template <typename... Component>
     ConstView<Component...> iterate() const;
 
+private:
+    template <typename E, typename... C>
+    friend class EntityView;
+
     template <typename T>
     typename Components::template Pool<T> &get_component_pool();
 
     template <typename T>
     const typename Components::template Pool<T> &get_component_pool() const;
 
-private:
     std::vector<std::unique_ptr<typename Components::AbstractPool>> m_component_pools;
     EntityPool m_entity_pool;
 

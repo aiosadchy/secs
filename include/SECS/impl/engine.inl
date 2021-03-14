@@ -23,6 +23,10 @@ Engine<Family>::Engine()
 
 template <typename Family>
 Engine<Family>::~Engine() {
+    // TODO: implement entity iteration
+    // for (Entity::ID entity : m_entity_pool) {
+    //     destroy(entity);
+    // }
 }
 
 template <typename Family>

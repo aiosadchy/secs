@@ -68,10 +68,10 @@ public:
     ConstEnd end() const;
 
 private:
-    template <typename R, typename First, typename... Rest>
-    static R get_pool_iterator_by_index(Engine &engine, Index index);
+    template <typename R, typename First, typename... Rest, typename E>
+    static R get_pool_iterator_by_index(E &engine, Index index);
 
-    static Index get_shortest_pool_index(Engine &engine);
+    static Index get_shortest_pool_index(const Engine &engine);
 
     Engine *m_engine;
 

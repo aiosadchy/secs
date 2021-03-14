@@ -8,11 +8,6 @@ class AbstractComponentPool {
 public:
     virtual ~AbstractComponentPool() = default;
     virtual Index size() const = 0;
-
-protected:
-    template <typename Family>
-    friend class Engine;
-
     virtual void remove(Entity::ID key) = 0;
     virtual bool contains(Entity::ID key) const = 0;
 
@@ -53,10 +48,6 @@ public:
 
     inline Index size() const override;
 
-private:
-    template <typename Family>
-    friend class Engine;
-
     template <typename ...Args>
     inline T &put(Entity::ID key, Args&& ...args);
 
@@ -69,6 +60,7 @@ private:
     inline T *find(Entity::ID key);
     inline const T *find(Entity::ID key) const;
 
+private:
     SparseMap<T> m_data;
 
 };

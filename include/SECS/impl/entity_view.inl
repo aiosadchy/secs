@@ -103,8 +103,8 @@ typename EntityView<Engine, C...>::ConstEnd EntityView<Engine, C...>::end() cons
 }
 
 template <typename Engine, typename... C>
-template <typename R, typename First, typename... Rest>
-R EntityView<Engine, C...>::get_pool_iterator_by_index(Engine &engine, Index index) {
+template <typename R, typename First, typename... Rest, typename E>
+R EntityView<Engine, C...>::get_pool_iterator_by_index(E &engine, Index index) {
     if (index == 0) {
         return R(engine, engine.template get_component_pool<First>());
     }
@@ -116,7 +116,7 @@ R EntityView<Engine, C...>::get_pool_iterator_by_index(Engine &engine, Index ind
 }
 
 template <typename Engine, typename... C>
-Index EntityView<Engine, C...>::get_shortest_pool_index(Engine &engine) {
+Index EntityView<Engine, C...>::get_shortest_pool_index(const Engine &engine) {
     int a[sizeof...(C)] = {};
     auto it = std::begin(a);
     (..., (*it++ = engine.template get_component_pool<C>().size()));
