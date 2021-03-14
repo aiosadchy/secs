@@ -108,7 +108,7 @@ typename Component<Family>::TypeID Component<Family>::Metadata::get_type_id() co
 
 template <typename Family>
 Index Component<Family>::Metadata::get_registered_types_count() {
-    return s_head->m_type_index + 1;
+    return (s_head != nullptr) ? (s_head->m_type_index + 1) : 0;
 }
 
 template <typename Family>

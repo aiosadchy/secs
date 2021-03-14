@@ -22,6 +22,8 @@ public:
     template <typename C>
     using Pool = ComponentPool<Decay<C>>;
 
+    class Metadata;
+
     class TypeID {
     public:
         TypeID();
@@ -60,6 +62,7 @@ public:
         };
 
         class List {
+        public:
             Iterator begin() const;
             Iterator end() const;
         };

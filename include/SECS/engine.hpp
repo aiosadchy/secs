@@ -17,6 +17,12 @@ class Engine {
 public:
     using Components = Component<Family>;
 
+    template <typename... Component>
+    using View = EntityView<Engine, Component...>;
+
+    template <typename... Component>
+    using ConstView = EntityView<const Engine, Component...>;
+
     Engine();
     ~Engine();
 
@@ -46,6 +52,12 @@ public:
 
     template <typename ...Component>
     void remove(const Entity::ID &entity);
+
+    template <typename... Component>
+    View<Component...> iterate();
+
+    template <typename... Component>
+    ConstView<Component...> iterate() const;
 
     template <typename T>
     typename Components::template Pool<T> &get_component_pool();

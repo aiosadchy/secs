@@ -17,21 +17,18 @@ EntityView<Engine, C...>::GenericIterator<IS_CONST>::GenericIterator()
 
 template <typename Engine, typename... C>
 template <bool IS_CONST>
-template <typename T>
-EntityView<Engine, C...>::GenericIterator<IS_CONST>::GenericIterator(
-        Engine &engine,
-        const PoolIterator<T> &iterator,
-        const PoolEnd<T> &end
-)
+template <typename P>
+EntityView<Engine, C...>::GenericIterator<IS_CONST>::GenericIterator(Engine &engine, P &pool)
     : m_engine(&engine)
-    , m_iterator(iterator)
-    , m_end(end) {
+    , m_iterator(pool.begin())
+    , m_end(pool.end()) {
     find_next_entity();
 }
 
 template <typename Engine, typename... C>
 template <bool IS_CONST>
 auto &EntityView<Engine, C...>::GenericIterator<IS_CONST>::operator++() {
+    step();
     find_next_entity();
     return *this;
 }
@@ -40,12 +37,15 @@ template <typename Engine, typename... C>
 template <bool IS_CONST>
 decltype(auto) EntityView<Engine, C...>::GenericIterator<IS_CONST>::operator*() {
     Entity::ID entity = get_current_entity();
-    return std::forward_as_tuple(entity, m_engine->template get<C>(entity)...);
+    return std::tuple_cat(
+        std::make_tuple(entity),
+        std::forward_as_tuple(m_engine->template get<C>(entity)...)
+    );
 }
 
 template <typename Engine, typename... C>
 template <bool IS_CONST>
-bool EntityView<Engine, C...>::GenericIterator<IS_CONST>::operator!=(const EndGuard &end) const {
+bool EntityView<Engine, C...>::GenericIterator<IS_CONST>::operator!=(const EndGuard &) const {
     return !reached_end();
 }
 
@@ -53,15 +53,22 @@ bool EntityView<Engine, C...>::GenericIterator<IS_CONST>::operator!=(const EndGu
 template <typename Engine, typename... C>
 template <bool IS_CONST>
 Entity::ID EntityView<Engine, C...>::GenericIterator<IS_CONST>::get_current_entity() const {
-    return std::visit([](auto &iterator) { return *iterator; }, m_iterator);
+    // TODO: fix hardcoded entity version
+    return std::visit([](auto &iterator) { return Entity::ID(*iterator, 0); }, m_iterator);
 }
 
 template <typename Engine, typename... C>
 template <bool IS_CONST>
 void EntityView<Engine, C...>::GenericIterator<IS_CONST>::find_next_entity() {
     while (!reached_end() && !m_engine->template has<C...>(get_current_entity())) {
-        std::visit([](auto &iterator) { ++iterator; }, m_iterator);
+        step();
     }
+}
+
+template <typename Engine, typename... C>
+template <bool IS_CONST>
+void EntityView<Engine, C...>::GenericIterator<IS_CONST>::step() {
+    std::visit([](auto &iterator) { ++iterator; }, m_iterator);
 }
 
 template <typename Engine, typename... C>
@@ -78,8 +85,8 @@ EntityView<Engine, C...>::EntityView(Engine &engine)
 
 template <typename Engine, typename... C>
 typename EntityView<Engine, C...>::Iterator EntityView<Engine, C...>::begin() {
-    Index shortest_pool = get_shortest_pool_index(m_engine);
-    return get_pool_iterator_by_index<Iterator, C...>(m_engine, shortest_pool);
+    Index shortest_pool = get_shortest_pool_index(*m_engine);
+    return get_pool_iterator_by_index<Iterator, C...>(*m_engine, shortest_pool);
 }
 
 template <typename Engine, typename... C>
@@ -89,8 +96,8 @@ typename EntityView<Engine, C...>::End EntityView<Engine, C...>::end() {
 
 template <typename Engine, typename... C>
 typename EntityView<Engine, C...>::ConstIterator EntityView<Engine, C...>::begin() const {
-    Index shortest_pool = get_shortest_pool_index(m_engine);
-    return get_pool_iterator_by_index<ConstIterator, C...>(m_engine, shortest_pool);
+    Index shortest_pool = get_shortest_pool_index(*m_engine);
+    return get_pool_iterator_by_index<ConstIterator, C...>(*m_engine, shortest_pool);
 }
 
 template <typename Engine, typename... C>
@@ -102,8 +109,7 @@ template <typename Engine, typename... C>
 template <typename R, typename First, typename... Rest>
 R EntityView<Engine, C...>::get_pool_iterator_by_index(Engine &engine, Index index) {
     if (index == 0) {
-        auto &pool = engine.template get_component_pool<First>();
-        return R(engine, pool.begin(), pool.end());
+        return R(engine, engine.template get_component_pool<First>());
     }
     if constexpr (sizeof...(Rest) > 0) {
         return get_pool_iterator_by_index<R, Rest...>(engine, index - 1);

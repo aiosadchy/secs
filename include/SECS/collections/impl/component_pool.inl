@@ -35,38 +35,38 @@ Index ComponentPool<T>::size() const {
 
 template <typename T>
 template <typename... Args>
-T &ComponentPool<T>::put(Index key, Args &&... args) {
-    return m_data.put(std::forward<Args>(args)...);
+T &ComponentPool<T>::put(Entity::ID key, Args &&... args) {
+    return m_data.put(key.get_index(), std::forward<Args>(args)...);
 }
 
 template <typename T>
-void ComponentPool<T>::remove(Index key) {
-    m_data.remove(key);
+void ComponentPool<T>::remove(Entity::ID key) {
+    m_data.remove(key.get_index());
 }
 
 template <typename T>
-bool ComponentPool<T>::contains(Index key) const {
-    return m_data.contains(key);
+bool ComponentPool<T>::contains(Entity::ID key) const {
+    return m_data.contains(key.get_index());
 }
 
 template <typename T>
-T &ComponentPool<T>::get(Index key) {
-    return m_data.get(key);
+T &ComponentPool<T>::get(Entity::ID key) {
+    return m_data.get(key.get_index());
 }
 
 template <typename T>
-const T &ComponentPool<T>::get(Index key) const {
-    return m_data.get(key);
+const T &ComponentPool<T>::get(Entity::ID key) const {
+    return m_data.get(key.get_index());
 }
 
 template <typename T>
-T *ComponentPool<T>::find(Index key) {
-    return m_data.find(key);
+T *ComponentPool<T>::find(Entity::ID key) {
+    return m_data.find(key.get_index());
 }
 
 template <typename T>
-const T *ComponentPool<T>::find(Index key) const {
-    return m_data.find();
+const T *ComponentPool<T>::find(Entity::ID key) const {
+    return m_data.find(key.get_index());
 }
 
 #endif // SECS_COMPONENT_POOL_INL

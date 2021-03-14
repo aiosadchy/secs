@@ -35,8 +35,8 @@ private:
     public:
         GenericIterator();
 
-        template <typename T>
-        GenericIterator(Engine &engine, const PoolIterator<T> &iterator, const PoolEnd<T> &end);
+        template <typename P>
+        GenericIterator(Engine &engine, P &pool);
 
         auto &operator++();
         decltype(auto) operator*();
@@ -45,6 +45,7 @@ private:
     private:
         Entity::ID get_current_entity() const;
         void find_next_entity();
+        void step();
         bool reached_end() const;
 
         Engine *m_engine;

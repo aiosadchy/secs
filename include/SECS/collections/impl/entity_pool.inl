@@ -14,7 +14,7 @@ EntityPool::~EntityPool() {
 
 Entity::ID EntityPool::create() {
     // TODO: implementation
-    return Entity::ID();
+    return m_pool.emplace_back(m_pool.size(), 0);
 }
 
 void EntityPool::destroy(const Entity::ID &entity) {
@@ -22,6 +22,7 @@ void EntityPool::destroy(const Entity::ID &entity) {
     if (!is_alive(entity)) {
         return;
     }
+    m_pool[entity.get_index()] = Entity::ID();
 }
 
 bool EntityPool::is_alive(const Entity::ID &entity) const {
