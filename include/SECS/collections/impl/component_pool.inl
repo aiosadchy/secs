@@ -3,29 +3,65 @@
 
 #include "SECS/collections/component_pool.hpp"
 
+
+template <typename T>
+template <typename Iterator>
+ComponentPool<T>::GenericIterator<Iterator>::GenericIterator()
+    : m_iterator() {
+}
+
+template <typename T>
+template <typename Iterator>
+ComponentPool<T>::GenericIterator<Iterator>::GenericIterator(const Iterator &iterator)
+    : m_iterator(iterator) {
+}
+
+template <typename T>
+template <typename Iterator>
+typename ComponentPool<T>::template GenericIterator<Iterator> &
+ComponentPool<T>::GenericIterator<Iterator>::operator++() {
+    ++m_iterator;
+    return *this;
+}
+
+template <typename T>
+template <typename Iterator>
+Entity::ID ComponentPool<T>::GenericIterator<Iterator>::operator*() {
+    // TODO: fix hardcoded entity version
+    return Entity::ID(*m_iterator, 0);
+}
+
+template <typename T>
+template <typename Iterator>
+template <typename Another>
+bool ComponentPool<T>::GenericIterator<Iterator>::operator!=(const Another &another) const {
+    return m_iterator != another.m_iterator;
+}
+
+
 template <typename T>
 ComponentPool<T>::ComponentPool(Index initial_capacity)
     : m_data(initial_capacity) {
 }
 
 template <typename T>
-auto ComponentPool<T>::begin() {
-    return m_data.keys().begin();
+typename ComponentPool<T>::Iterator ComponentPool<T>::begin() {
+    return Iterator(m_data.keys().begin());
 }
 
 template <typename T>
-auto ComponentPool<T>::begin() const {
-    return m_data.keys().begin();
+typename ComponentPool<T>::Iterator ComponentPool<T>::end() {
+    return Iterator(m_data.keys().end());
 }
 
 template <typename T>
-auto ComponentPool<T>::end() {
-    return m_data.keys().end();
+typename ComponentPool<T>::ConstIterator ComponentPool<T>::begin() const {
+    return ConstIterator(m_data.keys().begin());
 }
 
 template <typename T>
-auto ComponentPool<T>::end() const {
-    return m_data.keys().end();
+typename ComponentPool<T>::ConstIterator ComponentPool<T>::end() const {
+    return ConstIterator(m_data.keys().end());
 }
 
 template <typename T>

@@ -14,23 +14,23 @@ class EntityView {
 private:
     class EndGuard {};
 
-    template <bool IS_CONST>
+    template <bool CONST>
     class GenericIterator {
     private:
         using Components = typename Engine::Components;
 
         template <typename T>
         using Pool = std::conditional_t<
-            IS_CONST,
+            CONST,
             const typename Components::template Pool<T>,
             typename Components::template Pool<T>
         >;
 
         template <typename T>
-        using PoolIterator = decltype(std::declval<Pool<T>>().begin());
-
-        template <typename T>
-        using PoolEnd = decltype(std::declval<Pool<T>>().end());
+        using PoolIteratorPair = std::pair<
+            decltype(std::declval<Pool<T>>().begin()),
+            decltype(std::declval<Pool<T>>().end())
+        >;
 
     public:
         GenericIterator();
@@ -43,21 +43,20 @@ private:
         bool operator!=(const EndGuard &end) const;
 
     private:
-        Entity::ID get_current_entity() const;
+        Entity::ID get_current_entity();
         void find_next_entity();
         void step();
         bool reached_end() const;
 
         Engine *m_engine;
-        std::variant<PoolIterator<C>...> m_iterator;
-        std::variant<PoolEnd<C>...> m_end;
+        std::variant<PoolIteratorPair<C>...> m_iterator;
 
     };
 
 public:
-    using Iterator = GenericIterator<std::is_const_v<Engine>>;
+    using Iterator      = GenericIterator<std::is_const_v<Engine>>;
     using ConstIterator = GenericIterator<true>;
-    using End = EndGuard;
+    using End      = EndGuard;
     using ConstEnd = EndGuard;
 
     explicit EntityView(Engine &engine);

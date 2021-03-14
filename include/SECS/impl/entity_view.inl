@@ -8,73 +8,70 @@
 #include "SECS/engine.hpp"
 
 template <typename Engine, typename... C>
-template <bool IS_CONST>
-EntityView<Engine, C...>::GenericIterator<IS_CONST>::GenericIterator()
+template <bool CONST>
+EntityView<Engine, C...>::GenericIterator<CONST>::GenericIterator()
     : m_engine(nullptr)
-    , m_iterator()
-    , m_end() {
+    , m_iterator() {
 }
 
 template <typename Engine, typename... C>
-template <bool IS_CONST>
+template <bool CONST>
 template <typename P>
-EntityView<Engine, C...>::GenericIterator<IS_CONST>::GenericIterator(Engine &engine, P &pool)
+EntityView<Engine, C...>::GenericIterator<CONST>::GenericIterator(Engine &engine, P &pool)
     : m_engine(&engine)
-    , m_iterator(pool.begin())
-    , m_end(pool.end()) {
+    , m_iterator(std::make_pair(pool.begin(), pool.end())) {
     find_next_entity();
 }
 
 template <typename Engine, typename... C>
-template <bool IS_CONST>
-auto &EntityView<Engine, C...>::GenericIterator<IS_CONST>::operator++() {
+template <bool CONST>
+auto &EntityView<Engine, C...>::GenericIterator<CONST>::operator++() {
     step();
     find_next_entity();
     return *this;
 }
 
 template <typename Engine, typename... C>
-template <bool IS_CONST>
-decltype(auto) EntityView<Engine, C...>::GenericIterator<IS_CONST>::operator*() {
+template <bool CONST>
+decltype(auto) EntityView<Engine, C...>::GenericIterator<CONST>::operator*() {
     Entity::ID entity = get_current_entity();
     return std::tuple_cat(
-        std::make_tuple(entity),
+        std::tuple<Entity::ID>(entity),
         std::forward_as_tuple(m_engine->template get<C>(entity)...)
     );
 }
 
 template <typename Engine, typename... C>
-template <bool IS_CONST>
-bool EntityView<Engine, C...>::GenericIterator<IS_CONST>::operator!=(const EndGuard &) const {
+template <bool CONST>
+bool EntityView<Engine, C...>::GenericIterator<CONST>::operator!=(const EndGuard &) const {
     return !reached_end();
 }
 
 
 template <typename Engine, typename... C>
-template <bool IS_CONST>
-Entity::ID EntityView<Engine, C...>::GenericIterator<IS_CONST>::get_current_entity() const {
-    // TODO: fix hardcoded entity version
-    return std::visit([](auto &iterator) { return Entity::ID(*iterator, 0); }, m_iterator);
+template <bool CONST>
+Entity::ID EntityView<Engine, C...>::GenericIterator<CONST>::get_current_entity() {
+    return std::visit([](auto &pair) { return *pair.first; }, m_iterator);
 }
 
 template <typename Engine, typename... C>
-template <bool IS_CONST>
-void EntityView<Engine, C...>::GenericIterator<IS_CONST>::find_next_entity() {
+template <bool CONST>
+void EntityView<Engine, C...>::GenericIterator<CONST>::find_next_entity() {
     while (!reached_end() && !m_engine->template has<C...>(get_current_entity())) {
         step();
     }
 }
 
 template <typename Engine, typename... C>
-template <bool IS_CONST>
-void EntityView<Engine, C...>::GenericIterator<IS_CONST>::step() {
-    std::visit([](auto &iterator) { ++iterator; }, m_iterator);
+template <bool CONST>
+void EntityView<Engine, C...>::GenericIterator<CONST>::step() {
+    std::visit([](auto &pair) { ++pair.first; }, m_iterator);
 }
 
 template <typename Engine, typename... C>
-template <bool IS_CONST>
-bool EntityView<Engine, C...>::GenericIterator<IS_CONST>::reached_end() const {
-    return !(m_iterator != m_end);
+template <bool CONST>
+bool EntityView<Engine, C...>::GenericIterator<CONST>::reached_end() const {
+    return !std::visit([](auto &pair) { return pair.first != pair.second; }, m_iterator);
 }
 
 

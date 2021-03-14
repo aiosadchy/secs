@@ -69,11 +69,10 @@ int main() {
 
     engine.assign<int>(c, 25);
 
-    // const TestEngine &const_engine = engine;
-    // for (auto [id, name, integer] : engine.iterate<std::string, int>()) {
-    //     print("Got entity:", id.get_index(), name, integer);
-    //     name = name + name;
-    // }
+    const TestEngine &const_engine = engine;
+    for (auto [id, name, integer] : const_engine.iterate<std::string, int>()) {
+        print("Got entity:", id.get_index(), name, integer);
+    }
 
     return 0;
 }

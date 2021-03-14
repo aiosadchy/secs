@@ -7,7 +7,6 @@
 class AbstractComponentPool {
 public:
     virtual ~AbstractComponentPool() = default;
-
     virtual Index size() const = 0;
 
 protected:
@@ -21,17 +20,36 @@ protected:
 
 template <typename T>
 class ComponentPool : public AbstractComponentPool {
+private:
+    template <typename Iterator>
+    class GenericIterator {
+    public:
+        GenericIterator();
+        explicit GenericIterator(const Iterator &iterator);
+
+        GenericIterator &operator++();
+        Entity::ID operator*();
+
+        template <typename Another>
+        bool operator!=(const Another &another) const;
+
+    private:
+        Iterator m_iterator;
+
+    };
+
 public:
-    // TODO: create iterator class since it is used as std::variant element in EntityView
+    using Iterator      = GenericIterator<decltype(std::declval<SparseMap<T>>().keys().begin())>;
+    using ConstIterator = GenericIterator<decltype(std::declval<const SparseMap<T>>().keys().begin())>;
 
     explicit ComponentPool(Index initial_capacity);
     ~ComponentPool() override = default;
 
-    inline auto begin();
-    inline auto begin() const;
+    inline Iterator begin();
+    inline Iterator end();
 
-    inline auto end();
-    inline auto end() const;
+    inline ConstIterator begin() const;
+    inline ConstIterator end() const;
 
     inline Index size() const override;
 
