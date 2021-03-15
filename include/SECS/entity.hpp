@@ -2,10 +2,7 @@
 #define SECS_ENTITY_HPP
 
 #include <cstdint>
-#include <limits>
 #include <type_traits>
-
-#include <utl/non_constructable.hpp>
 
 #include "SECS/common.hpp"
 
@@ -28,6 +25,9 @@ public:
         inline Index get_index() const;
         inline Index get_version() const;
 
+        inline bool operator==(const ID &another) const;
+        inline bool operator!=(const ID &another) const;
+
     private:
         using UnderlyingType = std::conditional_t<
             (SECS_ENTITY_INDEX_BITS + SECS_ENTITY_VERSION_BITS > 32),
@@ -45,8 +45,6 @@ public:
         UnderlyingType m_data;
 
     };
-
-    UTL_NON_CONSTRUCTABLE(Entity)
 
 };
 

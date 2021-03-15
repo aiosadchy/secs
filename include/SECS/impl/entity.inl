@@ -4,7 +4,7 @@
 #include "SECS/entity.hpp"
 
 Entity::ID::ID()
-    : m_data(std::numeric_limits<UnderlyingType>::max()) {
+    : ID(INDEX_MASK, VERSION_MASK) {
 }
 
 Entity::ID::ID(Index index, Index version)
@@ -18,6 +18,14 @@ Index Entity::ID::get_index() const {
 
 Index Entity::ID::get_version() const {
     return (m_data >> VERSION_OFFSET) & VERSION_MASK;
+}
+
+bool Entity::ID::operator==(const Entity::ID &another) const {
+    return (get_index() == another.get_index()) && (get_version() == another.get_version());
+}
+
+bool Entity::ID::operator!=(const Entity::ID &another) const {
+    return !(*this == another);
 }
 
 #endif // SECS_ENTITY_INL
