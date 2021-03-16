@@ -19,14 +19,14 @@ class Entity {
 public:
     class ID {
     public:
-        inline ID();
-        inline ID(Index index, Index version);
+        inline ID() noexcept;
+        inline ID(Index index, Index version) noexcept;
 
-        inline Index get_index() const;
-        inline Index get_version() const;
+        inline Index get_index() const noexcept;
+        inline Index get_version() const noexcept;
 
-        inline bool operator==(const ID &another) const;
-        inline bool operator!=(const ID &another) const;
+        inline bool operator==(const ID &another) const noexcept;
+        inline bool operator!=(const ID &another) const noexcept;
 
     private:
         using UnderlyingType = std::conditional_t<
@@ -45,6 +45,8 @@ public:
         UnderlyingType m_data;
 
     };
+
+    inline static const ID null = ID();
 
 };
 
