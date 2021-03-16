@@ -10,7 +10,7 @@ public:
     inline auto end();
 
 private:
-    C &m_collection;
+    C *m_collection;
 
 };
 
