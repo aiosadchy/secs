@@ -41,24 +41,26 @@ void SparseMap<K, V, R>::remove(const K &key) {
         return;
     }
 
-    Index key_index = m_key_reduce(key);
-    Index index = m_sparse[key_index];
-    m_sparse[key_index] = NULL_VALUE;
+    Index sparse_index = m_key_reduce(key);
+    Index dense_index = m_sparse[sparse_index];
 
-    std::swap(m_values[index], m_values.back());
+    m_sparse[sparse_index] = NULL_VALUE;
+
+    if (dense_index != (m_dense.size() - 1)) {
+        m_sparse[m_key_reduce(m_dense.back())] = dense_index;
+        std::swap(m_values[dense_index], m_values.back());
+        std::swap(m_dense[dense_index], m_dense.back());
+    }
+
     m_values.pop_back();
-
-    K &last = m_dense.back();
-    Index last_index = m_key_reduce(last);
-    m_sparse[last_index] = index;
-    m_dense[index] = last;
     m_dense.pop_back();
+
 }
 
 template <typename K, typename V, typename R>
 bool SparseMap<K, V, R>::contains(const K &key) const {
-    Index key_index = m_key_reduce(key);
-    return (m_sparse.size() > key_index) && (m_sparse[key_index] != NULL_VALUE);
+    Index index = m_key_reduce(key);
+    return (m_sparse.size() > index) && (m_sparse[index] != NULL_VALUE);
 }
 
 template <typename K, typename V, typename R>
