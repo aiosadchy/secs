@@ -69,6 +69,11 @@ int main() {
 
     const TestEngine &const_engine = engine;
 
+    engine.destroy(b);
+    b = engine.create();
+    engine.destroy(b);
+    b = engine.create();
+
     for (auto [id, name, counter] : const_engine.iterate<std::string, int>()) {
         print("Got entity:", id.get_index(), name, counter);
     }

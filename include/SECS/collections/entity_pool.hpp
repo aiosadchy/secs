@@ -37,7 +37,7 @@ public:
     using End      = EndGuard;
     using ConstEnd = EndGuard;
 
-    explicit EntityPool(Index default_capacity);
+    explicit EntityPool(Index default_capacity, Index recycle_period);
     ~EntityPool();
 
     inline Iterator begin();
@@ -52,6 +52,12 @@ public:
 
 private:
     std::vector<Entity::ID> m_pool;
+    struct {
+        Index first;
+        Index last;
+        Index count;
+    } m_free_list;
+    Index m_recycle_period;
 
 };
 

@@ -51,6 +51,9 @@ public:
 
     inline Index size() const override;
 
+    // TODO: change input parameter type to Index because
+    //       this class can not check if Entity::ID is valid
+
     template <typename ...Args>
     inline T &put(Entity::ID key, Args&& ...args);
 
