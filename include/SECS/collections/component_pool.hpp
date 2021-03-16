@@ -11,6 +11,13 @@ public:
     virtual void remove(Entity::ID key) = 0;
     virtual bool contains(Entity::ID key) const = 0;
 
+protected:
+    class EntityToIndex {
+    public:
+        Index operator()(const Entity::ID &entity) const noexcept;
+
+    };
+
 };
 
 template <typename T>
@@ -24,21 +31,18 @@ private:
 
         GenericIterator &operator++();
         Entity::ID operator*();
-
-        template <typename Another>
-        bool operator!=(const Another &another) const;
+        bool operator!=(const GenericIterator &another) const;
 
     private:
-        template <typename I>
-        friend class GenericIterator;
-
         Iterator m_iterator;
 
     };
 
+    using Map = SparseMap<Entity::ID, T, EntityToIndex>;
+
 public:
-    using Iterator      = GenericIterator<decltype(std::declval<SparseMap<T>>().keys().begin())>;
-    using ConstIterator = GenericIterator<decltype(std::declval<const SparseMap<T>>().keys().begin())>;
+    using Iterator      = GenericIterator<decltype(std::declval<Map>().keys().begin())>;
+    using ConstIterator = GenericIterator<decltype(std::declval<const Map>().keys().begin())>;
 
     explicit ComponentPool(Index initial_capacity);
     ~ComponentPool() override = default;
@@ -50,9 +54,6 @@ public:
     inline ConstIterator end() const;
 
     inline Index size() const override;
-
-    // TODO: change input parameter type to Index because
-    //       this class can not check if Entity::ID is valid
 
     template <typename ...Args>
     inline T &put(Entity::ID key, Args&& ...args);
@@ -67,7 +68,7 @@ public:
     inline const T *find(Entity::ID key) const;
 
 private:
-    SparseMap<T> m_data;
+    Map m_data;
 
 };
 

@@ -2,26 +2,38 @@
 #define SECS_UTILITY_HPP
 
 #include <type_traits>
+#include <utility>
+
 #include "SECS/common.hpp"
 
 template <typename T, typename U>
-T fast_dynamic_cast(U *object) {
+inline T fast_dynamic_cast(U *object) {
+    static_assert(std::is_pointer_v<T>);
     if constexpr (secs::DEBUG) {
         return dynamic_cast<T>(object);
     } else {
-        static_assert(std::is_pointer_v<T>);
         return reinterpret_cast<T>(object);
     }
 }
 
 template <typename T, typename U>
-T fast_dynamic_cast(U &object) {
+inline T fast_dynamic_cast(U &object) {
+    static_assert(std::is_reference_v<T>);
     if constexpr (secs::DEBUG) {
         return dynamic_cast<T>(object);
     } else {
-        static_assert(std::is_reference_v<T>);
         return *reinterpret_cast<std::remove_reference_t<T> *>(&object);
     }
 }
+
+
+class Identity {
+public:
+    template <typename T>
+    inline constexpr T &&operator()(T &&input) const noexcept {
+        return std::forward<T>(input);
+    }
+
+};
 
 #endif // SECS_UTILITY_HPP

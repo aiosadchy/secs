@@ -6,39 +6,40 @@
 
 #include "SECS/common.hpp"
 #include "SECS/collections/view.hpp"
+#include "SECS/utility.hpp"
 
-template <typename T>
+template <typename K, typename V, typename R = Identity>
 class SparseMap {
 public:
-    explicit SparseMap(Index initial_capacity, double reserve_factor = 0.5);
+    explicit SparseMap(Index initial_capacity = 0, R key_reduce = R());
     ~SparseMap();
 
     template <typename ...Args>
-    inline T &put(Index key, Args&& ...args);
+    inline V &put(const K &key, Args&& ...args);
 
-    inline void remove(Index key);
-    inline bool contains(Index key) const;
+    inline void remove(const K &key);
+    inline bool contains(const K &key) const;
 
-    inline T &get(Index key);
-    inline const T &get(Index key) const;
+    inline V &get(const K &key);
+    inline const V &get(const K &key) const;
 
-    inline T *find(Index key);
-    inline const T *find(Index key) const;
+    inline V *find(const K &key);
+    inline const V *find(const K &key) const;
 
     inline Index size() const;
 
-    View<const std::vector<Index>> keys() const;
+    View<const std::vector<K>> keys() const;
 
-    View<std::vector<T>> values();
-    View<const std::vector<T>> values() const;
+    View<std::vector<V>> values();
+    View<const std::vector<V>> values() const;
 
 private:
     inline static const Index NULL_VALUE = std::numeric_limits<Index>::max();
 
-    std::vector<Index> m_dense;
+    std::vector<K> m_dense;
     std::vector<Index> m_sparse;
-    std::vector<T> m_values;
-    double m_reserve_factor;
+    std::vector<V> m_values;
+    R m_key_reduce;
 
 };
 

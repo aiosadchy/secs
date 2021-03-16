@@ -4,6 +4,11 @@
 #include "SECS/collections/component_pool.hpp"
 
 
+Index AbstractComponentPool::EntityToIndex::operator()(const Entity::ID &entity) const noexcept {
+    return entity.get_index();
+}
+
+
 template <typename T>
 template <typename Iterator>
 ComponentPool<T>::GenericIterator<Iterator>::GenericIterator()
@@ -27,14 +32,12 @@ ComponentPool<T>::GenericIterator<Iterator>::operator++() {
 template <typename T>
 template <typename Iterator>
 Entity::ID ComponentPool<T>::GenericIterator<Iterator>::operator*() {
-    // TODO: fix hardcoded entity version
-    return Entity::ID(*m_iterator, 0);
+    return *m_iterator;
 }
 
 template <typename T>
 template <typename Iterator>
-template <typename Another>
-bool ComponentPool<T>::GenericIterator<Iterator>::operator!=(const Another &another) const {
+bool ComponentPool<T>::GenericIterator<Iterator>::operator!=(const GenericIterator &another) const {
     return m_iterator != another.m_iterator;
 }
 
@@ -72,37 +75,37 @@ Index ComponentPool<T>::size() const {
 template <typename T>
 template <typename... Args>
 T &ComponentPool<T>::put(Entity::ID key, Args &&... args) {
-    return m_data.put(key.get_index(), std::forward<Args>(args)...);
+    return m_data.put(key, std::forward<Args>(args)...);
 }
 
 template <typename T>
 void ComponentPool<T>::remove(Entity::ID key) {
-    m_data.remove(key.get_index());
+    m_data.remove(key);
 }
 
 template <typename T>
 bool ComponentPool<T>::contains(Entity::ID key) const {
-    return m_data.contains(key.get_index());
+    return m_data.contains(key);
 }
 
 template <typename T>
 T &ComponentPool<T>::get(Entity::ID key) {
-    return m_data.get(key.get_index());
+    return m_data.get(key);
 }
 
 template <typename T>
 const T &ComponentPool<T>::get(Entity::ID key) const {
-    return m_data.get(key.get_index());
+    return m_data.get(key);
 }
 
 template <typename T>
 T *ComponentPool<T>::find(Entity::ID key) {
-    return m_data.find(key.get_index());
+    return m_data.find(key);
 }
 
 template <typename T>
 const T *ComponentPool<T>::find(Entity::ID key) const {
-    return m_data.find(key.get_index());
+    return m_data.find(key);
 }
 
 #endif // SECS_COMPONENT_POOL_INL
