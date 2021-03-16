@@ -59,6 +59,10 @@ public:
     template <typename... Component>
     ConstView<Component...> iterate() const;
 
+    ::View<EntityPool> iterate();
+
+    ::View<const EntityPool> iterate() const;
+
 private:
     template <typename E, typename... C>
     friend class EntityView;

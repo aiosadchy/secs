@@ -60,8 +60,6 @@ int main() {
 
     engine.assign<std::string>(b, "bb");
 
-    engine.destroy(b);
-
     for (auto [id, name] : engine.iterate<std::string>()) {
         print("Got entity:", id.get_index(), name);
         name = name + name;
@@ -70,8 +68,13 @@ int main() {
     engine.assign<int>(c, 25);
 
     const TestEngine &const_engine = engine;
-    for (auto [id, name, integer] : const_engine.iterate<std::string, int>()) {
-        print("Got entity:", id.get_index(), name, integer);
+
+    for (auto [id, name, counter] : const_engine.iterate<std::string, int>()) {
+        print("Got entity:", id.get_index(), name, counter);
+    }
+
+    for (auto id : const_engine.iterate()) {
+        print("Got entity:", id.get_index());
     }
 
     return 0;

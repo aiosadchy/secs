@@ -118,6 +118,16 @@ typename Engine<Family>::template ConstView<Component...> Engine<Family>::iterat
 }
 
 template <typename Family>
+View<EntityPool> Engine<Family>::iterate() {
+    return ::View<EntityPool>(m_entity_pool);
+}
+
+template <typename Family>
+View<const EntityPool> Engine<Family>::iterate() const {
+    return ::View<const EntityPool>(m_entity_pool);
+}
+
+template <typename Family>
 template <typename T>
 typename Engine<Family>::Components::template Pool<T> &Engine<Family>::get_component_pool() {
     Index type_index = Components::TypeID::template get<T>().get_index();

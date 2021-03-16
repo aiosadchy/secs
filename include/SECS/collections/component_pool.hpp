@@ -29,6 +29,9 @@ private:
         bool operator!=(const Another &another) const;
 
     private:
+        template <typename I>
+        friend class GenericIterator;
+
         Iterator m_iterator;
 
     };
