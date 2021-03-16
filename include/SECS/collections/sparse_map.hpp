@@ -1,13 +1,16 @@
 #ifndef SECS_SPARSE_MAP_HPP
 #define SECS_SPARSE_MAP_HPP
 
-#include "SECS/collections/vector.hpp"
+#include <limits>
+#include <vector>
+
+#include "SECS/common.hpp"
 #include "SECS/collections/view.hpp"
 
 template <typename T>
 class SparseMap {
 public:
-    explicit SparseMap(Index initial_capacity, double reserve_factor = 0.5, double growth_rate = 2.0);
+    explicit SparseMap(Index initial_capacity, double reserve_factor = 0.5);
     ~SparseMap();
 
     template <typename ...Args>
@@ -24,15 +27,17 @@ public:
 
     inline Index size() const;
 
-    View<const Vector<Index>> keys() const;
+    View<const std::vector<Index>> keys() const;
 
-    View<Vector<T>> values();
-    View<const Vector<T>> values() const;
+    View<std::vector<T>> values();
+    View<const std::vector<T>> values() const;
 
 private:
-    Vector<Index> m_dense;
-    Vector<Index> m_sparse;
-    Vector<T> m_values;
+    inline static const Index NULL_VALUE = std::numeric_limits<Index>::max();
+
+    std::vector<Index> m_dense;
+    std::vector<Index> m_sparse;
+    std::vector<T> m_values;
     double m_reserve_factor;
 
 };
