@@ -26,9 +26,9 @@ public:
 
     using PoolHandle = std::unique_ptr<IPool>;
 
-    using TypeID = utl::TypeID<Component<Family>, Index, Decay, true>;
+    using TypeID = utl::TypeID<Component<Family>, Index, Decay, utl::init::TypeID::LAZY>;
 
-    class Metadata : public utl::TypeInfo<Metadata, Decay, false> {
+    class Metadata : public utl::TypeInfo<Metadata, Decay, utl::init::TypeInfo::STATIC> {
     public:
         inline PoolHandle create_pool(Index capacity) const;
         inline TypeID get_type_id() const;
@@ -37,8 +37,8 @@ public:
         static const Metadata *next(const Metadata *record);
 
     private:
-        friend class utl::TypeInfo<Metadata, Decay, false>;
-        using Base = utl::TypeInfo<Metadata, Decay, false>;
+        friend class utl::TypeInfo<Metadata, Decay, utl::init::TypeInfo::STATIC>;
+        using Base = utl::TypeInfo<Metadata, Decay, utl::init::TypeInfo::STATIC>;
         using CreatePool = PoolHandle (Index);
 
         template <typename T>
