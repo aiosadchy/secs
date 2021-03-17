@@ -48,7 +48,7 @@ private:
         bool operator!=(const EndGuard &end) const;
 
     private:
-        Entity::ID get_current_entity();
+        Entity get_current_entity();
         void find_next_entity();
         void step();
         bool reached_end() const;

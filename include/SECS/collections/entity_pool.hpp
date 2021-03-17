@@ -18,7 +18,7 @@ private:
         GenericIterator(Iterator begin, Iterator end, const EntityPool &pool);
 
         GenericIterator &operator++();
-        Entity::ID operator*();
+        Entity operator*();
         bool operator!=(const EndGuard &end) const;
 
     private:
@@ -32,13 +32,13 @@ private:
     };
 
 public:
-    using Iterator      = GenericIterator<std::vector<Entity::ID>::iterator>;
-    using ConstIterator = GenericIterator<std::vector<Entity::ID>::const_iterator>;
+    using Iterator      = GenericIterator<std::vector<Entity>::iterator>;
+    using ConstIterator = GenericIterator<std::vector<Entity>::const_iterator>;
     using End      = EndGuard;
     using ConstEnd = EndGuard;
 
-    explicit EntityPool(Index default_capacity, Index recycle_period);
-    ~EntityPool();
+    inline explicit EntityPool(Index default_capacity, Index recycle_period);
+    inline ~EntityPool();
 
     inline Iterator begin();
     inline End end();
@@ -46,12 +46,15 @@ public:
     inline ConstIterator begin() const;
     inline ConstEnd end() const;
 
-    [[nodiscard]] Entity::ID create();
-    void destroy(const Entity::ID &entity);
-    [[nodiscard]] bool is_alive(const Entity::ID &entity) const;
+    [[nodiscard]] inline Entity create();
+    inline void destroy(Entity entity);
+    [[nodiscard]] inline bool is_alive(Entity entity) const;
+
+    inline static Index get_index(Entity entity) noexcept;
+    inline static Index get_version(Entity entity) noexcept;
 
 private:
-    std::vector<Entity::ID> m_pool;
+    std::vector<Entity> m_pool;
     struct {
         Index first;
         Index last;

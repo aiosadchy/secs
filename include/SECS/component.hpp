@@ -1,6 +1,7 @@
 #ifndef SECS_COMPONENT_HPP
 #define SECS_COMPONENT_HPP
 
+#include <memory>
 #include <type_traits>
 
 #include <utl/non_constructable.hpp>
@@ -18,31 +19,32 @@ private:
     using Decay = std::decay_t<C>;
 
 public:
-    using AbstractPool = AbstractComponentPool;
+    using IPool = IComponentPool;
 
     template <typename C>
     using Pool = ComponentPool<Decay<C>>;
+
+    using PoolHandle = std::unique_ptr<IPool>;
 
     using TypeID = utl::TypeID<Component<Family>, Index, Decay, true>;
 
     class Metadata : public utl::TypeInfo<Metadata, Decay, false> {
     public:
-        inline AbstractPool *create_pool(Index capacity) const;
+        inline PoolHandle create_pool(Index capacity) const;
         inline TypeID get_type_id() const;
 
         static const Metadata *first();
         static const Metadata *next(const Metadata *record);
 
     private:
-        using Base = utl::TypeInfo<Metadata, Decay, false>;
-        using PoolFactory = AbstractPool *(*)(Index);
-
         friend class utl::TypeInfo<Metadata, Decay, false>;
+        using Base = utl::TypeInfo<Metadata, Decay, false>;
+        using CreatePool = PoolHandle (Index);
 
         template <typename T>
         explicit Metadata(typename Base::template Initializer<T>);
 
-        const PoolFactory m_pool_factory;
+        CreatePool * const m_create_pool;
         const TypeID m_type_id;
         const Metadata * const m_next;
 

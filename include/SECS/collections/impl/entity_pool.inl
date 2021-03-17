@@ -31,7 +31,7 @@ typename EntityPool::GenericIterator<Iterator> &EntityPool::GenericIterator<Iter
 }
 
 template <typename Iterator>
-Entity::ID EntityPool::GenericIterator<Iterator>::operator*() {
+Entity EntityPool::GenericIterator<Iterator>::operator*() {
     return *m_iterator;
 }
 
@@ -81,33 +81,41 @@ EntityPool::End EntityPool::end() const {
     return ConstEnd();
 }
 
-Entity::ID EntityPool::create() {
+Entity EntityPool::create() {
     if (m_free_list.count > m_recycle_period) {
         Index created = m_free_list.first;
         m_free_list.first = m_pool[created].get_index();
         m_free_list.count -= 1;
-        m_pool[created] = Entity::ID(created, m_pool[created].get_version());
+        m_pool[created] = Entity(created, m_pool[created].get_version());
         return m_pool[created];
     }
-    return m_pool.emplace_back(m_pool.size(), 0);
+    return m_pool.emplace_back(Entity(m_pool.size(), 0));
 }
 
-void EntityPool::destroy(const Entity::ID &entity) {
+void EntityPool::destroy(Entity entity) {
     if (!is_alive(entity)) {
         return;
     }
     Index index = entity.get_index();
     Index version = entity.get_version();
-    m_pool[index] = Entity::ID(Entity::null.get_index(), version + 1);
-    Entity::ID &last_free = m_pool[m_free_list.last];
-    last_free = Entity::ID(index, last_free.get_version());
+    m_pool[index] = Entity(Entity::null.get_index(), version + 1);
+    Entity &last_free = m_pool[m_free_list.last];
+    last_free = Entity(index, last_free.get_version());
     m_free_list.last = index;
     m_free_list.count += 1;
 }
 
-bool EntityPool::is_alive(const Entity::ID &entity) const {
+bool EntityPool::is_alive(Entity entity) const {
     Index index = entity.get_index();
     return (m_pool.size() > index) && (m_pool[index] == entity);
+}
+
+Index EntityPool::get_index(Entity entity) noexcept {
+    return entity.get_index();
+}
+
+Index EntityPool::get_version(Entity entity) noexcept {
+    return entity.get_version();
 }
 
 #endif // SECS_ENTITY_POOL_INL

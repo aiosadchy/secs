@@ -3,9 +3,10 @@
 
 #include "SECS/engine.hpp"
 
-#include "SECS/utility.hpp"
-
 #include <tuple>
+#include <utility>
+
+#include "SECS/utility.hpp"
 
 // TODO: change to something customizable
 constexpr Index DEFAULT_INITIAL_CAPACITY = 32;
@@ -19,50 +20,51 @@ Engine<Family>::Engine()
         if (type_index >= m_component_pools.size()) {
             m_component_pools.resize(type_index + 1);
         }
-        m_component_pools[type_index].reset(metadata.create_pool(DEFAULT_INITIAL_CAPACITY));
+        m_component_pools[type_index] = std::move(metadata.create_pool(DEFAULT_INITIAL_CAPACITY));
     }
 }
 
 template <typename Family>
 Engine<Family>::~Engine() {
-    for (Entity::ID entity : m_entity_pool) {
+    for (Entity entity : m_entity_pool) {
         destroy(entity);
     }
 }
 
 template <typename Family>
-Entity::ID Engine<Family>::create() {
+Entity Engine<Family>::create() {
     return m_entity_pool.create();
 }
 
 template <typename Family>
-void Engine<Family>::destroy(const Entity::ID &entity) {
+void Engine<Family>::destroy(Entity entity) {
     for (auto &pool : m_component_pools) {
+        // TODO: optimize virtual call to IComponentPool::remove(Entity)
         pool->remove(entity);
     }
     m_entity_pool.destroy(entity);
 }
 
 template <typename Family>
-bool Engine<Family>::is_alive(const Entity::ID &entity) const {
+bool Engine<Family>::is_alive(Entity entity) const {
     return m_entity_pool.is_alive(entity);
 }
 
 template <typename Family>
 template <typename C, typename... Args>
-auto &Engine<Family>::assign(const Entity::ID &entity, Args &&... args) {
+auto &Engine<Family>::assign(Entity entity, Args &&... args) {
     return get_component_pool<C>().put(entity, std::forward<Args>(args)...);
 }
 
 template <typename Family>
 template <typename... C>
-bool Engine<Family>::has(const Entity::ID &entity) const {
+bool Engine<Family>::has(Entity entity) const {
     return (get_component_pool<C>().contains(entity) && ...);
 }
 
 template <typename Family>
 template <typename... C>
-decltype(auto) Engine<Family>::get(const Entity::ID &entity) {
+decltype(auto) Engine<Family>::get(Entity entity) {
     if constexpr (sizeof...(C) == 1) {
         return get_component_pool<C...>().get(entity);
     } else {
@@ -72,7 +74,7 @@ decltype(auto) Engine<Family>::get(const Entity::ID &entity) {
 
 template <typename Family>
 template <typename... C>
-decltype(auto) Engine<Family>::get(const Entity::ID &entity) const {
+decltype(auto) Engine<Family>::get(Entity entity) const {
     if constexpr (sizeof...(C) == 1) {
         return get_component_pool<C...>().get(entity);
     } else {
@@ -82,7 +84,7 @@ decltype(auto) Engine<Family>::get(const Entity::ID &entity) const {
 
 template <typename Family>
 template <typename... C>
-decltype(auto) Engine<Family>::find(const Entity::ID &entity) {
+decltype(auto) Engine<Family>::find(Entity entity) {
     if constexpr (sizeof...(C) == 1) {
         return get_component_pool<C...>().find(entity);
     } else {
@@ -92,7 +94,7 @@ decltype(auto) Engine<Family>::find(const Entity::ID &entity) {
 
 template <typename Family>
 template <typename... C>
-decltype(auto) Engine<Family>::find(const Entity::ID &entity) const {
+decltype(auto) Engine<Family>::find(Entity entity) const {
     if constexpr (sizeof...(C) == 1) {
         return get_component_pool<C...>().find(entity);
     } else {
@@ -102,7 +104,7 @@ decltype(auto) Engine<Family>::find(const Entity::ID &entity) const {
 
 template <typename Family>
 template <typename... C>
-void Engine<Family>::remove(const Entity::ID &entity) {
+void Engine<Family>::remove(Entity entity) {
     (get_component_pool<C>().remove(entity), ...);
 }
 
@@ -132,7 +134,7 @@ template <typename Family>
 template <typename T>
 typename Engine<Family>::Components::template Pool<T> &Engine<Family>::get_component_pool() {
     Index type_index = Components::Metadata::template get<T>().get_type_id().get_index();
-    typename Components::AbstractPool *pool = m_component_pools[type_index].get();
+    typename Components::IPool *pool = m_component_pools[type_index].get();
     return fast_dynamic_cast<typename Components::template Pool<T> &>(*pool);
 }
 
@@ -140,7 +142,7 @@ template <typename Family>
 template <typename T>
 const typename Engine<Family>::Components::template Pool<T> &Engine<Family>::get_component_pool() const {
     Index type_index = Components::Metadata::template get<T>().get_type_id().get_index();
-    typename Components::AbstractPool *pool = m_component_pools[type_index].get();
+    typename Components::IPool *pool = m_component_pools[type_index].get();
     return fast_dynamic_cast<typename Components::template Pool<T> &>(*pool);
 }
 

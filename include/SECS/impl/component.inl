@@ -5,8 +5,8 @@
 
 
 template <typename Family>
-typename Component<Family>::AbstractPool *Component<Family>::Metadata::create_pool(Index capacity) const {
-    return m_pool_factory(capacity);
+typename Component<Family>::PoolHandle Component<Family>::Metadata::create_pool(Index capacity) const {
+    return m_create_pool(capacity);
 }
 
 template <typename Family>
@@ -17,11 +17,10 @@ typename Component<Family>::TypeID Component<Family>::Metadata::get_type_id() co
 template <typename Family>
 template <typename T>
 Component<Family>::Metadata::Metadata(typename Base::template Initializer<T>)
-    : m_pool_factory(
-        +[](Index initial_capacity) -> typename Component<Family>::AbstractPool * {
-            return new ComponentPool<T>(initial_capacity);
-        }
-    )
+    : m_create_pool(
+        +[](Index initial_capacity) {
+            return PoolHandle(new Pool<T>(initial_capacity));
+        })
     , m_type_id(TypeID::template get<T>())
     , m_next(s_head) {
     s_head = this;

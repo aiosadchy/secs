@@ -4,24 +4,15 @@
 #include "SECS/collections/sparse_map.hpp"
 #include "SECS/entity.hpp"
 
-class AbstractComponentPool {
+class IComponentPool {
 public:
-    virtual ~AbstractComponentPool() = default;
-    virtual Index size() const = 0;
-    virtual void remove(Entity::ID key) = 0;
-    virtual bool contains(Entity::ID key) const = 0;
-
-protected:
-    class EntityToIndex {
-    public:
-        Index operator()(const Entity::ID &entity) const noexcept;
-
-    };
+    virtual ~IComponentPool() = default;
+    virtual void remove(Entity entity) = 0;
 
 };
 
 template <typename T>
-class ComponentPool : public AbstractComponentPool {
+class ComponentPool : public IComponentPool {
 private:
     template <typename Iterator>
     class GenericIterator {
@@ -30,7 +21,7 @@ private:
         explicit GenericIterator(const Iterator &iterator);
 
         GenericIterator &operator++();
-        Entity::ID operator*();
+        Entity operator*();
         bool operator!=(const GenericIterator &another) const;
 
     private:
@@ -38,7 +29,7 @@ private:
 
     };
 
-    using Map = SparseMap<Entity::ID, T, EntityToIndex>;
+    using Map = SparseMap<Entity, T, Index (*)(Entity)>;
 
 public:
     using Iterator      = GenericIterator<decltype(std::declval<Map>().keys().begin())>;
@@ -53,19 +44,19 @@ public:
     inline ConstIterator begin() const;
     inline ConstIterator end() const;
 
-    inline Index size() const override;
+    inline Index size() const;
 
     template <typename ...Args>
-    inline T &put(Entity::ID key, Args&& ...args);
+    inline T &put(Entity entity, Args&& ...args);
 
-    inline void remove(Entity::ID key) override;
-    inline bool contains(Entity::ID key) const override;
+    inline void remove(Entity entity) override;
+    inline bool contains(Entity entity) const;
 
-    inline T &get(Entity::ID key);
-    inline const T &get(Entity::ID key) const;
+    inline T &get(Entity entity);
+    inline const T &get(Entity entity) const;
 
-    inline T *find(Entity::ID key);
-    inline const T *find(Entity::ID key) const;
+    inline T *find(Entity entity);
+    inline const T *find(Entity entity) const;
 
 private:
     Map m_data;

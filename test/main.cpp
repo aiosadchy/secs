@@ -42,8 +42,8 @@ private:
 
 };
 
-std::ostream &operator<<(std::ostream &stream, const Entity::ID &entity) {
-    return stream << "[" << entity.get_index() << ":" << entity.get_version() << "]";
+std::ostream &operator<<(std::ostream &stream, Entity entity) {
+    return stream << "[" << EntityPool::get_index(entity) << ":" << EntityPool::get_version(entity) << "]";
 }
 
 class TestEngine : public Engine<TestEngine> {};
@@ -53,7 +53,7 @@ int main() {
     Timer timer;
 
     TestEngine engine;
-    Entity::ID a, b, c;
+    Entity a, b, c;
     a = engine.create();
     b = engine.create();
     c = engine.create();
@@ -66,7 +66,7 @@ int main() {
     engine.assign<std::string>(b, "bb");
 
     for (auto [id, name] : engine.iterate<std::string>()) {
-        print("Got entity:", id.get_index(), name);
+        print("Got entity:", id, name);
         name += name;
     }
 
@@ -79,12 +79,14 @@ int main() {
         b = engine.create();
     }
 
+    engine.assign<int>(b);
+
     for (auto [id, name, counter] : const_engine.iterate<std::string, int>()) {
-        print("Got entity:", id.get_index(), name, counter);
+        print("Got entity:", id, name, counter);
     }
 
     for (auto id : const_engine.iterate()) {
-        print("Got entity:", id.get_index());
+        print("Got entity:", id);
     }
 
     return 0;

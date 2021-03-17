@@ -32,9 +32,9 @@ auto &EntityView<E, C...>::GenericIterator<CONST>::operator++() {
 template <typename E, typename... C>
 template <bool CONST>
 decltype(auto) EntityView<E, C...>::GenericIterator<CONST>::operator*() {
-    Entity::ID entity = get_current_entity();
+    Entity entity = get_current_entity();
     return std::tuple_cat(
-        std::tuple<Entity::ID>(entity),
+        std::tuple<Entity>(entity),
         std::forward_as_tuple(m_engine->template get<C>(entity)...)
     );
 }
@@ -48,7 +48,7 @@ bool EntityView<E, C...>::GenericIterator<CONST>::operator!=(const EndGuard &) c
 
 template <typename E, typename... C>
 template <bool CONST>
-Entity::ID EntityView<E, C...>::GenericIterator<CONST>::get_current_entity() {
+Entity EntityView<E, C...>::GenericIterator<CONST>::get_current_entity() {
     return std::visit([](auto &pair) { return *pair.first; }, m_iterator);
 }
 
