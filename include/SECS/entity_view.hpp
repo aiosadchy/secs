@@ -9,6 +9,10 @@
 #include "SECS/entity.hpp"
 
 
+template <typename Family>
+class Engine;
+
+
 template <typename E, typename... C>
 class EntityView {
 protected:
@@ -79,10 +83,6 @@ private:
     std::tuple<Pool<C> * ...> m_pools;
 
 };
-
-
-template <typename Family>
-class Engine;
 
 
 template <typename Family, typename... C>

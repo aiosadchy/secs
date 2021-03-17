@@ -5,6 +5,5 @@
 #include "engine.inl"
 #include "entity.inl"
 #include "entity_view.inl"
-#include "memory.inl"
 
 #endif // SECS_SECS_INL

@@ -18,10 +18,6 @@ private:
     using Decay = std::decay_t<C>;
 
 public:
-    class Metadata;
-    class Iterator;
-    class View;
-
     using AbstractPool = AbstractComponentPool;
 
     template <typename C>
@@ -34,13 +30,14 @@ public:
         inline AbstractPool *create_pool(Index capacity) const;
         inline TypeID get_type_id() const;
 
+        static const Metadata *first();
+        static const Metadata *next(const Metadata *record);
+
     private:
         using Base = utl::TypeInfo<Metadata, Decay, false>;
         using PoolFactory = AbstractPool *(*)(Index);
 
         friend class utl::TypeInfo<Metadata, Decay, false>;
-        friend class Iterator;
-        friend class View;
 
         template <typename T>
         explicit Metadata(typename Base::template Initializer<T>);
@@ -57,7 +54,6 @@ public:
     public:
         Iterator();
         explicit Iterator(const Metadata *item);
-        const Metadata *operator->() const;
         const Metadata &operator*() const;
         const Iterator &operator++();
         bool operator!=(const Iterator &another) const;
