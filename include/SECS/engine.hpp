@@ -48,14 +48,14 @@ public:
     void remove(Entity entity);
 
     template <typename... C>
-    [[nodiscard]] View<Engine<Family>, C...> iterate();
+    [[nodiscard]] View<Engine<Family>, C...> view();
 
     template <typename... C>
-    [[nodiscard]] View<const Engine<Family>, C...> iterate() const;
+    [[nodiscard]] View<const Engine<Family>, C...> view() const;
 
-    [[nodiscard]] View<EntityPool> iterate();
+    [[nodiscard]] View<EntityPool> view();
 
-    [[nodiscard]] View<const EntityPool> iterate() const;
+    [[nodiscard]] View<const EntityPool> view() const;
 
 private:
     template <typename T>

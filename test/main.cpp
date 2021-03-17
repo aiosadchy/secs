@@ -65,7 +65,7 @@ int main() {
 
     engine.assign<std::string>(b, "bb");
 
-    for (auto [id, name] : engine.iterate<std::string>()) {
+    for (auto [id, name] : engine.view<std::string>()) {
         print("Got entity:", id, name);
         name += name;
     }
@@ -81,11 +81,11 @@ int main() {
 
     engine.assign<int>(b);
 
-    for (auto [id, name, counter] : const_engine.iterate<std::string, int>()) {
+    for (auto [id, name, counter] : const_engine.view<std::string, int>()) {
         print("Got entity:", id, name, counter);
     }
 
-    for (auto id : const_engine.iterate()) {
+    for (auto id : const_engine.view()) {
         print("Got entity:", id);
     }
 

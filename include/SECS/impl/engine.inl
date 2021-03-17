@@ -15,7 +15,7 @@ template <typename Family>
 Engine<Family>::Engine()
     : m_component_pools()
     , m_entity_pool(DEFAULT_INITIAL_CAPACITY, 16) {
-    for (const auto &metadata : Components::iterate()) {
+    for (const auto &metadata : Components::view()) {
         Index type_index = metadata.get_type_id().get_index();
         if (type_index >= m_component_pools.size()) {
             m_component_pools.resize(type_index + 1);
@@ -110,23 +110,23 @@ void Engine<Family>::remove(Entity entity) {
 
 template <typename Family>
 template <typename... C>
-View<Engine<Family>, C...> Engine<Family>::iterate() {
+View<Engine<Family>, C...> Engine<Family>::view() {
     return View<Engine<Family>, C...>(*this, get_component_pool<C>()...);
 }
 
 template <typename Family>
 template <typename... C>
-View<const Engine<Family>, C...> Engine<Family>::iterate() const {
+View<const Engine<Family>, C...> Engine<Family>::view() const {
     return View<const Engine<Family>, C...>(*this, get_component_pool<C>()...);
 }
 
 template <typename Family>
-View<EntityPool> Engine<Family>::iterate() {
+View<EntityPool> Engine<Family>::view() {
     return View<EntityPool>(m_entity_pool);
 }
 
 template <typename Family>
-View<const EntityPool> Engine<Family>::iterate() const {
+View<const EntityPool> Engine<Family>::view() const {
     return View<const EntityPool>(m_entity_pool);
 }
 

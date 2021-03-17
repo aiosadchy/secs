@@ -77,7 +77,7 @@ typename Component<Family>::Iterator Component<Family>::View::end() const {
 
 
 template <typename Family>
-typename Component<Family>::View Component<Family>::iterate() {
+typename Component<Family>::View Component<Family>::view() {
     return Component<Family>::View();
 }
 

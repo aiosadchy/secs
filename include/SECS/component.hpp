@@ -70,7 +70,7 @@ public:
         Iterator end() const;
     };
 
-    static View iterate();
+    static View view();
 
     NON_CONSTRUCTABLE(Component)
 
