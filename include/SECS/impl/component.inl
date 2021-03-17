@@ -5,36 +5,14 @@
 
 
 template <typename Family>
-Component<Family>::TypeID::TypeID()
-    : m_index(Index(0) - Index(1)) {
+typename Component<Family>::AbstractPool *Component<Family>::Metadata::create_pool(Index capacity) const {
+    return m_pool_factory(capacity);
 }
 
 template <typename Family>
-Index Component<Family>::TypeID::get_index() const {
-    return m_index;
+typename Component<Family>::TypeID Component<Family>::Metadata::get_type_id() const {
+    return m_type_id;
 }
-
-template <typename Family>
-bool Component<Family>::TypeID::operator==(const Component::TypeID &another) const {
-    return m_index == another.m_index;
-}
-
-template <typename Family>
-bool Component<Family>::TypeID::operator!=(const Component::TypeID &another) const {
-    return m_index != another.m_index;
-}
-
-template <typename Family>
-template <typename T>
-typename Component<Family>::TypeID Component<Family>::TypeID::get() {
-    return Component<Family>::Metadata::template get<T>().get_type_id();
-}
-
-template <typename Family>
-Component<Family>::TypeID::TypeID(Index index)
-    : m_index(index) {
-}
-
 
 template <typename Family>
 template <typename T>
@@ -44,24 +22,9 @@ Component<Family>::Metadata::Metadata(typename Base::template Initializer<T>)
             return new ComponentPool<T>(initial_capacity);
         }
     )
-    , m_type_index(s_head == nullptr ? 0 : (s_head->m_type_index + 1))
+    , m_type_id(TypeID::template get<T>())
     , m_next(s_head) {
     s_head = this;
-}
-
-template <typename Family>
-typename Component<Family>::AbstractPool *Component<Family>::Metadata::create_pool(Index capacity) const {
-    return m_pool_factory(capacity);
-}
-
-template <typename Family>
-typename Component<Family>::TypeID Component<Family>::Metadata::get_type_id() const {
-    return Component<Family>::TypeID(m_type_index);
-}
-
-template <typename Family>
-Index Component<Family>::Metadata::get_registered_types_count() {
-    return (s_head != nullptr) ? (s_head->m_type_index + 1) : 0;
 }
 
 

@@ -3,8 +3,9 @@
 
 #include <type_traits>
 
-#include <utl/type_info.hpp>
 #include <utl/non_constructable.hpp>
+#include <utl/type_id.hpp>
+#include <utl/type_info.hpp>
 
 #include "SECS/collections/component_pool.hpp"
 #include "SECS/common.hpp"
@@ -17,7 +18,6 @@ private:
     using Decay = std::decay_t<C>;
 
 public:
-    class TypeID;
     class Metadata;
     class Iterator;
     class View;
@@ -27,46 +27,27 @@ public:
     template <typename C>
     using Pool = ComponentPool<Decay<C>>;
 
-    class TypeID {
+    using TypeID = utl::TypeID<Component<Family>, Index, Decay, true>;
+
+    class Metadata : public utl::TypeInfo<Metadata, Decay, false> {
     public:
-        TypeID();
-        Index get_index() const;
-        bool operator==(const TypeID &another) const;
-        bool operator!=(const TypeID &another) const;
-
-        template <typename T>
-        static TypeID get();
-
-    private:
-        friend class Metadata;
-
-        explicit TypeID(Index index);
-
-        Index m_index;
-
-    };
-
-    class Metadata : public utl::TypeInfo<Metadata, false, Decay> {
-    private:
-        using Base = utl::TypeInfo<Metadata, false, Decay>;
-
-    public:
-        template <typename T>
-        explicit Metadata(typename Base::template Initializer<T>);
-
         inline AbstractPool *create_pool(Index capacity) const;
         inline TypeID get_type_id() const;
-        static Index get_registered_types_count();
 
     private:
+        using Base = utl::TypeInfo<Metadata, Decay, false>;
         using PoolFactory = AbstractPool *(*)(Index);
 
+        friend class utl::TypeInfo<Metadata, Decay, false>;
         friend class Iterator;
         friend class View;
 
-        PoolFactory m_pool_factory;
-        Index m_type_index;
-        const Metadata *m_next;
+        template <typename T>
+        explicit Metadata(typename Base::template Initializer<T>);
+
+        const PoolFactory m_pool_factory;
+        const TypeID m_type_id;
+        const Metadata * const m_next;
 
         inline static const Metadata *s_head = nullptr;
 
@@ -93,7 +74,7 @@ public:
 
     static View iterate();
 
-    UTL_NON_CONSTRUCTABLE(Component)
+    NON_CONSTRUCTABLE(Component)
 
 };
 

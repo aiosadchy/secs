@@ -57,7 +57,9 @@ EntityPool::EntityPool(Index default_capacity, Index recycle_period)
     : m_pool()
     , m_free_list({0, 0, 1})
     , m_recycle_period((recycle_period > 1) ? recycle_period : 1) {
-    m_pool.reserve(default_capacity);
+    if (default_capacity > 0) {
+        m_pool.reserve(default_capacity);
+    }
     m_pool.emplace_back(Entity::null);
 }
 

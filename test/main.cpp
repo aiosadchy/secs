@@ -1,6 +1,7 @@
 #include <chrono>
 #include <iostream>
 #include <SECS/secs.hpp>
+#include <utl/utl.hpp>
 
 template <typename ...Args>
 void print(Args&& ...args) {
@@ -41,6 +42,10 @@ private:
 
 };
 
+std::ostream &operator<<(std::ostream &stream, const Entity::ID &entity) {
+    return stream << "[" << entity.get_index() << ":" << entity.get_version() << "]";
+}
+
 class TestEngine : public Engine<TestEngine> {};
 
 int main() {
@@ -62,17 +67,17 @@ int main() {
 
     for (auto [id, name] : engine.iterate<std::string>()) {
         print("Got entity:", id.get_index(), name);
-        name = name + name;
+        name += name;
     }
 
     engine.assign<int>(c, 25);
 
     const TestEngine &const_engine = engine;
 
-    engine.destroy(b);
-    b = engine.create();
-    engine.destroy(b);
-    b = engine.create();
+    REPEAT(3) {
+        engine.destroy(b);
+        b = engine.create();
+    }
 
     for (auto [id, name, counter] : const_engine.iterate<std::string, int>()) {
         print("Got entity:", id.get_index(), name, counter);

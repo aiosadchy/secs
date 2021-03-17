@@ -26,7 +26,7 @@ public:
     Engine();
     ~Engine();
 
-    UTL_NON_COPYABLE(Engine)
+    NON_COPYABLE(Engine)
 
     [[nodiscard]] Entity::ID create();
     void destroy(const Entity::ID &entity);
