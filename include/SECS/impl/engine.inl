@@ -49,83 +49,83 @@ bool Engine<Family>::is_alive(const Entity::ID &entity) const {
 }
 
 template <typename Family>
-template <typename Component, typename... Args>
+template <typename C, typename... Args>
 auto &Engine<Family>::assign(const Entity::ID &entity, Args &&... args) {
-    return get_component_pool<Component>().put(entity, std::forward<Args>(args)...);
+    return get_component_pool<C>().put(entity, std::forward<Args>(args)...);
 }
 
 template <typename Family>
-template <typename... Component>
+template <typename... C>
 bool Engine<Family>::has(const Entity::ID &entity) const {
-    return (get_component_pool<Component>().contains(entity) && ...);
+    return (get_component_pool<C>().contains(entity) && ...);
 }
 
 template <typename Family>
-template <typename... Component>
+template <typename... C>
 decltype(auto) Engine<Family>::get(const Entity::ID &entity) {
-    if constexpr (sizeof...(Component) == 1) {
-        return get_component_pool<Component...>().get(entity);
+    if constexpr (sizeof...(C) == 1) {
+        return get_component_pool<C...>().get(entity);
     } else {
-        return std::forward_as_tuple(get<Component>(entity)...);
+        return std::forward_as_tuple(get<C>(entity)...);
     }
 }
 
 template <typename Family>
-template <typename... Component>
+template <typename... C>
 decltype(auto) Engine<Family>::get(const Entity::ID &entity) const {
-    if constexpr (sizeof...(Component) == 1) {
-        return get_component_pool<Component...>().get(entity);
+    if constexpr (sizeof...(C) == 1) {
+        return get_component_pool<C...>().get(entity);
     } else {
-        return std::forward_as_tuple(get<Component>(entity)...);
+        return std::forward_as_tuple(get<C>(entity)...);
     }
 }
 
 template <typename Family>
-template <typename... Component>
+template <typename... C>
 decltype(auto) Engine<Family>::find(const Entity::ID &entity) {
-    if constexpr (sizeof...(Component) == 1) {
-        return get_component_pool<Component...>().find(entity);
+    if constexpr (sizeof...(C) == 1) {
+        return get_component_pool<C...>().find(entity);
     } else {
-        return std::forward_as_tuple(find<Component>(entity)...);
+        return std::forward_as_tuple(find<C>(entity)...);
     }
 }
 
 template <typename Family>
-template <typename... Component>
+template <typename... C>
 decltype(auto) Engine<Family>::find(const Entity::ID &entity) const {
-    if constexpr (sizeof...(Component) == 1) {
-        return get_component_pool<Component...>().find(entity);
+    if constexpr (sizeof...(C) == 1) {
+        return get_component_pool<C...>().find(entity);
     } else {
-        return std::forward_as_tuple(find<Component>(entity)...);
+        return std::forward_as_tuple(find<C>(entity)...);
     }
 }
 
 template <typename Family>
-template <typename... Component>
+template <typename... C>
 void Engine<Family>::remove(const Entity::ID &entity) {
-    (get_component_pool<Component>().remove(entity), ...);
+    (get_component_pool<C>().remove(entity), ...);
 }
 
 template <typename Family>
-template <typename... Component>
-typename Engine<Family>::template View<Component...> Engine<Family>::iterate() {
-    return View<Component...>(*this, get_component_pool<Component>()...);
+template <typename... C>
+View<Engine<Family>, C...> Engine<Family>::iterate() {
+    return View<Engine<Family>, C...>(*this, get_component_pool<C>()...);
 }
 
 template <typename Family>
-template <typename... Component>
-typename Engine<Family>::template ConstView<Component...> Engine<Family>::iterate() const {
-    return ConstView<Component...>(*this, get_component_pool<Component>()...);
+template <typename... C>
+View<const Engine<Family>, C...> Engine<Family>::iterate() const {
+    return View<const Engine<Family>, C...>(*this, get_component_pool<C>()...);
 }
 
 template <typename Family>
 View<EntityPool> Engine<Family>::iterate() {
-    return ::View<EntityPool>(m_entity_pool);
+    return View<EntityPool>(m_entity_pool);
 }
 
 template <typename Family>
 View<const EntityPool> Engine<Family>::iterate() const {
-    return ::View<const EntityPool>(m_entity_pool);
+    return View<const EntityPool>(m_entity_pool);
 }
 
 template <typename Family>

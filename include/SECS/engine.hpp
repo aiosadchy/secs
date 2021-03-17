@@ -17,12 +17,6 @@ class Engine {
 public:
     using Components = Component<Family>;
 
-    template <typename... Component>
-    using View = EntityView<Engine, Component...>;
-
-    template <typename... Component>
-    using ConstView = EntityView<const Engine, Component...>;
-
     Engine();
     ~Engine();
 
@@ -32,36 +26,36 @@ public:
     void destroy(const Entity::ID &entity);
     [[nodiscard]] bool is_alive(const Entity::ID &entity) const;
 
-    template <typename Component, typename ...Args>
+    template <typename C, typename... Args>
     auto &assign(const Entity::ID &entity, Args&& ...args);
 
-    template <typename ...Component>
+    template <typename... C>
     [[nodiscard]] bool has(const Entity::ID &entity) const;
 
-    template <typename ...Component>
+    template <typename... C>
     [[nodiscard]] decltype(auto) get(const Entity::ID &entity);
 
-    template <typename ...Component>
+    template <typename... C>
     [[nodiscard]] decltype(auto) get(const Entity::ID &entity) const;
 
-    template <typename ...Component>
+    template <typename... C>
     [[nodiscard]] decltype(auto) find(const Entity::ID &entity);
 
-    template <typename ...Component>
+    template <typename... C>
     [[nodiscard]] decltype(auto) find(const Entity::ID &entity) const;
 
-    template <typename ...Component>
+    template <typename... C>
     void remove(const Entity::ID &entity);
 
-    template <typename... Component>
-    View<Component...> iterate();
+    template <typename... C>
+    [[nodiscard]] View<Engine<Family>, C...> iterate();
 
-    template <typename... Component>
-    ConstView<Component...> iterate() const;
+    template <typename... C>
+    [[nodiscard]] View<const Engine<Family>, C...> iterate() const;
 
-    ::View<EntityPool> iterate();
+    [[nodiscard]] View<EntityPool> iterate();
 
-    ::View<const EntityPool> iterate() const;
+    [[nodiscard]] View<const EntityPool> iterate() const;
 
 private:
     template <typename T>

@@ -5,8 +5,6 @@
 
 #include <algorithm>
 
-#include "SECS/engine.hpp"
-
 template <typename E, typename... C>
 template <bool CONST>
 EntityView<E, C...>::GenericIterator<CONST>::GenericIterator()
@@ -83,7 +81,7 @@ EntityView<E, C...>::EntityView(E &engine, Pool<C> & ...pool)
 
 template <typename E, typename... C>
 typename EntityView<E, C...>::Iterator EntityView<E, C...>::begin() {
-    Index shortest_pool = get_shortest_pool_index(std::make_index_sequence<sizeof...(C)>());
+    std::size_t shortest_pool = get_shortest_pool_index(std::make_index_sequence<sizeof...(C)>());
     return get_pool_iterator<Iterator>(
         shortest_pool,
         *this,
@@ -98,7 +96,7 @@ typename EntityView<E, C...>::End EntityView<E, C...>::end() {
 
 template <typename E, typename... C>
 typename EntityView<E, C...>::ConstIterator EntityView<E, C...>::begin() const {
-    Index shortest_pool = get_shortest_pool_index(std::make_index_sequence<sizeof...(C)>());
+    std::size_t shortest_pool = get_shortest_pool_index(std::make_index_sequence<sizeof...(C)>());
     return get_pool_iterator<ConstIterator>(
         shortest_pool,
         *this,
@@ -113,7 +111,7 @@ typename EntityView<E, C...>::ConstEnd EntityView<E, C...>::end() const {
 
 template <typename E, typename... C>
 template <typename R, typename V, std::size_t First, std::size_t... Rest>
-R EntityView<E, C...>::get_pool_iterator(Index i, V &v, std::index_sequence<First, Rest...>) {
+R EntityView<E, C...>::get_pool_iterator(std::size_t i, V &v, std::index_sequence<First, Rest...>) {
     if (i == 0) {
         return R(*v.m_engine, *std::get<First>(v.m_pools));
     }
@@ -126,10 +124,28 @@ R EntityView<E, C...>::get_pool_iterator(Index i, V &v, std::index_sequence<Firs
 
 template <typename E, typename... C>
 template <std::size_t... N>
-Index EntityView<E, C...>::get_shortest_pool_index(std::index_sequence<N...>) const {
+std::size_t EntityView<E, C...>::get_shortest_pool_index(std::index_sequence<N...>) const {
     int a[sizeof...(N)] = {};
     (..., (a[N] = std::get<N>(m_pools)->size()));
     return std::min_element(std::begin(a), std::end(a)) - std::begin(a);
+}
+
+
+template <typename Family, typename... C>
+View<Engine<Family>, C...>::View(
+    Engine<Family> &engine,
+    typename Base::template Pool<C> &... pool
+)
+    : Base(engine, pool...) {
+}
+
+
+template <typename Family, typename... C>
+View<const Engine<Family>, C...>::View(
+    const Engine<Family> &engine,
+    typename Base::template Pool<C> &... pool
+)
+    : Base(engine, pool...) {
 }
 
 #endif // SECS_ENTITY_VIEW_INL

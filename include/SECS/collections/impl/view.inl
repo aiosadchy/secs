@@ -18,4 +18,14 @@ auto View<C>::end() {
     return std::end(*m_collection);
 }
 
+template <typename C>
+auto View<C>::begin() const {
+    return std::begin(*m_collection);
+}
+
+template <typename C>
+auto View<C>::end() const {
+    return std::end(*m_collection);
+}
+
 #endif // SECS_VIEW_INL
