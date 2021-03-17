@@ -5,38 +5,39 @@
 #include <utility>
 #include <variant>
 
+#include "SECS/common.hpp"
 #include "SECS/component.hpp"
 #include "SECS/entity.hpp"
 
 
-template <typename Engine, typename... C>
+template <typename E, typename... C>
 class EntityView {
 private:
+    using Components = typename E::Components;
+
     class EndGuard {};
+
+    template <typename T, bool FORCE_CONST = std::is_const_v<E>>
+    using Pool = std::conditional_t<
+        FORCE_CONST,
+        const typename Components::template Pool<T>,
+        typename Components::template Pool<T>
+    >;
 
     template <bool CONST>
     class GenericIterator {
     private:
-        using Components = typename Engine::Components;
-
-        template <typename T>
-        using Pool = std::conditional_t<
-            CONST,
-            const typename Components::template Pool<T>,
-            typename Components::template Pool<T>
-        >;
-
         template <typename T>
         using PoolIteratorPair = std::pair<
-            decltype(std::declval<Pool<T>>().begin()),
-            decltype(std::declval<Pool<T>>().end())
+            decltype(std::declval<Pool<T, CONST>>().begin()),
+            decltype(std::declval<Pool<T, CONST>>().end())
         >;
 
     public:
         GenericIterator();
 
         template <typename P>
-        GenericIterator(Engine &engine, P &pool);
+        GenericIterator(E &engine, P &pool);
 
         auto &operator++();
         decltype(auto) operator*();
@@ -48,18 +49,18 @@ private:
         void step();
         bool reached_end() const;
 
-        Engine *m_engine;
+        E *m_engine;
         std::variant<PoolIteratorPair<C>...> m_iterator;
 
     };
 
 public:
-    using Iterator      = GenericIterator<std::is_const_v<Engine>>;
+    using Iterator      = GenericIterator<std::is_const_v<E>>;
     using ConstIterator = GenericIterator<true>;
     using End      = EndGuard;
     using ConstEnd = EndGuard;
 
-    explicit EntityView(Engine &engine);
+    explicit EntityView(E &engine, Pool<C> & ...pool);
 
     Iterator begin();
     End end();
@@ -68,12 +69,14 @@ public:
     ConstEnd end() const;
 
 private:
-    template <typename R, typename First, typename... Rest, typename E>
-    static R get_pool_iterator_by_index(E &engine, Index index);
+    template <typename R, typename V, std::size_t First, std::size_t... Rest>
+    static R get_pool_iterator(Index i, V &v, std::index_sequence<First, Rest...>);
 
-    static Index get_shortest_pool_index(const Engine &engine);
+    template <std::size_t... N>
+    Index get_shortest_pool_index(std::index_sequence<N...>) const;
 
-    Engine *m_engine;
+    E *m_engine;
+    std::tuple<Pool<C> * ...> m_pools;
 
 };
 

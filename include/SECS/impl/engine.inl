@@ -109,13 +109,13 @@ void Engine<Family>::remove(const Entity::ID &entity) {
 template <typename Family>
 template <typename... Component>
 typename Engine<Family>::template View<Component...> Engine<Family>::iterate() {
-    return View<Component...>(*this);
+    return View<Component...>(*this, get_component_pool<Component>()...);
 }
 
 template <typename Family>
 template <typename... Component>
 typename Engine<Family>::template ConstView<Component...> Engine<Family>::iterate() const {
-    return ConstView<Component...>(*this);
+    return ConstView<Component...>(*this, get_component_pool<Component>()...);
 }
 
 template <typename Family>

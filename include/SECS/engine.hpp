@@ -64,9 +64,6 @@ public:
     ::View<const EntityPool> iterate() const;
 
 private:
-    template <typename E, typename... C>
-    friend class EntityView;
-
     template <typename T>
     typename Components::template Pool<T> &get_component_pool();
 
