@@ -89,18 +89,18 @@ Index SparseMap<K, V, R>::size() const {
 }
 
 template <typename K, typename V, typename R>
-View<const std::vector<K>> SparseMap<K, V, R>::keys() const {
-    return View<const std::vector<K>>(m_dense);
+View<const SparseMap<K, V, R>, K> SparseMap<K, V, R>::keys() const {
+    return View<const SparseMap<K, V, R>, K>(m_dense);
 }
 
 template <typename K, typename V, typename R>
-View<std::vector<V>> SparseMap<K, V, R>::values() {
-    return View<std::vector<V>>(m_values);
+View<SparseMap<K, V, R>, V> SparseMap<K, V, R>::values() {
+    return View<SparseMap<K, V, R>, V>(m_values);
 }
 
 template <typename K, typename V, typename R>
-View<const std::vector<V>> SparseMap<K, V, R>::values() const {
-    return View<const std::vector<V>>(m_values);
+View<const SparseMap<K, V, R>, V> SparseMap<K, V, R>::values() const {
+    return View<const SparseMap<K, V, R>, V>(m_values);
 }
 
 #endif // SECS_SPARSE_MAP_INL

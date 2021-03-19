@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "SECS/common.hpp"
-#include "SECS/collections/view.hpp"
+#include "SECS/collections/sparse_map_view.hpp"
 #include "SECS/utility.hpp"
 
 template <typename K, typename V, typename R = Identity>
@@ -28,10 +28,10 @@ public:
 
     inline Index size() const;
 
-    View<const std::vector<K>> keys() const;
+    View<const SparseMap<K, V, R>, K> keys() const;
 
-    View<std::vector<V>> values();
-    View<const std::vector<V>> values() const;
+    View<SparseMap<K, V, R>, V> values();
+    View<const SparseMap<K, V, R>, V> values() const;
 
 private:
     inline static const Index NULL_VALUE = std::numeric_limits<Index>::max();

@@ -36,4 +36,7 @@ public:
 
 };
 
+template <typename T, bool APPLY>
+using AddConst = std::conditional_t<APPLY, const T, T>;
+
 #endif // SECS_UTILITY_HPP
