@@ -4,52 +4,56 @@
 #include "SECS/collections/entity_pool.hpp"
 
 
-template <typename Iterator>
-EntityPool::GenericIterator<Iterator>::GenericIterator()
-    : m_iterator()
-    , m_end()
+template <typename Collection>
+EntityPool::GenericIterator<Collection>::GenericIterator()
+    : m_index(Index(0) - Index(1))
+    , m_collection(nullptr)
     , m_pool(nullptr) {
 }
 
-template <typename Iterator>
-EntityPool::GenericIterator<Iterator>::GenericIterator(
-        Iterator begin,
-        Iterator end,
+template <typename Collection>
+EntityPool::GenericIterator<Collection>::GenericIterator(
+        Collection &collection,
         const EntityPool &pool
 )
-    : m_iterator(begin)
-    , m_end(end)
+    : m_index(static_cast<Index>(collection.size()) - Index(1))
+    , m_collection(&collection)
     , m_pool(&pool) {
     find_next_entity();
 }
 
-template <typename Iterator>
-typename EntityPool::GenericIterator<Iterator> &EntityPool::GenericIterator<Iterator>::operator++() {
-    ++m_iterator;
+template <typename Collection>
+typename EntityPool::GenericIterator<Collection> &EntityPool::GenericIterator<Collection>::operator++() {
+    step();
     find_next_entity();
     return *this;
 }
 
-template <typename Iterator>
-Entity EntityPool::GenericIterator<Iterator>::operator*() {
-    return *m_iterator;
+template <typename Collection>
+Entity EntityPool::GenericIterator<Collection>::operator*() {
+    return (*m_collection)[m_index];
 }
 
-template <typename Iterator>
-bool EntityPool::GenericIterator<Iterator>::operator!=(const EndGuard &) const {
+template <typename Collection>
+bool EntityPool::GenericIterator<Collection>::operator!=(const EndGuard &) const {
     return !reached_end();
 }
 
-template <typename Iterator>
-void EntityPool::GenericIterator<Iterator>::find_next_entity() {
-    while (!reached_end() && !m_pool->is_alive(*m_iterator)) {
-        ++m_iterator;
+template <typename Collection>
+void EntityPool::GenericIterator<Collection>::find_next_entity() {
+    while (!reached_end() && !m_pool->is_alive(*(*this))) {
+        step();
     }
 }
 
-template <typename Iterator>
-bool EntityPool::GenericIterator<Iterator>::reached_end() const {
-    return !(m_iterator != m_end);
+template <typename Collection>
+void EntityPool::GenericIterator<Collection>::step() {
+    m_index -= Index(1);
+}
+
+template <typename Collection>
+bool EntityPool::GenericIterator<Collection>::reached_end() const {
+    return (m_index + Index(1)) == 0;
 }
 
 
@@ -66,7 +70,7 @@ EntityPool::EntityPool(Index default_capacity, Index recycle_period)
 EntityPool::~EntityPool() = default;
 
 EntityPool::Iterator EntityPool::begin() {
-    return Iterator(m_pool.begin(), m_pool.end(), *this);
+    return Iterator(m_pool, *this);
 }
 
 EntityPool::End EntityPool::end() {
@@ -74,7 +78,7 @@ EntityPool::End EntityPool::end() {
 }
 
 EntityPool::ConstIterator EntityPool::begin() const {
-    return ConstIterator(m_pool.begin(), m_pool.end(), *this);
+    return ConstIterator(m_pool, *this);
 }
 
 EntityPool::End EntityPool::end() const {
@@ -89,7 +93,7 @@ Entity EntityPool::create() {
         m_pool[created] = Entity(created, m_pool[created].get_version());
         return m_pool[created];
     }
-    return m_pool.emplace_back(Entity(m_pool.size(), 0));
+    return m_pool.emplace_back(Entity(static_cast<Index>(m_pool.size()), 0));
 }
 
 void EntityPool::destroy(Entity entity) {

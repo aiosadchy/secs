@@ -11,11 +11,11 @@ class EntityPool {
 private:
     class EndGuard {};
 
-    template <typename Iterator>
+    template <typename Collection>
     class GenericIterator {
     public:
         GenericIterator();
-        GenericIterator(Iterator begin, Iterator end, const EntityPool &pool);
+        GenericIterator(Collection &collection, const EntityPool &pool);
 
         GenericIterator &operator++();
         Entity operator*();
@@ -23,17 +23,18 @@ private:
 
     private:
         void find_next_entity();
+        void step();
         bool reached_end() const;
 
-        Iterator m_iterator;
-        Iterator m_end;
+        Index m_index;
+        Collection *m_collection;
         const EntityPool *m_pool;
 
     };
 
 public:
-    using Iterator      = GenericIterator<std::vector<Entity>::iterator>;
-    using ConstIterator = GenericIterator<std::vector<Entity>::const_iterator>;
+    using Iterator      = GenericIterator<std::vector<Entity>>;
+    using ConstIterator = GenericIterator<const std::vector<Entity>>;
     using End      = EndGuard;
     using ConstEnd = EndGuard;
 
