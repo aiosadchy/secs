@@ -35,7 +35,7 @@ Entity EntityPool::GenericIterator<Collection>::operator*() {
 }
 
 template <typename Collection>
-bool EntityPool::GenericIterator<Collection>::operator!=(const EndGuard &) const {
+bool EntityPool::GenericIterator<Collection>::operator!=(EndGuard) const {
     return !reached_end();
 }
 

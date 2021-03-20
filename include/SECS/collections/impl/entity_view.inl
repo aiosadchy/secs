@@ -23,7 +23,7 @@ EntityView<E, C...>::Iterator::Iterator(E &engine, P &pool)
 }
 
 template <typename E, typename... C>
-auto &EntityView<E, C...>::Iterator::operator++() {
+typename EntityView<E, C...>::Iterator &EntityView<E, C...>::Iterator::operator++() {
     step();
     find_next_entity();
     return *this;

@@ -50,7 +50,7 @@ typename ComponentPool<T>::Iterator ComponentPool<T>::begin() {
 }
 
 template <typename T>
-typename ComponentPool<T>::Iterator ComponentPool<T>::end() {
+typename ComponentPool<T>::End ComponentPool<T>::end() {
     return Iterator(m_data.keys().end());
 }
 
@@ -60,7 +60,7 @@ typename ComponentPool<T>::ConstIterator ComponentPool<T>::begin() const {
 }
 
 template <typename T>
-typename ComponentPool<T>::ConstIterator ComponentPool<T>::end() const {
+typename ComponentPool<T>::ConstEnd ComponentPool<T>::end() const {
     return ConstIterator(m_data.keys().end());
 }
 

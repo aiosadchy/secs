@@ -5,10 +5,10 @@
 
 #include <utl/non_copyable.hpp>
 
-#include "SECS/entity.hpp"
-#include "SECS/collections/entity_view.hpp"
 #include "SECS/collections/entity_pool.hpp"
+#include "SECS/collections/entity_view.hpp"
 #include "SECS/component.hpp"
+#include "SECS/entity.hpp"
 
 template <typename Family>
 class Engine {

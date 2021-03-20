@@ -16,6 +16,7 @@ class Engine;
 
 namespace detail {
 
+// TODO: single component specialization
 template <typename E, typename... C>
 class EntityView {
 protected:
@@ -41,7 +42,7 @@ public:
         template <typename P>
         Iterator(E &engine, P &pool);
 
-        auto &operator++();
+        Iterator &operator++();
         decltype(auto) operator*();
         bool operator!=(End end) const;
 
