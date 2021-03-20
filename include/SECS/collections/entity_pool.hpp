@@ -19,7 +19,7 @@ private:
 
         GenericIterator &operator++();
         Entity operator*();
-        bool operator!=(const EndGuard &end) const;
+        bool operator!=(EndGuard end) const;
 
     private:
         void find_next_entity();

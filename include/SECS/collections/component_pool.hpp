@@ -34,15 +34,17 @@ private:
 public:
     using Iterator      = GenericIterator<decltype(std::declval<Map>().keys().begin())>;
     using ConstIterator = GenericIterator<decltype(std::declval<const Map>().keys().begin())>;
+    using End      = GenericIterator<decltype(std::declval<Map>().keys().end())>;
+    using ConstEnd = GenericIterator<decltype(std::declval<const Map>().keys().end())>;
 
     explicit ComponentPool(Index initial_capacity);
     ~ComponentPool() override = default;
 
     inline Iterator begin();
-    inline Iterator end();
+    inline End end();
 
     inline ConstIterator begin() const;
-    inline ConstIterator end() const;
+    inline ConstEnd end() const;
 
     inline Index size() const;
 
