@@ -50,26 +50,9 @@ private:
 
 
 template <typename K, typename V, typename R, typename T>
-class View<SparseMap<K, V, R>, T> : public detail::SparseMapView<SparseMap<K, V, R>, T> {
-private:
-    using Base = detail::SparseMapView<SparseMap<K, V, R>, T>;
-
-public:
-    explicit View(typename Base::Vector &collection);
-
-};
-
+SECS_VIEW_SPECIALIZATION(detail::SparseMapView, SparseMap<K, V, R>, T);
 
 template <typename K, typename V, typename R, typename T>
-class View<const SparseMap<K, V, R>, T> : public detail::SparseMapView<const SparseMap<K, V, R>, T> {
-private:
-    using Base = detail::SparseMapView<const SparseMap<K, V, R>, T>;
-
-public:
-    explicit View(typename Base::Vector &collection);
-
-};
-
-
+SECS_VIEW_SPECIALIZATION(detail::SparseMapView, const SparseMap<K, V, R>, T);
 
 #endif // SECS_SPARSE_MAP_VIEW_HPP

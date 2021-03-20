@@ -6,7 +6,7 @@
 #include <utl/non_copyable.hpp>
 
 #include "SECS/entity.hpp"
-#include "SECS/entity_view.hpp"
+#include "SECS/collections/entity_view.hpp"
 #include "SECS/collections/entity_pool.hpp"
 #include "SECS/component.hpp"
 

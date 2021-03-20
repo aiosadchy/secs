@@ -3,6 +3,7 @@
 
 #include "SECS/collections/view.hpp"
 
+
 template <typename C>
 View<C>::View(C &collection)
     : m_collection(&collection) {
@@ -15,16 +16,6 @@ auto View<C>::begin() {
 
 template <typename C>
 auto View<C>::end() {
-    return std::end(*m_collection);
-}
-
-template <typename C>
-auto View<C>::begin() const {
-    return std::begin(*m_collection);
-}
-
-template <typename C>
-auto View<C>::end() const {
     return std::end(*m_collection);
 }
 

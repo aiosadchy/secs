@@ -52,15 +52,4 @@ typename SparseMapView<M, T>::Iterator SparseMapView<M, T>::end() {
 
 } // namespace detail
 
-
-template <typename K, typename V, typename R, typename T>
-View<SparseMap<K, V, R>, T>::View(typename Base::Vector &collection)
-    : Base(collection) {
-}
-
-template <typename K, typename V, typename R, typename T>
-View<const SparseMap<K, V, R>, T>::View(typename Base::Vector &collection)
-    : Base(collection) {
-}
-
 #endif // SECS_SPARSE_MAP_VIEW_INL

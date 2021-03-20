@@ -7,7 +7,6 @@
 #include "component.hpp"
 #include "engine.hpp"
 #include "entity.hpp"
-#include "entity_view.hpp"
 #include "utility.hpp"
 
 

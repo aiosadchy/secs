@@ -1,6 +1,9 @@
 #ifndef SECS_VIEW_HPP
 #define SECS_VIEW_HPP
 
+#include <utility>
+
+
 template <typename...>
 class View;
 
@@ -12,12 +15,19 @@ public:
     inline auto begin();
     inline auto end();
 
-    inline auto begin() const;
-    inline auto end() const;
-
 private:
     C *m_collection;
 
 };
+
+
+#define SECS_VIEW_SPECIALIZATION(base, ...)                     \
+    class View<__VA_ARGS__> : public base<__VA_ARGS__> {        \
+    public:                                                     \
+        template <typename... Args>                             \
+        explicit View(Args &&... args)                          \
+            : base<__VA_ARGS__>(std::forward<Args>(args)...) {  \
+        }                                                       \
+    }
 
 #endif // SECS_VIEW_HPP
