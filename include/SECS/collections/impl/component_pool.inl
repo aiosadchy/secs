@@ -6,6 +6,8 @@
 #include "SECS/collections/entity_pool.hpp"
 
 
+namespace secs {
+
 template <typename T>
 template <typename Iterator>
 ComponentPool<T>::GenericIterator<Iterator>::GenericIterator()
@@ -104,5 +106,7 @@ template <typename T>
 const T *ComponentPool<T>::find(Entity entity) const {
     return m_data.find(entity);
 }
+
+} // namespace secs
 
 #endif // SECS_COMPONENT_POOL_INL

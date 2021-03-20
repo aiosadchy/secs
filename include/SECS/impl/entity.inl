@@ -3,6 +3,8 @@
 
 #include "SECS/entity.hpp"
 
+namespace secs {
+
 const Entity &Entity::get_null() noexcept {
     const static Entity null_value = Entity();
     return null_value;
@@ -36,5 +38,7 @@ Index Entity::get_index() const noexcept {
 Index Entity::get_version() const noexcept {
     return (m_data >> VERSION_OFFSET) & VERSION_MASK;
 }
+
+} // namespace secs
 
 #endif // SECS_ENTITY_INL

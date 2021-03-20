@@ -6,6 +6,8 @@
 #include <algorithm>
 
 
+namespace secs {
+
 namespace detail {
 
 template <typename E, typename... C>
@@ -110,5 +112,7 @@ Index EntityView<E, C...>::get_shortest_pool_index(Indices<I...>) const {
 }
 
 } // namespace detail
+
+} // namespace secs
 
 #endif // SECS_ENTITY_VIEW_INL

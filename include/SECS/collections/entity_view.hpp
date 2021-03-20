@@ -11,6 +11,8 @@
 #include "SECS/utility.hpp"
 
 
+namespace secs {
+
 template <typename Family>
 class Engine;
 
@@ -86,5 +88,7 @@ SECS_VIEW_SPECIALIZATION(detail::EntityView, Engine<Family>, C...);
 
 template <typename Family, typename... C>
 SECS_VIEW_SPECIALIZATION(detail::EntityView, const Engine<Family>, C...);
+
+} // namespace secs
 
 #endif // SECS_ENTITY_VIEW_HPP

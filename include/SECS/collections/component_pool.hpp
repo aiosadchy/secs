@@ -4,6 +4,9 @@
 #include "SECS/collections/sparse_map.hpp"
 #include "SECS/entity.hpp"
 
+
+namespace secs {
+
 class IComponentPool {
 public:
     virtual ~IComponentPool() = default;
@@ -64,5 +67,7 @@ private:
     Map m_data;
 
 };
+
+} // namespace secs
 
 #endif // SECS_COMPONENT_POOL_HPP

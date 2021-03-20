@@ -4,6 +4,8 @@
 #include "SECS/collections/entity_pool.hpp"
 
 
+namespace secs {
+
 template <typename Collection>
 EntityPool::GenericIterator<Collection>::GenericIterator()
     : m_index(Index(0) - Index(1))
@@ -121,5 +123,7 @@ Index EntityPool::get_index(Entity entity) noexcept {
 Index EntityPool::get_version(Entity entity) noexcept {
     return entity.get_version();
 }
+
+} // namespace secs
 
 #endif // SECS_ENTITY_POOL_INL

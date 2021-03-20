@@ -8,6 +8,9 @@
 
 #include "SECS/utility.hpp"
 
+
+namespace secs {
+
 // TODO: change to something customizable
 constexpr Index DEFAULT_INITIAL_CAPACITY = 32;
 
@@ -145,5 +148,7 @@ const typename Engine<Family>::Components::template Pool<T> &Engine<Family>::get
     typename Components::IPool *pool = m_component_pools[type_index].get();
     return fast_dynamic_cast<typename Components::template Pool<T> &>(*pool);
 }
+
+} // namespace secs
 
 #endif // SECS_ENGINE_INL

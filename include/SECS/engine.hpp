@@ -10,6 +10,9 @@
 #include "SECS/component.hpp"
 #include "SECS/entity.hpp"
 
+
+namespace secs {
+
 template <typename Family>
 class Engine {
 public:
@@ -68,5 +71,7 @@ private:
     EntityPool m_entity_pool;
 
 };
+
+} // namespace secs
 
 #endif // SECS_ENGINE_HPP

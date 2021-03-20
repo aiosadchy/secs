@@ -15,6 +15,8 @@
 #endif
 
 
+namespace secs {
+
 class Entity {
 private:
     static const Entity &get_null() noexcept;
@@ -52,5 +54,7 @@ private:
     ID m_data;
 
 };
+
+} // namespace secs
 
 #endif // SECS_ENTITY_HPP

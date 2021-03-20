@@ -3,6 +3,8 @@
 #include <SECS/secs.hpp>
 #include <utl/utl.hpp>
 
+using namespace secs;
+
 template <typename ...Args>
 void print(Args&& ...args) {
     ((std::cout << args << " "), ...);

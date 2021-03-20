@@ -4,6 +4,8 @@
 #include "SECS/collections/sparse_map_view.hpp"
 
 
+namespace secs {
+
 namespace detail {
 
 template <typename M, typename T>
@@ -51,5 +53,7 @@ typename SparseMapView<M, T>::Iterator SparseMapView<M, T>::end() {
 }
 
 } // namespace detail
+
+} // namespace secs
 
 #endif // SECS_SPARSE_MAP_VIEW_INL

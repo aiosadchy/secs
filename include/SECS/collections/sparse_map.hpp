@@ -8,6 +8,9 @@
 #include "SECS/collections/sparse_map_view.hpp"
 #include "SECS/utility.hpp"
 
+
+namespace secs {
+
 template <typename K, typename V, typename R = Identity>
 class SparseMap {
 public:
@@ -42,5 +45,7 @@ private:
     R m_key_reduce;
 
 };
+
+} // namespace secs
 
 #endif // SECS_SPARSE_MAP_HPP

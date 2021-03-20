@@ -6,6 +6,9 @@
 
 #include "SECS/common.hpp"
 
+
+namespace secs {
+
 template <typename T, typename U>
 inline T fast_dynamic_cast(U *object) {
     static_assert(std::is_pointer_v<T>);
@@ -38,5 +41,7 @@ public:
 
 template <typename T, bool APPLY>
 using AddConst = std::conditional_t<APPLY, const T, T>;
+
+} // namespace secs
 
 #endif // SECS_UTILITY_HPP

@@ -4,6 +4,8 @@
 #include <utility>
 
 
+namespace secs {
+
 template <typename...>
 class View;
 
@@ -29,5 +31,7 @@ private:
             : base<__VA_ARGS__>(std::forward<Args>(args)...) {  \
         }                                                       \
     }
+
+} // namespace secs
 
 #endif // SECS_VIEW_HPP

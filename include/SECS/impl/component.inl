@@ -4,6 +4,8 @@
 #include "SECS/component.hpp"
 
 
+namespace secs {
+
 template <typename Family>
 typename Component<Family>::PoolHandle Component<Family>::Metadata::create_pool(Index capacity) const {
     return m_create_pool(capacity);
@@ -80,5 +82,7 @@ template <typename Family>
 typename Component<Family>::View Component<Family>::view() {
     return Component<Family>::View();
 }
+
+} // namespace secs
 
 #endif // SECS_COMPONENT_INL

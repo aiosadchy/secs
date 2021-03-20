@@ -12,6 +12,8 @@
 #include "SECS/common.hpp"
 
 
+namespace secs {
+
 template <typename Family>
 class Component {
 private:
@@ -75,5 +77,7 @@ public:
     NON_CONSTRUCTABLE(Component)
 
 };
+
+} // namespace secs
 
 #endif // SECS_COMPONENT_HPP

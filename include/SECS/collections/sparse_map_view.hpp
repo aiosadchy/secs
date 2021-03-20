@@ -8,6 +8,8 @@
 #include "SECS/utility.hpp"
 
 
+namespace secs {
+
 template <typename K, typename V, typename R>
 class SparseMap;
 
@@ -54,5 +56,7 @@ SECS_VIEW_SPECIALIZATION(detail::SparseMapView, SparseMap<K, V, R>, T);
 
 template <typename K, typename V, typename R, typename T>
 SECS_VIEW_SPECIALIZATION(detail::SparseMapView, const SparseMap<K, V, R>, T);
+
+} // namespace secs
 
 #endif // SECS_SPARSE_MAP_VIEW_HPP

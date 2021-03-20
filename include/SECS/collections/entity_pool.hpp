@@ -7,6 +7,9 @@
 #include "SECS/common.hpp"
 #include "SECS/entity.hpp"
 
+
+namespace secs {
+
 class EntityPool {
 private:
     class EndGuard {};
@@ -64,5 +67,7 @@ private:
     Index m_recycle_period;
 
 };
+
+} // namespace secs
 
 #endif // SECS_ENTITY_POOL_HPP

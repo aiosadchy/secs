@@ -6,6 +6,8 @@
 #include <utility>
 
 
+namespace secs {
+
 template <typename K, typename V, typename R>
 SparseMap<K, V, R>::SparseMap(Index initial_capacity, R key_reduce)
     : m_dense()
@@ -102,5 +104,7 @@ template <typename K, typename V, typename R>
 View<const SparseMap<K, V, R>, V> SparseMap<K, V, R>::values() const {
     return View<const SparseMap<K, V, R>, V>(m_values);
 }
+
+} // namespace secs
 
 #endif // SECS_SPARSE_MAP_INL
