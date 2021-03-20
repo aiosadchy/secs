@@ -1,6 +1,7 @@
 #ifndef SECS_ENTITY_VIEW_HPP
 #define SECS_ENTITY_VIEW_HPP
 
+#include <tuple>
 #include <type_traits>
 #include <utility>
 #include <variant>

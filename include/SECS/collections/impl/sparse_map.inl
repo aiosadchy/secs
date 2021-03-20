@@ -30,7 +30,7 @@ V &SparseMap<K, V, R>::put(const K &key, Args&& ...args) {
     if (m_sparse.size() <= key_index) {
         m_sparse.resize(key_index + 1, NULL_VALUE);
     }
-    m_sparse[key_index] = m_dense.size();
+    m_sparse[key_index] = static_cast<Index>(m_dense.size());
     m_dense.emplace_back(key);
     return m_values.emplace_back(std::forward<Args>(args)...);
 }
@@ -85,7 +85,7 @@ const V *SparseMap<K, V, R>::find(const K &key) const {
 
 template <typename K, typename V, typename R>
 Index SparseMap<K, V, R>::size() const {
-    return m_dense.size();
+    return static_cast<Index>(m_dense.size());
 }
 
 template <typename K, typename V, typename R>
