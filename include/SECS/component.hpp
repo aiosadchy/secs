@@ -4,7 +4,7 @@
 #include <memory>
 #include <type_traits>
 
-#include <utl/non_constructable.hpp>
+#include <utl/non_constructible.hpp>
 #include <utl/type_id.hpp>
 #include <utl/type_info.hpp>
 
@@ -61,6 +61,7 @@ public:
         const Metadata &operator*() const;
         const Iterator &operator++();
         bool operator!=(const Iterator &another) const;
+
     private:
         const Metadata *m_item;
 
@@ -74,7 +75,7 @@ public:
 
     static View view();
 
-    NON_CONSTRUCTABLE(Component)
+    NON_CONSTRUCTIBLE(Component)
 
 };
 
