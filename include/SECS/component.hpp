@@ -7,6 +7,7 @@
 #include <utl/non_constructible.hpp>
 #include <utl/type_id.hpp>
 #include <utl/type_info.hpp>
+#include <SECS/collections/linked_metadata.hpp>
 
 #include "SECS/collections/component_pool.hpp"
 #include "SECS/common.hpp"
@@ -30,50 +31,25 @@ public:
 
     using TypeID = utl::TypeID<Component<Family>, Index, Decay, utl::init::TypeID::LAZY>;
 
-    class Metadata : public utl::TypeInfo<Metadata, Decay, utl::init::TypeInfo::STATIC> {
+    class Metadata : public LinkedMetadata<Metadata, Decay> {
     public:
         inline PoolHandle create_pool(Index capacity) const;
         inline TypeID get_type_id() const;
 
-        static const Metadata *first();
-        static const Metadata *next(const Metadata *record);
-
     private:
-        friend class utl::TypeInfo<Metadata, Decay, utl::init::TypeInfo::STATIC>;
-        using Base = utl::TypeInfo<Metadata, Decay, utl::init::TypeInfo::STATIC>;
+        using Base = LinkedMetadata<Metadata, Decay>;
+        friend class Base::Base;
         using CreatePool = PoolHandle (Index);
 
         template <typename T>
-        explicit Metadata(typename Base::template Initializer<T>);
+        explicit Metadata(typename Metadata::template Initializer<T>);
 
         CreatePool * const m_create_pool;
         const TypeID m_type_id;
-        const Metadata * const m_next;
-
-        inline static const Metadata *s_head = nullptr;
 
     };
 
-    class Iterator {
-    public:
-        Iterator();
-        explicit Iterator(const Metadata *item);
-        const Metadata &operator*() const;
-        const Iterator &operator++();
-        bool operator!=(const Iterator &another) const;
-
-    private:
-        const Metadata *m_item;
-
-    };
-
-    class View {
-    public:
-        Iterator begin() const;
-        Iterator end() const;
-    };
-
-    static View view();
+    static typename Metadata::View view();
 
     NON_CONSTRUCTIBLE(Component)
 
