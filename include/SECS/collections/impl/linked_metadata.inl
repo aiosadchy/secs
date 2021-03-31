@@ -4,6 +4,8 @@
 #include "SECS/collections/linked_metadata.hpp"
 
 
+namespace secs {
+
 template <typename Data, template <typename> typename Decay>
 LinkedMetadata<Data, Decay>::Iterator::Iterator()
     : m_item(nullptr) {
@@ -58,9 +60,17 @@ typename LinkedMetadata<Data, Decay>::View LinkedMetadata<Data, Decay>::view() {
 }
 
 template <typename Data, template <typename> typename Decay>
+Index LinkedMetadata<Data, Decay>::get_types_count() {
+    return s_registered_types;
+}
+
+template <typename Data, template <typename> typename Decay>
 LinkedMetadata<Data, Decay>::LinkedMetadata(const Data *derived)
     : m_next(s_head) {
     s_head = derived;
+    ++s_registered_types;
 }
+
+} // namespace secs
 
 #endif // SECS_LINKED_METADATA_INL

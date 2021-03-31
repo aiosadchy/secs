@@ -3,6 +3,10 @@
 
 #include <utl/type_info.hpp>
 
+#include "SECS/common.hpp"
+
+
+namespace secs {
 
 template <typename Data, template <typename> typename Decay>
 class LinkedMetadata : public utl::TypeInfo<Data, Decay, utl::init::TypeInfo::STATIC> {
@@ -33,6 +37,8 @@ public:
 
     static View view();
 
+    static Index get_types_count();
+
 protected:
     explicit LinkedMetadata(const Data *derived);
 
@@ -42,8 +48,10 @@ private:
     const Data * const m_next;
 
     inline static const Data *s_head = nullptr;
+    inline static Index s_registered_types = 0;
 
 };
 
+} // namespace secs
 
 #endif // SECS_LINKED_METADATA_HPP
