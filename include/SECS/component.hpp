@@ -37,8 +37,8 @@ public:
         inline TypeID get_type_id() const;
 
     private:
+        friend class utl::TypeInfo<Metadata, Decay, utl::init::TypeInfo::STATIC>;
         using Base = LinkedMetadata<Metadata, Decay>;
-        friend class Base::Base;
         using CreatePool = PoolHandle (Index);
 
         template <typename T>
