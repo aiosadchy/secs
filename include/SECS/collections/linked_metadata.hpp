@@ -18,7 +18,7 @@ public:
         Iterator();
         explicit Iterator(const Data *item);
         const Data &operator*() const;
-        const Iterator &operator++();
+        Iterator &operator++();
         bool operator!=(const Iterator &another) const;
 
     private:

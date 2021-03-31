@@ -22,7 +22,7 @@ const Data &LinkedMetadata<Data, Decay>::Iterator::operator*() const {
 }
 
 template <typename Data, template <typename> typename Decay>
-const typename LinkedMetadata<Data, Decay>::Iterator &LinkedMetadata<Data, Decay>::Iterator::operator++() {
+typename LinkedMetadata<Data, Decay>::Iterator &LinkedMetadata<Data, Decay>::Iterator::operator++() {
     m_item = LinkedMetadata::View::next(m_item);
     return *this;
 }
