@@ -17,11 +17,10 @@ namespace secs {
 
 template <typename Family>
 class Component {
-private:
+public:
     template <typename C>
     using Decay = std::decay_t<C>;
 
-public:
     using IPool = IComponentPool;
 
     template <typename C>

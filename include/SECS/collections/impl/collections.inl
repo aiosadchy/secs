@@ -1,6 +1,7 @@
 #ifndef SECS_COLLECTIONS_INL
 #define SECS_COLLECTIONS_INL
 
+#include "callback_storage.inl"
 #include "component_pool.inl"
 #include "entity_pool.inl"
 #include "entity_view.inl"

@@ -9,6 +9,7 @@
 #include "SECS/collections/entity_view.hpp"
 #include "SECS/component.hpp"
 #include "SECS/entity.hpp"
+#include "SECS/event.hpp"
 
 
 namespace secs {
@@ -17,6 +18,7 @@ template <typename Family>
 class Engine {
 public:
     using Components = Component<Family>;
+    using Events     = Event<Family>;
 
     Engine();
     ~Engine();
