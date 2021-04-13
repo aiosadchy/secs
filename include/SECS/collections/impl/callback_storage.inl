@@ -27,7 +27,7 @@ template <typename T>
 CallbackID CallbackStorage<T>::register_callback(Callback &&function) {
     auto &pair = m_callbacks.emplace_back(m_next_index, std::move(function));
     m_next_index++;
-    return CallbackID(this, pair->first);
+    return CallbackID(this, pair.first);
 }
 
 template <typename T>
@@ -39,7 +39,7 @@ void CallbackStorage<T>::unregister_callback(const CallbackID &id) {
         m_callbacks.begin(),
         m_callbacks.end(),
         [&id](const std::pair<Index, Callback> &pair) {
-            pair.first == id.m_index;
+            return pair.first == id.m_index;
         }
     );
     if (it != m_callbacks.end()) {
