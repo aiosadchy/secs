@@ -81,15 +81,27 @@ int main() {
         b = engine.create();
     }
 
-    engine.assign<int>(b);
+    engine.assign<int>(b, 25);
 
     for (auto [id, name, counter] : const_engine.view<std::string, int>()) {
         print("Got entity:", id, name, counter);
     }
 
+    engine.get_event_manager().register_callback(
+        [](const TestEngine::Events::EntityLostComponent<int> &e) {
+            print("Entity", e.get_entity(), "lost <int> component with the value of", e.get_component());
+        }
+    );
+
+    engine.remove<int>(b);
+
+    engine.assign<int>(c, 2);
+
     for (auto id : const_engine.view()) {
         print("Got entity:", id);
     }
+
+    engine.remove<int>(c);
 
     return 0;
 }

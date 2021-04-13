@@ -43,6 +43,7 @@ Entity Engine<Family>::create() {
 template <typename Family>
 void Engine<Family>::destroy(Entity entity) {
     for (auto &pool : m_component_pools) {
+        // TODO: raise EntityLostComponent event
         // TODO: optimize virtual call to IComponentPool::remove(Entity)
         pool->remove(entity);
     }
@@ -109,7 +110,16 @@ decltype(auto) Engine<Family>::find(Entity entity) const {
 template <typename Family>
 template <typename... C>
 void Engine<Family>::remove(Entity entity) {
-    (get_component_pool<C>().remove(entity), ...);
+    if constexpr (sizeof...(C) == 1) {
+        if (has<C...>(entity)) {
+            using EventType = typename Events::template EntityLostComponent<C...>;
+            typename Components::template Pool<C...> &pool = get_component_pool<C...>();
+            m_event_manager.template handle<EventType>(entity, pool.get(entity));
+            pool.remove(entity);
+        }
+    } else {
+        (remove<C>(entity), ...);
+    }
 }
 
 template <typename Family>
