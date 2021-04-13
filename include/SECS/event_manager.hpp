@@ -5,6 +5,8 @@
 #include <queue>
 #include <utility>
 
+#include <utl/non_copyable.hpp>
+
 #include "SECS/event.hpp"
 
 
@@ -17,6 +19,8 @@ public:
 
     inline EventManager();
     inline ~EventManager();
+
+    NON_COPYABLE(EventManager)
 
     template <typename E>
     void handle(E &&event);

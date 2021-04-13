@@ -78,6 +78,12 @@ private:
     class EntityDestroyedEvent : public EntityEvent {
     public:
         explicit EntityDestroyedEvent(Entity entity);
+        EntityDestroyedEvent(Entity entity, EntityPool &pool);
+
+        void finalize();
+
+    private:
+        EntityPool *m_pool;
 
     };
 
@@ -92,6 +98,16 @@ private:
     class EntityLostComponentEvent : public ComponentEvent<C> {
     public:
         EntityLostComponentEvent(Entity entity, C &component);
+        EntityLostComponentEvent(
+            Entity entity,
+            C &component,
+            typename Component<Family>::template Pool<C> &pool
+        );
+
+        void finalize();
+
+    private:
+        typename Component<Family>::template Pool<C> *m_pool;
 
     };
 

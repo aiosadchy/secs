@@ -103,5 +103,9 @@ int main() {
 
     engine.remove<int>(c);
 
+    for (auto [id, counter] : const_engine.view<int>()) {
+        print("Got entity:", id, counter);
+    }
+
     return 0;
 }

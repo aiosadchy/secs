@@ -8,6 +8,27 @@
 
 namespace secs {
 
+namespace detail {
+
+template <class E>
+class HasFinalize {
+    template <typename T, T>
+    struct Has;
+
+    template <typename T>
+    static std::true_type has_finalize(Has<void (E::*)(), &T::finalize> *);
+
+    template <typename T>
+    static std::false_type has_finalize(...);
+
+public:
+    static constexpr bool value = decltype(has_finalize<E>(nullptr))::value;
+
+};
+
+} // namespace detail
+
+
 template <typename Family>
 EventManager<Family>::EventManager()
     : m_callbacks() {
@@ -45,9 +66,12 @@ CallbackID EventManager<Family>::register_callback(F &&function) {
 template <typename Family>
 template <typename T, typename... Args>
 void EventManager<Family>::process_event(Args &&... args) {
-    using E = typename Events::template Decay<T>;
-    E event = E(std::forward<Args>(args)...);
-    get_storage<E>().handle(event);
+    using Event = typename Events::template Decay<T>;
+    Event event = Event(std::forward<Args>(args)...);
+    get_storage<Event>().handle(event);
+    if constexpr (detail::HasFinalize<Event>::value) {
+        event.finalize();
+    }
 }
 
 template <typename Family>

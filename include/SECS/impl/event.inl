@@ -67,7 +67,21 @@ Event<Family>::EntityCreatedEvent::EntityCreatedEvent(Entity entity)
 
 template <typename Family>
 Event<Family>::EntityDestroyedEvent::EntityDestroyedEvent(Entity entity)
-    : EntityEvent(entity) {
+    : EntityEvent(entity)
+    , m_pool(nullptr) {
+}
+
+template <typename Family>
+Event<Family>::EntityDestroyedEvent::EntityDestroyedEvent(Entity entity, EntityPool &pool)
+    : EntityEvent(entity)
+    , m_pool(&pool) {
+}
+
+template <typename Family>
+void Event<Family>::EntityDestroyedEvent::finalize() {
+    if (m_pool != nullptr) {
+        m_pool->destroy(EntityEvent::get_entity());
+    }
 }
 
 
@@ -81,7 +95,27 @@ Event<Family>::EntityGotComponentEvent<C>::EntityGotComponentEvent(Entity entity
 template <typename Family>
 template <typename C>
 Event<Family>::EntityLostComponentEvent<C>::EntityLostComponentEvent(Entity entity, C &component)
-    : ComponentEvent<C>(entity, component) {
+    : ComponentEvent<C>(entity, component)
+    , m_pool(nullptr) {
+}
+
+template <typename Family>
+template <typename C>
+Event<Family>::EntityLostComponentEvent<C>::EntityLostComponentEvent(
+        Entity entity,
+        C &component,
+        typename Component<Family>::template Pool<C> &pool
+)
+    : ComponentEvent<C>(entity, component)
+    , m_pool(&pool) {
+}
+
+template <typename Family>
+template <typename C>
+void Event<Family>::EntityLostComponentEvent<C>::finalize() {
+    if (m_pool != nullptr) {
+        m_pool->remove(ComponentEvent<C>::get_entity());
+    }
 }
 
 
