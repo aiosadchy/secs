@@ -14,7 +14,7 @@ EventManager<Family>::EventManager()
         if (type_index >= m_callbacks.size()) {
             m_callbacks.resize(type_index + 1);
         }
-        m_callbacks[type_index] = std::move(metadata.create_pool());
+        m_callbacks[type_index] = std::move(metadata.create_callbacks_storage());
     }
 }
 
@@ -30,7 +30,7 @@ void EventManager<Family>::handle(const E &event) const {
 template <typename Family>
 template <typename E, typename F>
 CallbackID EventManager<Family>::register_callback(F &&function) {
-    get_storage<E>().register_callback(std::forward<F>(function));
+    return get_storage<E>().register_callback(std::forward<F>(function));
 }
 
 template <typename Family>

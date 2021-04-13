@@ -9,7 +9,7 @@
 #include "SECS/collections/entity_view.hpp"
 #include "SECS/component.hpp"
 #include "SECS/entity.hpp"
-#include "SECS/event.hpp"
+#include "SECS/event_manager.hpp"
 
 
 namespace secs {
@@ -18,7 +18,7 @@ template <typename Family>
 class Engine {
 public:
     using Components = Component<Family>;
-    using Events     = Event<Family>;
+    using Events     = typename EventManager<Family>::Events;
 
     Engine();
     ~Engine();
@@ -62,6 +62,8 @@ public:
 
     [[nodiscard]] View<const EntityPool> view() const;
 
+    EventManager<Family> &get_event_manager();
+
 private:
     template <typename T>
     typename Components::template Pool<T> &get_component_pool();
@@ -71,6 +73,7 @@ private:
 
     std::vector<typename Components::PoolHandle> m_component_pools;
     EntityPool m_entity_pool;
+    EventManager<Family> m_event_manager;
 
 };
 

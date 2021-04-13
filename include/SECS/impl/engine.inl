@@ -17,7 +17,8 @@ constexpr Index DEFAULT_INITIAL_CAPACITY = 32;
 template <typename Family>
 Engine<Family>::Engine()
     : m_component_pools()
-    , m_entity_pool(DEFAULT_INITIAL_CAPACITY, 16) {
+    , m_entity_pool(DEFAULT_INITIAL_CAPACITY, 16)
+    , m_event_manager() {
     for (const auto &metadata : Components::view()) {
         Index type_index = metadata.get_type_id().get_index();
         if (type_index >= m_component_pools.size()) {
@@ -131,6 +132,11 @@ View<EntityPool> Engine<Family>::view() {
 template <typename Family>
 View<const EntityPool> Engine<Family>::view() const {
     return View<const EntityPool>(m_entity_pool);
+}
+
+template <typename Family>
+EventManager<Family> &Engine<Family>::get_event_manager() {
+    return m_event_manager;
 }
 
 template <typename Family>
