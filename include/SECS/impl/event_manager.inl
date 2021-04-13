@@ -3,6 +3,8 @@
 
 #include "SECS/event_manager.hpp"
 
+#include <utl/type_traits.hpp>
+
 
 namespace secs {
 
@@ -23,14 +25,29 @@ EventManager<Family>::~EventManager() = default;
 
 template <typename Family>
 template <typename E>
-void EventManager<Family>::handle(const E &event) const {
-    get_storage<E>().handle(event);
+void EventManager<Family>::handle(E &&event) {
+    process_event<E>(std::forward<E>(event));
 }
 
 template <typename Family>
-template <typename E, typename F>
+template <typename E, typename... Args>
+void EventManager<Family>::handle(Args &&... args) {
+    process_event<E>(std::forward<Args>(args)...);
+}
+
+template <typename Family>
+template <typename F>
 CallbackID EventManager<Family>::register_callback(F &&function) {
-    return get_storage<E>().register_callback(std::forward<F>(function));
+    using Event = typename utl::type_traits::Function<F>::template Argument<0>;
+    return get_storage<Event>().register_callback(std::forward<F>(function));
+}
+
+template <typename Family>
+template <typename T, typename... Args>
+void EventManager<Family>::process_event(Args &&... args) {
+    using E = typename Events::template Decay<T>;
+    E event = E(std::forward<Args>(args)...);
+    get_storage<E>().handle(event);
 }
 
 template <typename Family>

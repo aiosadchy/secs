@@ -19,7 +19,8 @@ typename Event<Family>::TypeID Event<Family>::Metadata::get_type_id() const {
 template <typename Family>
 template <typename T>
 Event<Family>::Metadata::Metadata(typename Metadata::template Initializer<T>)
-    : m_create_storage(
+    : Base(this)
+    , m_create_storage(
         +[]() {
             return CallbacksHandle(new CallbackStorage<T>());
         })

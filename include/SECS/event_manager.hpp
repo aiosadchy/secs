@@ -19,27 +19,32 @@ public:
     inline ~EventManager();
 
     template <typename E>
-    void handle(const E &event) const;
+    void handle(E &&event);
 
-    // TODO: overloads
-    template <typename E, typename F>
+    template <typename E, typename... Args>
+    void handle(Args &&... args);
+
+    template <typename F>
     CallbackID register_callback(F &&function);
 
 private:
-    template <typename T>
-    using Queue = std::queue<T, std::deque<T>>;
+    // template <typename T>
+    // using Queue = std::queue<T, std::deque<T>>;
 
-    using ProcessEvent = void ();
+    // using ProcessEvent = void ();
+
+    template <typename T, typename... Args>
+    void process_event(Args &&... args);
 
     template <typename T>
     typename Events::template Callbacks<T> &get_storage();
 
     std::vector<typename Events::CallbacksHandle> m_callbacks;
 
-    inline static thread_local Queue<ProcessEvent *> s_unprocessed = {};
+    // inline static thread_local Queue<ProcessEvent *> s_unprocessed = {};
 
-    template <typename E>
-    inline static thread_local Queue<E> s_events = {};
+    // template <typename E>
+    // inline static thread_local Queue<E> s_events = {};
 
 };
 
