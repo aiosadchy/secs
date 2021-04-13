@@ -1,6 +1,7 @@
 #ifndef SECS_EVENT_HPP
 #define SECS_EVENT_HPP
 
+#include <memory>
 #include <type_traits>
 
 #include <utl/non_constructible.hpp>
@@ -18,19 +19,29 @@ public:
     template <typename E>
     using Decay = std::decay_t<E>;
 
+    using ICallbacks = ICallbackStorage;
+
+    template <typename E>
+    using Callbacks = CallbackStorage<Decay<E>>;
+
+    using CallbacksHandle = std::unique_ptr<ICallbacks>;
+
     using TypeID = utl::TypeID<Event<Family>, Index, Decay, utl::init::TypeID::LAZY>;
 
     class Metadata : public LinkedMetadata<Metadata, Decay> {
     public:
+        inline CallbacksHandle create_callbacks_storage() const;
         inline TypeID get_type_id() const;
 
     private:
         friend class utl::TypeInfo<Metadata, Decay, utl::init::TypeInfo::STATIC>;
         using Base = LinkedMetadata<Metadata, Decay>;
+        using CreateStorage = CallbacksHandle ();
 
         template <typename T>
         explicit Metadata(typename Metadata::template Initializer<T>);
 
+        CreateStorage * const m_create_storage;
         const TypeID m_type_id;
 
     };

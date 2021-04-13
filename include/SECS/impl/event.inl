@@ -7,6 +7,11 @@
 namespace secs {
 
 template <typename Family>
+typename Event<Family>::CallbacksHandle Event<Family>::Metadata::create_callbacks_storage() const {
+    return m_create_storage();
+}
+
+template <typename Family>
 typename Event<Family>::TypeID Event<Family>::Metadata::get_type_id() const {
     return m_type_id;
 }
@@ -14,7 +19,11 @@ typename Event<Family>::TypeID Event<Family>::Metadata::get_type_id() const {
 template <typename Family>
 template <typename T>
 Event<Family>::Metadata::Metadata(typename Metadata::template Initializer<T>)
-    : m_type_id(TypeID::template get<T>()) {
+    : m_create_storage(
+        +[]() {
+            return CallbacksHandle(new CallbackStorage<T>());
+        })
+    , m_type_id(TypeID::template get<T>()) {
 }
 
 

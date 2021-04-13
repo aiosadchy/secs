@@ -3,17 +3,12 @@
 
 #include <deque>
 #include <queue>
+#include <utility>
 
 #include "SECS/event.hpp"
 
 
 namespace secs {
-
-namespace detail {
-
-// class
-
-} // namespace detail
 
 template <typename Family>
 class EventManager {
@@ -26,8 +21,9 @@ public:
     template <typename E>
     void handle(const E &event) const;
 
+    // TODO: overloads
     template <typename E, typename F>
-    void subscribe(F &&function);
+    CallbackID register_callback(F &&function);
 
 private:
     template <typename T>
@@ -35,7 +31,10 @@ private:
 
     using ProcessEvent = void ();
 
-    // std::vector<std::vector<std::function<void >>>
+    template <typename T>
+    typename Events::template Callbacks<T> &get_storage();
+
+    std::vector<typename Events::CallbacksHandle> m_callbacks;
 
     inline static thread_local Queue<ProcessEvent *> s_unprocessed = {};
 
