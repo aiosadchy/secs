@@ -1,2 +1,2 @@
 # SECS
-A Simple Entity-Component-System framework
+A Simple Entity-Component-System library
