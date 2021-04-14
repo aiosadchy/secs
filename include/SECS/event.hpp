@@ -8,6 +8,7 @@
 #include <utl/type_id.hpp>
 
 #include "SECS/common.hpp"
+#include "SECS/component.hpp"
 #include "SECS/entity.hpp"
 
 
@@ -47,6 +48,8 @@ public:
     };
 
 private:
+    using Components = Component<Family>;
+
     class EntityEvent {
     public:
         explicit EntityEvent(Entity entity);
@@ -60,12 +63,12 @@ private:
     template <typename C>
     class ComponentEvent : public EntityEvent {
     public:
-        ComponentEvent(Entity entity, C &component);
+        ComponentEvent(Entity entity, typename Components::template Pool<C> &pool);
         C &get_component();
         const C &get_component() const;
 
-    private:
-        C *m_component;
+    protected:
+        typename Components::template Pool<C> *m_pool;
 
     };
 
@@ -77,9 +80,7 @@ private:
 
     class EntityDestroyedEvent : public EntityEvent {
     public:
-        explicit EntityDestroyedEvent(Entity entity);
         EntityDestroyedEvent(Entity entity, EntityPool &pool);
-
         void finalize();
 
     private:
@@ -90,29 +91,20 @@ private:
     template <typename C>
     class EntityGotComponentEvent : public ComponentEvent<C> {
     public:
-        EntityGotComponentEvent(Entity entity, C &component);
+        EntityGotComponentEvent(Entity entity, typename Components::template Pool<C> &pool);
 
     };
 
     template <typename C>
     class EntityLostComponentEvent : public ComponentEvent<C> {
     public:
-        EntityLostComponentEvent(Entity entity, C &component);
-        EntityLostComponentEvent(
-            Entity entity,
-            C &component,
-            typename Component<Family>::template Pool<C> &pool
-        );
-
+        EntityLostComponentEvent(Entity entity, typename Components::template Pool<C> &pool);
         void finalize();
-
-    private:
-        typename Component<Family>::template Pool<C> *m_pool;
 
     };
 
     template <typename C>
-    using ComponentDecay = typename Component<Family>::template Decay<C>;
+    using ComponentDecay = typename Components::template Decay<C>;
 
 public:
     using EntityCreated = EntityCreatedEvent;

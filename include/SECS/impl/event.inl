@@ -41,23 +41,23 @@ Entity Event<Family>::EntityEvent::get_entity() const {
 
 template <typename Family>
 template <typename C>
-Event<Family>::ComponentEvent<C>::ComponentEvent(Entity entity, C &component)
+Event<Family>::ComponentEvent<C>::ComponentEvent(
+        Entity entity,
+        typename Components::template Pool<C> &pool)
     : EntityEvent(entity)
-    , m_component(&component) {
+    , m_pool(&pool) {
 }
 
 template <typename Family>
 template <typename C>
 C &Event<Family>::ComponentEvent<C>::get_component() {
-    return *m_component;
+    return m_pool->get(EntityEvent::get_entity());
 }
 
 template <typename Family>
 template <typename C>
 const C &Event<Family>::ComponentEvent<C>::get_component() const {
-    // TODO: this is unsafe since component address
-    //       may change during event processing
-    return *m_component;
+    return m_pool->get(EntityEvent::get_entity());
 }
 
 
@@ -66,12 +66,6 @@ Event<Family>::EntityCreatedEvent::EntityCreatedEvent(Entity entity)
     : EntityEvent(entity)  {
 }
 
-
-template <typename Family>
-Event<Family>::EntityDestroyedEvent::EntityDestroyedEvent(Entity entity)
-    : EntityEvent(entity)
-    , m_pool(nullptr) {
-}
 
 template <typename Family>
 Event<Family>::EntityDestroyedEvent::EntityDestroyedEvent(Entity entity, EntityPool &pool)
@@ -89,35 +83,27 @@ void Event<Family>::EntityDestroyedEvent::finalize() {
 
 template <typename Family>
 template <typename C>
-Event<Family>::EntityGotComponentEvent<C>::EntityGotComponentEvent(Entity entity, C &component)
-    : ComponentEvent<C>(entity, component) {
+Event<Family>::EntityGotComponentEvent<C>::EntityGotComponentEvent(
+        Entity entity,
+        typename Components::template Pool<C> &pool
+)
+    : ComponentEvent<C>(entity, pool) {
 }
 
-
-template <typename Family>
-template <typename C>
-Event<Family>::EntityLostComponentEvent<C>::EntityLostComponentEvent(Entity entity, C &component)
-    : ComponentEvent<C>(entity, component)
-    , m_pool(nullptr) {
-}
 
 template <typename Family>
 template <typename C>
 Event<Family>::EntityLostComponentEvent<C>::EntityLostComponentEvent(
         Entity entity,
-        C &component,
-        typename Component<Family>::template Pool<C> &pool
+        typename Components::template Pool<C> &pool
 )
-    : ComponentEvent<C>(entity, component)
-    , m_pool(&pool) {
+    : ComponentEvent<C>(entity, pool) {
 }
 
 template <typename Family>
 template <typename C>
 void Event<Family>::EntityLostComponentEvent<C>::finalize() {
-    if (m_pool != nullptr) {
-        m_pool->remove(ComponentEvent<C>::get_entity());
-    }
+    ComponentEvent<C>::m_pool->remove(ComponentEvent<C>::get_entity());
 }
 
 

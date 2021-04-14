@@ -57,8 +57,9 @@ template <typename Family>
 template <typename C, typename... Args>
 auto &Engine<Family>::assign(Entity entity, Args &&... args) {
     using Event = typename Events::template EntityGotComponent<C>;
-    C &component = get_component_pool<C>().put(entity, std::forward<Args>(args)...);
-    m_event_manager.template handle<Event>(entity, component);
+    typename Components::template Pool<C> &pool = get_component_pool<C>();
+    C &component = pool.put(entity, std::forward<Args>(args)...);
+    m_event_manager.template handle<Event>(entity, pool);
     return component;
 }
 
@@ -112,10 +113,9 @@ template <typename Family>
 template <typename... C>
 void Engine<Family>::remove(Entity entity) {
     if constexpr (sizeof...(C) == 1) {
-        auto *component = find<C...>(entity);
-        if (component != nullptr) {
+        if (has<C...>(entity)) {
             using Event = typename Events::template EntityLostComponent<C...>;
-            m_event_manager.template handle<Event>(entity, *component, get_component_pool<C...>());
+            m_event_manager.template handle<Event>(entity, get_component_pool<C...>());
         }
     } else {
         (remove<C>(entity), ...);
