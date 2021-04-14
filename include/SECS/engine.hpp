@@ -1,6 +1,7 @@
 #ifndef SECS_ENGINE_HPP
 #define SECS_ENGINE_HPP
 
+#include <memory>
 #include <vector>
 
 #include <utl/non_copyable.hpp>

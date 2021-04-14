@@ -1,7 +1,6 @@
 #ifndef SECS_COMPONENT_HPP
 #define SECS_COMPONENT_HPP
 
-#include <memory>
 #include <type_traits>
 
 #include <utl/non_constructible.hpp>

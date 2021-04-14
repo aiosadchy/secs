@@ -2,8 +2,10 @@
 #define SECS_EVENT_MANAGER_HPP
 
 #include <deque>
+#include <memory>
 #include <queue>
 #include <utility>
+#include <vector>
 
 #include <utl/non_copyable.hpp>
 
@@ -31,11 +33,33 @@ public:
     template <typename F>
     CallbackID register_callback(F &&function);
 
-private:
-    // template <typename T>
-    // using Queue = std::queue<T, std::deque<T>>;
+    template <typename... E>
+    void register_event();
 
-    // using ProcessEvent = void ();
+private:
+    using CallbacksHandle = std::unique_ptr<typename Events::ICallbacks>;
+
+    using TypeID = typename Events::TypeID;
+
+    template <typename T>
+    using Decay = typename Events::template Decay<T>;
+
+    class Metadata : public LinkedMetadata<Metadata, Decay> {
+    public:
+        using CreateStorage = CallbacksHandle (*)();
+
+        template <typename T>
+        explicit Metadata(typename Metadata::template Initializer<T>);
+
+        const CreateStorage create_callbacks_storage;
+        inline TypeID get_type_id() const;
+
+    private:
+        const TypeID m_type_id;
+
+    };
+
+    void register_event(const Metadata &metadata);
 
     template <typename T, typename... Args>
     void process_event(Args &&... args);
@@ -43,12 +67,9 @@ private:
     template <typename T>
     typename Events::template Callbacks<T> &get_storage();
 
-    std::vector<typename Events::CallbacksHandle> m_callbacks;
+    std::vector<CallbacksHandle> m_callbacks;
 
-    // inline static thread_local Queue<ProcessEvent *> s_unprocessed = {};
-
-    // template <typename E>
-    // inline static thread_local Queue<E> s_events = {};
+    // TODO: thread_local event queues
 
 };
 
