@@ -7,6 +7,8 @@
 #include "component.hpp"
 #include "engine.hpp"
 #include "entity.hpp"
+#include "event.hpp"
+#include "event_manager.hpp"
 #include "utility.hpp"
 
 

@@ -31,8 +31,9 @@
 *.out
 *.app
 
-# CMake
-**/cmake-build-*
+# CMake build directories
+/build/
+/cmake-build-*/
 
-# IDE
-.idea/*
+# IDE-specific directories
+/.idea/

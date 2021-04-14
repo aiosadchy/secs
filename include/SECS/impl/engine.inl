@@ -13,17 +13,16 @@ namespace secs {
 
 // TODO: change to something customizable
 constexpr Index DEFAULT_INITIAL_CAPACITY = 32;
+constexpr Index DEFAULT_RECYCLE_PERIOD = 16;
 
 template <typename Family>
 Engine<Family>::Engine()
     : m_component_pools()
-    , m_entity_pool(DEFAULT_INITIAL_CAPACITY, 16) {
-    for (const auto &metadata : Components::view()) {
-        Index type_index = metadata.get_type_id().get_index();
-        if (type_index >= m_component_pools.size()) {
-            m_component_pools.resize(type_index + 1);
-        }
-        m_component_pools[type_index] = std::move(metadata.create_pool(DEFAULT_INITIAL_CAPACITY));
+    , m_remove_component()
+    , m_entity_pool(DEFAULT_INITIAL_CAPACITY, DEFAULT_RECYCLE_PERIOD)
+    , m_event_manager() {
+    for (const auto &metadata : Metadata::view()) {
+        register_component(metadata);
     }
 }
 
@@ -36,16 +35,17 @@ Engine<Family>::~Engine() {
 
 template <typename Family>
 Entity Engine<Family>::create() {
-    return m_entity_pool.create();
+    Entity entity = m_entity_pool.create();
+    m_event_manager.template handle<typename Events::EntityCreated>(entity);
+    return entity;
 }
 
 template <typename Family>
 void Engine<Family>::destroy(Entity entity) {
-    for (auto &pool : m_component_pools) {
-        // TODO: optimize virtual call to IComponentPool::remove(Entity)
-        pool->remove(entity);
+    for (const auto remove_component : m_remove_component) {
+        remove_component(*this, entity);
     }
-    m_entity_pool.destroy(entity);
+    m_event_manager.template handle<typename Events::EntityDestroyed>(entity, m_entity_pool);
 }
 
 template <typename Family>
@@ -56,7 +56,11 @@ bool Engine<Family>::is_alive(Entity entity) const {
 template <typename Family>
 template <typename C, typename... Args>
 auto &Engine<Family>::assign(Entity entity, Args &&... args) {
-    return get_component_pool<C>().put(entity, std::forward<Args>(args)...);
+    using Event = typename Events::template EntityGotComponent<C>;
+    typename Components::template Pool<C> &pool = get_component_pool<C>();
+    C &component = pool.put(entity, std::forward<Args>(args)...);
+    m_event_manager.template handle<Event>(entity, pool);
+    return component;
 }
 
 template <typename Family>
@@ -108,7 +112,14 @@ decltype(auto) Engine<Family>::find(Entity entity) const {
 template <typename Family>
 template <typename... C>
 void Engine<Family>::remove(Entity entity) {
-    (get_component_pool<C>().remove(entity), ...);
+    if constexpr (sizeof...(C) == 1) {
+        if (has<C...>(entity)) {
+            using Event = typename Events::template EntityLostComponent<C...>;
+            m_event_manager.template handle<Event>(entity, get_component_pool<C...>());
+        }
+    } else {
+        (remove<C>(entity), ...);
+    }
 }
 
 template <typename Family>
@@ -134,9 +145,42 @@ View<const EntityPool> Engine<Family>::view() const {
 }
 
 template <typename Family>
+EventManager<Family> &Engine<Family>::get_event_manager() {
+    return m_event_manager;
+}
+
+template <typename Family>
+template <typename... C>
+void Engine<Family>::register_component() {
+    (register_component(Metadata::template get<C>()), ...);
+}
+
+
+template <typename Family>
+template <typename T>
+Engine<Family>::Metadata::Metadata(typename Metadata::template Initializer<T>)
+    : LinkedMetadata<Metadata, Decay>(this)
+    , create_pool(
+        +[](Index initial_capacity) {
+            return PoolHandle(new typename Components::template Pool<T>(initial_capacity));
+        })
+    , remove_component(
+        +[](Engine &engine, Entity entity) {
+            engine.template remove<T>(entity);
+        })
+    , m_type_id(TypeID::template get<T>()) {
+}
+
+template <typename Family>
+typename Engine<Family>::TypeID Engine<Family>::Metadata::get_type_id() const {
+    return m_type_id;
+}
+
+
+template <typename Family>
 template <typename T>
 typename Engine<Family>::Components::template Pool<T> &Engine<Family>::get_component_pool() {
-    Index type_index = Components::Metadata::template get<T>().get_type_id().get_index();
+    Index type_index = Metadata::template get<T>().get_type_id().get_index();
     typename Components::IPool *pool = m_component_pools[type_index].get();
     return fast_dynamic_cast<typename Components::template Pool<T> &>(*pool);
 }
@@ -144,9 +188,22 @@ typename Engine<Family>::Components::template Pool<T> &Engine<Family>::get_compo
 template <typename Family>
 template <typename T>
 const typename Engine<Family>::Components::template Pool<T> &Engine<Family>::get_component_pool() const {
-    Index type_index = Components::Metadata::template get<T>().get_type_id().get_index();
+    Index type_index = Metadata::template get<T>().get_type_id().get_index();
     typename Components::IPool *pool = m_component_pools[type_index].get();
     return fast_dynamic_cast<typename Components::template Pool<T> &>(*pool);
+}
+
+template <typename Family>
+void Engine<Family>::register_component(const Engine::Metadata &metadata) {
+    Index type_index = metadata.get_type_id().get_index();
+    if (type_index >= m_component_pools.size()) {
+        m_component_pools.resize(type_index + 1);
+    }
+    if (type_index >= m_remove_component.size()) {
+        m_remove_component.resize(type_index + 1);
+    }
+    m_component_pools.at(type_index) = std::move(metadata.create_pool(DEFAULT_INITIAL_CAPACITY));
+    m_remove_component.at(type_index) = metadata.remove_component;
 }
 
 } // namespace secs

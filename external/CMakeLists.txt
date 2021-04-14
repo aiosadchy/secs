@@ -1,2 +1,2 @@
-set(UTL_UNSCOPED_MACROS ON CACHE INTERNAL "")
+set(UTL_BUILD_TESTS OFF CACHE INTERNAL "")
 add_subdirectory(utl)
