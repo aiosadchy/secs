@@ -55,6 +55,8 @@ C &Event<Family>::ComponentEvent<C>::get_component() {
 template <typename Family>
 template <typename C>
 const C &Event<Family>::ComponentEvent<C>::get_component() const {
+    // TODO: this is unsafe since component address
+    //       may change during event processing
     return *m_component;
 }
 
