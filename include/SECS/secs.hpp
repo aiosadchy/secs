@@ -5,6 +5,7 @@
 
 #include "common.hpp"
 #include "component.hpp"
+#include "debug.hpp"
 #include "engine.hpp"
 #include "entity.hpp"
 #include "event.hpp"

@@ -5,30 +5,10 @@
 #include <utility>
 
 #include "SECS/common.hpp"
+#include "SECS/debug.hpp"
 
 
 namespace secs {
-
-template <typename T, typename U>
-inline T fast_dynamic_cast(U *object) {
-    static_assert(std::is_pointer_v<T>);
-    if constexpr (secs::DEBUG) {
-        return dynamic_cast<T>(object);
-    } else {
-        return reinterpret_cast<T>(object);
-    }
-}
-
-template <typename T, typename U>
-inline T fast_dynamic_cast(U &object) {
-    static_assert(std::is_reference_v<T>);
-    if constexpr (secs::DEBUG) {
-        return dynamic_cast<T>(object);
-    } else {
-        return *reinterpret_cast<std::remove_reference_t<T> *>(&object);
-    }
-}
-
 
 class Identity {
 public:

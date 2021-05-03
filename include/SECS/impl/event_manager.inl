@@ -5,6 +5,8 @@
 
 #include <utl/type_traits.hpp>
 
+#include "SECS/debug.hpp"
+
 
 namespace secs {
 
@@ -108,7 +110,7 @@ template <typename T>
 typename EventManager<Family>::Events::template Callbacks<T> &EventManager<Family>::get_storage() {
     Index type_index = Metadata::template get<T>().get_type_id().get_index();
     typename Events::ICallbacks *storage = m_callbacks[type_index].get();
-    return fast_dynamic_cast<typename Events::template Callbacks<T> &>(*storage);
+    return SECS_FAST_DYNAMIC_CAST<typename Events::template Callbacks<T> &>(*storage);
 }
 
 

@@ -8,6 +8,8 @@
 
 #include "SECS/utility.hpp"
 
+#include "SECS/debug.hpp"
+
 
 namespace secs {
 
@@ -182,7 +184,7 @@ template <typename T>
 typename Engine<Family>::Components::template Pool<T> &Engine<Family>::get_component_pool() {
     Index type_index = Metadata::template get<T>().get_type_id().get_index();
     typename Components::IPool *pool = m_component_pools[type_index].get();
-    return fast_dynamic_cast<typename Components::template Pool<T> &>(*pool);
+    return SECS_FAST_DYNAMIC_CAST<typename Components::template Pool<T> &>(*pool);
 }
 
 template <typename Family>
@@ -190,7 +192,7 @@ template <typename T>
 const typename Engine<Family>::Components::template Pool<T> &Engine<Family>::get_component_pool() const {
     Index type_index = Metadata::template get<T>().get_type_id().get_index();
     typename Components::IPool *pool = m_component_pools[type_index].get();
-    return fast_dynamic_cast<typename Components::template Pool<T> &>(*pool);
+    return SECS_FAST_DYNAMIC_CAST<typename Components::template Pool<T> &>(*pool);
 }
 
 template <typename Family>
