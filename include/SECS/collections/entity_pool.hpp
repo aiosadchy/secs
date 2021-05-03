@@ -6,6 +6,7 @@
 
 #include "SECS/common.hpp"
 #include "SECS/entity.hpp"
+#include "SECS/utility.hpp"
 
 
 namespace secs {
@@ -20,6 +21,13 @@ private:
         GenericIterator();
         GenericIterator(Collection &collection, const EntityPool &pool);
 
+        SECS_IF_DEBUG (
+            GenericIterator(const GenericIterator &another);
+            GenericIterator(GenericIterator &&another) noexcept;
+            GenericIterator &operator=(const GenericIterator &another) = default;
+            GenericIterator &operator=(GenericIterator &&another) noexcept = default;
+        )
+
         GenericIterator &operator++();
         Entity operator*();
         bool operator!=(EndGuard end) const;
@@ -32,6 +40,10 @@ private:
         Index m_index;
         Collection *m_collection;
         const EntityPool *m_pool;
+
+        SECS_IF_DEBUG (
+            debug::IteratorTracker<GenericIterator<Collection>> m_tracker = *this;
+        )
 
     };
 

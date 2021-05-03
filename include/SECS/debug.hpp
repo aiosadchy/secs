@@ -42,7 +42,7 @@ public:
 template <typename T>
 class IteratorTracker : public IIteratorTracker {
 public:
-    explicit IteratorTracker(T &iterator);
+    IteratorTracker(T &iterator);
     ~IteratorTracker();
 
     IteratorTracker &operator=(const IteratorTracker &another);

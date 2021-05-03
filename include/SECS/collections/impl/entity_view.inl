@@ -24,6 +24,22 @@ EntityView<E, C...>::Iterator::Iterator(E &engine, P &pool)
     find_next_entity();
 }
 
+SECS_IF_DEBUG (
+
+template <typename E, typename... C>
+EntityView<E, C...>::Iterator::Iterator(const EntityView::Iterator &another)
+    : Iterator() {
+    *this = another;
+}
+
+template <typename E, typename... C>
+EntityView<E, C...>::Iterator::Iterator(EntityView::Iterator &&another) noexcept
+    : Iterator() {
+    *this = std::move(another);
+}
+
+) // SECS_IF_DEBUG
+
 template <typename E, typename... C>
 typename EntityView<E, C...>::Iterator &EntityView<E, C...>::Iterator::operator++() {
     step();

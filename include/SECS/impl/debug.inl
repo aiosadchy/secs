@@ -4,6 +4,7 @@
 #include "SECS/debug.hpp"
 
 #include <tuple>
+#include <iostream>
 
 #include <utl/type_traits.hpp>
 
@@ -18,11 +19,13 @@ template <typename T>
 IteratorTracker<T>::IteratorTracker(T &iterator)
     : m_iterator(iterator) {
     // TODO: register iterator
+    std::cout << " -- tracing " << &m_iterator << std::endl;
 }
 
 template <typename T>
 IteratorTracker<T>::~IteratorTracker() {
     // TODO: unregister iterator
+    std::cout << " -- finished tracing " << &m_iterator << std::endl;
 }
 
 template <typename T>
