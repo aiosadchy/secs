@@ -46,6 +46,9 @@ void Engine<Family>::destroy(Entity entity) {
         remove_component(*this, entity);
     }
     m_event_manager.template handle<typename Events::EntityDestroyed>(entity, m_entity_pool);
+    SECS_IF_DEBUG (
+        debug::IteratorRegistry::on_destroy(entity);
+    )
 }
 
 template <typename Family>
@@ -117,6 +120,9 @@ void Engine<Family>::remove(Entity entity) {
             using Event = typename Events::template EntityLostComponent<C...>;
             m_event_manager.template handle<Event>(entity, get_component_pool<C...>());
         }
+        SECS_IF_DEBUG (
+            debug::IteratorRegistry::on_remove<C...>(entity);
+        )
     } else {
         (remove<C>(entity), ...);
     }

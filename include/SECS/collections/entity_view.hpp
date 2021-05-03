@@ -40,17 +40,10 @@ public:
         >;
 
     public:
-        Iterator();
+        Iterator() noexcept;
 
         template <typename P>
         Iterator(E &engine, P &pool);
-
-        SECS_IF_DEBUG (
-            Iterator(const Iterator &another);
-            Iterator(Iterator &&another) noexcept;
-            Iterator &operator=(const Iterator &another) = default;
-            Iterator &operator=(Iterator &&another) noexcept = default;
-        )
 
         Iterator &operator++();
         decltype(auto) operator*();
@@ -65,9 +58,7 @@ public:
         E *m_engine;
         std::variant<PoolIteratorPair<C>...> m_iterator;
 
-        SECS_IF_DEBUG (
-            debug::IteratorTracer<Iterator> m_tracker = *this;
-        )
+        SECS_TRACE_ITERATOR(Iterator)
 
     };
 

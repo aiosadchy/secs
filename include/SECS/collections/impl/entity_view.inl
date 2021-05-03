@@ -11,7 +11,7 @@ namespace secs {
 namespace detail {
 
 template <typename E, typename... C>
-EntityView<E, C...>::Iterator::Iterator()
+EntityView<E, C...>::Iterator::Iterator() noexcept
     : m_engine(nullptr)
     , m_iterator() {
 }
@@ -23,22 +23,6 @@ EntityView<E, C...>::Iterator::Iterator(E &engine, P &pool)
     , m_iterator(std::make_pair(pool.begin(), pool.end())) {
     find_next_entity();
 }
-
-SECS_IF_DEBUG (
-
-template <typename E, typename... C>
-EntityView<E, C...>::Iterator::Iterator(const EntityView::Iterator &another)
-    : Iterator() {
-    *this = another;
-}
-
-template <typename E, typename... C>
-EntityView<E, C...>::Iterator::Iterator(EntityView::Iterator &&another) noexcept
-    : Iterator() {
-    *this = std::move(another);
-}
-
-) // SECS_IF_DEBUG
 
 template <typename E, typename... C>
 typename EntityView<E, C...>::Iterator &EntityView<E, C...>::Iterator::operator++() {

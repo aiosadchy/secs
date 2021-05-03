@@ -3,13 +3,11 @@
 
 #include "SECS/collections/entity_pool.hpp"
 
-#include <utility>
-
 
 namespace secs {
 
 template <typename Collection>
-EntityPool::GenericIterator<Collection>::GenericIterator()
+EntityPool::GenericIterator<Collection>::GenericIterator() noexcept
     : m_index(Index(0) - Index(1))
     , m_collection(nullptr)
     , m_pool(nullptr) {
@@ -25,22 +23,6 @@ EntityPool::GenericIterator<Collection>::GenericIterator(
     , m_pool(&pool) {
     find_next_entity();
 }
-
-SECS_IF_DEBUG (
-
-template <typename Collection>
-EntityPool::GenericIterator<Collection>::GenericIterator(const GenericIterator<Collection> &another)
-    : GenericIterator() {
-    *this = another;
-}
-
-template <typename Collection>
-EntityPool::GenericIterator<Collection>::GenericIterator(GenericIterator<Collection> &&another) noexcept
-    : GenericIterator() {
-    *this = std::move(another);
-}
-
-) // SECS_IF_DEBUG
 
 template <typename Collection>
 typename EntityPool::GenericIterator<Collection> &EntityPool::GenericIterator<Collection>::operator++() {

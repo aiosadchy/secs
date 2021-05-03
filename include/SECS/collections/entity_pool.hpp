@@ -18,15 +18,8 @@ private:
     template <typename Collection>
     class GenericIterator {
     public:
-        GenericIterator();
+        GenericIterator() noexcept;
         GenericIterator(Collection &collection, const EntityPool &pool);
-
-        SECS_IF_DEBUG (
-            GenericIterator(const GenericIterator &another);
-            GenericIterator(GenericIterator &&another) noexcept;
-            GenericIterator &operator=(const GenericIterator &another) = default;
-            GenericIterator &operator=(GenericIterator &&another) noexcept = default;
-        )
 
         GenericIterator &operator++();
         Entity operator*();
@@ -41,9 +34,7 @@ private:
         Collection *m_collection;
         const EntityPool *m_pool;
 
-        SECS_IF_DEBUG (
-            debug::IteratorTracer<GenericIterator<Collection>> m_tracker = *this;
-        )
+        SECS_TRACE_ITERATOR(GenericIterator)
 
     };
 

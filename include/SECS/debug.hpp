@@ -1,6 +1,8 @@
 #ifndef SECS_DEBUG_HPP
 #define SECS_DEBUG_HPP
 
+#include <utility>
+
 #include <utl/non_constructible.hpp>
 
 #include "entity.hpp"
@@ -42,7 +44,7 @@ public:
 template <typename T>
 class IteratorTracer : public IIteratorTracer {
 public:
-    IteratorTracer(T &iterator);
+    explicit IteratorTracer(T &iterator);
     ~IteratorTracer();
 
     IteratorTracer &operator=(const IteratorTracer &another);
@@ -76,6 +78,28 @@ private:
 };
 
 ) // SECS_IF_DEBUG
+
+
+#define SECS_TRACE_ITERATOR(Iterator) SECS_IF_DEBUG (                                          \
+        private:                                                                               \
+            debug::IteratorTracer<Iterator> m_tracer = debug::IteratorTracer<Iterator>(*this); \
+                                                                                               \
+        public:                                                                                \
+            Iterator(const Iterator &another)                                                  \
+                : Iterator() {                                                                 \
+                *this = another;                                                               \
+            }                                                                                  \
+                                                                                               \
+            Iterator(Iterator &&another) noexcept                                              \
+                : Iterator() {                                                                 \
+                *this = std::move(another);                                                    \
+            }                                                                                  \
+                                                                                               \
+            Iterator &operator=(const Iterator &) = default;                                   \
+            Iterator &operator=(Iterator &&) noexcept = default;                               \
+                                                                                               \
+        private:                                                                               \
+    )
 
 } // namespace debug
 

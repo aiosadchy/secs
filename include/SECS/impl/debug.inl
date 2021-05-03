@@ -48,6 +48,26 @@ Entity IteratorTracer<T>::get_current_entity() {
     }
 }
 
+
+void IteratorRegistry::on_destroy(Entity /* entity */) {
+    // TODO: implementation
+}
+
+template <typename C>
+void IteratorRegistry::on_remove(Entity /* entity */) {
+    // TODO: implementation
+}
+
+template <typename... C>
+void IteratorRegistry::track(IIteratorTracer & /* tracker */) {
+    // TODO: implementation
+}
+
+template <typename... C>
+void IteratorRegistry::release(IIteratorTracer & /* tracker */) {
+    // TODO: implementation
+}
+
 ) // SECS_IF_DEBUG
 
 } // namespace debug
