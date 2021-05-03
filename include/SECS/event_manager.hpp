@@ -22,7 +22,7 @@ public:
     inline EventManager();
     inline ~EventManager();
 
-    NON_COPYABLE(EventManager)
+    UTL_NON_COPYABLE(EventManager)
 
     template <typename E>
     void handle(E &&event);

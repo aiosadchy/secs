@@ -24,7 +24,7 @@ public:
     Engine();
     ~Engine();
 
-    NON_COPYABLE(Engine)
+    UTL_NON_COPYABLE(Engine)
 
     [[nodiscard]] Entity create();
 

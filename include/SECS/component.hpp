@@ -27,7 +27,7 @@ public:
 
     using TypeID = utl::TypeID<Component<Family>, Index, Decay, utl::init::TypeID::LAZY>;
 
-    NON_CONSTRUCTIBLE(Component)
+    UTL_NON_CONSTRUCTIBLE(Component)
 
 };
 

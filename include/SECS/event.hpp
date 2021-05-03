@@ -96,7 +96,7 @@ public:
     template <typename C>
     using EntityLostComponent = EntityLostComponentEvent<ComponentDecay<C>>;
 
-    NON_CONSTRUCTIBLE(Event)
+    UTL_NON_CONSTRUCTIBLE(Event)
 
 };
 

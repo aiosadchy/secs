@@ -76,7 +76,7 @@ int main() {
 
     const TestEngine &const_engine = engine;
 
-    REPEAT(3) {
+    UTL_REPEAT(3) {
         engine.destroy(b);
         b = engine.create();
     }
