@@ -5,7 +5,6 @@
 #include <utility>
 
 #include "SECS/common.hpp"
-#include "SECS/debug.hpp"
 
 
 namespace secs {
