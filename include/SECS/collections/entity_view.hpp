@@ -66,7 +66,7 @@ public:
         std::variant<PoolIteratorPair<C>...> m_iterator;
 
         SECS_IF_DEBUG (
-            debug::IteratorTracker<Iterator> m_tracker = *this;
+            debug::IteratorTracer<Iterator> m_tracker = *this;
         )
 
     };

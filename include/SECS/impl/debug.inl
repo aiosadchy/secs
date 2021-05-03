@@ -16,30 +16,30 @@ namespace debug {
 SECS_IF_DEBUG (
 
 template <typename T>
-IteratorTracker<T>::IteratorTracker(T &iterator)
+IteratorTracer<T>::IteratorTracer(T &iterator)
     : m_iterator(iterator) {
     // TODO: register iterator
     std::cout << " -- tracing " << &m_iterator << std::endl;
 }
 
 template <typename T>
-IteratorTracker<T>::~IteratorTracker() {
+IteratorTracer<T>::~IteratorTracer() {
     // TODO: unregister iterator
     std::cout << " -- finished tracing " << &m_iterator << std::endl;
 }
 
 template <typename T>
-IteratorTracker<T> &IteratorTracker<T>::operator=(const IteratorTracker &) {
+IteratorTracer<T> &IteratorTracer<T>::operator=(const IteratorTracer &) {
     return *this;
 }
 
 template <typename T>
-IteratorTracker<T> &IteratorTracker<T>::operator=(IteratorTracker &&) noexcept {
+IteratorTracer<T> &IteratorTracer<T>::operator=(IteratorTracer &&) noexcept {
     return *this;
 }
 
 template <typename T>
-Entity IteratorTracker<T>::get_current_entity() {
+Entity IteratorTracer<T>::get_current_entity() {
     using R = std::decay_t<decltype(*m_iterator)>;
     if constexpr (utl::type_traits::IS_SPECIALIZATION<R, std::tuple>) {
         return std::get<0>(*m_iterator);

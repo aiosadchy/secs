@@ -42,7 +42,7 @@ private:
         const EntityPool *m_pool;
 
         SECS_IF_DEBUG (
-            debug::IteratorTracker<GenericIterator<Collection>> m_tracker = *this;
+            debug::IteratorTracer<GenericIterator<Collection>> m_tracker = *this;
         )
 
     };

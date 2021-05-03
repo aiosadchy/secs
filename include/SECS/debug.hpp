@@ -32,21 +32,21 @@ namespace debug {
 
 SECS_IF_DEBUG (
 
-class IIteratorTracker {
+class IIteratorTracer {
 public:
-    virtual ~IIteratorTracker() = default;
+    virtual ~IIteratorTracer() = default;
     virtual Entity get_current_entity() = 0;
 
 };
 
 template <typename T>
-class IteratorTracker : public IIteratorTracker {
+class IteratorTracer : public IIteratorTracer {
 public:
-    IteratorTracker(T &iterator);
-    ~IteratorTracker();
+    IteratorTracer(T &iterator);
+    ~IteratorTracer();
 
-    IteratorTracker &operator=(const IteratorTracker &another);
-    IteratorTracker &operator=(IteratorTracker &&another) noexcept;
+    IteratorTracer &operator=(const IteratorTracer &another);
+    IteratorTracer &operator=(IteratorTracer &&another) noexcept;
 
     Entity get_current_entity() override;
 
@@ -55,9 +55,9 @@ private:
 
 };
 
-class IteratorTrackerStorage {
+class IteratorRegistry {
 public:
-    UTL_NON_CONSTRUCTIBLE(IteratorTrackerStorage)
+    UTL_NON_CONSTRUCTIBLE(IteratorRegistry)
 
     inline static void on_destroy(Entity entity);
 
@@ -65,10 +65,10 @@ public:
     inline static void on_remove(Entity entity);
 
     template <typename... C>
-    static void track(IIteratorTracker &tracker);
+    static void track(IIteratorTracer &tracker);
 
     template <typename... C>
-    static void release(IIteratorTracker &tracker);
+    static void release(IIteratorTracer &tracker);
 
 private:
 
