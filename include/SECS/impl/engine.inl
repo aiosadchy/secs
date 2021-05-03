@@ -8,8 +8,6 @@
 
 #include "SECS/utility.hpp"
 
-#include "SECS/debug.hpp"
-
 
 namespace secs {
 

@@ -5,7 +5,14 @@
 #include <utility>
 
 #include "SECS/common.hpp"
+#include "SECS/debug.hpp"
 
+
+#ifndef SECS_DEBUG
+    #define SECS_FAST_DYNAMIC_CAST reinterpret_cast
+#else
+    #define SECS_FAST_DYNAMIC_CAST dynamic_cast
+#endif
 
 namespace secs {
 
