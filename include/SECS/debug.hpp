@@ -32,8 +32,6 @@ namespace secs {
 
 namespace debug {
 
-SECS_IF_DEBUG (
-
 class IIteratorTracer {
 public:
     virtual ~IIteratorTracer() = default;
@@ -45,7 +43,7 @@ template <typename T>
 class IteratorTracer : public IIteratorTracer {
 public:
     explicit IteratorTracer(T &iterator);
-    ~IteratorTracer();
+    ~IteratorTracer() override;
 
     IteratorTracer &operator=(const IteratorTracer &another);
     IteratorTracer &operator=(IteratorTracer &&another) noexcept;
@@ -77,7 +75,9 @@ private:
 
 };
 
-) // SECS_IF_DEBUG
+} // namespace debug
+
+} // namespace secs
 
 
 #define SECS_TRACE_ITERATOR(Iterator) SECS_IF_DEBUG (                                          \
@@ -100,9 +100,5 @@ private:
                                                                                                \
         private:                                                                               \
     )
-
-} // namespace debug
-
-} // namespace secs
 
 #endif // SECS_DEBUG_HPP

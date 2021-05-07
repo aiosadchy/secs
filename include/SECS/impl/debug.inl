@@ -13,8 +13,6 @@ namespace secs {
 
 namespace debug {
 
-SECS_IF_DEBUG (
-
 template <typename T>
 IteratorTracer<T>::IteratorTracer(T &iterator)
     : m_iterator(iterator) {
@@ -67,8 +65,6 @@ template <typename... C>
 void IteratorRegistry::release(IIteratorTracer & /* tracker */) {
     // TODO: implementation
 }
-
-) // SECS_IF_DEBUG
 
 } // namespace debug
 
